@@ -14,3 +14,7 @@
 ### Coding Todos
 
 - [x] Get basic launch structure into place
+
+### Super Advanced Coding Todos
+
+- [] Use [Parsec](https://hackage.haskell.org/package/parsec) for the REPL, per [this](https://blogg.bekk.no/creating-a-repl-in-haskell-efcdef1deec2) article's suggestion. It's an older article, so follow up on other options later.
