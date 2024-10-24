@@ -1,0 +1,21 @@
+# cradle:
+#   stack:
+#     - path: "./app/Main.hs"
+#       component: "TextAdventure:exe:TextAdventure-exe"
+#     - path: "./src"
+#       component: "TextAdventure:lib"
+#     - path: "./test"
+#       component: "TextAdventure:test:TextAdventure-test"
+
+cradle:
+  multi:
+    - path: "./app"
+      config:
+        cradle:
+          stack:
+            component: "TextAdventure:exe:TextAdventure-exe"
+    - path: "./src"
+      config:
+        cradle:
+          stack:
+            component: "TextAdventure:lib"
