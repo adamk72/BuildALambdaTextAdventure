@@ -1,10 +1,10 @@
 name:                TextAdventure
 version:             0.1.0.0
-github:              "githubuser/TextAdventure"
+github:              "adamk72/MyTextAdventure"
 license:             BSD-3-Clause
-author:              "Author name here"
+author:              "Adam Kecskes"
 maintainer:          "example@example.com"
-copyright:           "2024 Author name here"
+copyright:           "2024 Adam Kecskes"
 
 extra-source-files:
 - README.md
@@ -52,12 +52,10 @@ executables:
     - TextAdventure
     - aeson
     - bytestring
-    - containers
     - directory
     - filepath
     - optparse-applicative
     - prettyprinter
-    - prettyprinter-ansi-terminal
     - text
 
 tests:

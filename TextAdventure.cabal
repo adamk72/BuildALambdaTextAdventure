@@ -7,11 +7,11 @@ cabal-version: 2.2
 name:           TextAdventure
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/TextAdventure#readme>
-homepage:       https://github.com/githubuser/TextAdventure#readme
-bug-reports:    https://github.com/githubuser/TextAdventure/issues
-author:         Author name here
+homepage:       https://github.com/adamk72/MyTextAdventure#readme
+bug-reports:    https://github.com/adamk72/MyTextAdventure/issues
+author:         Adam Kecskes
 maintainer:     example@example.com
-copyright:      2024 Author name here
+copyright:      2024 Adam Kecskes
 license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
@@ -21,20 +21,11 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/TextAdventure
+  location: https://github.com/adamk72/MyTextAdventure
 
 library
   exposed-modules:
-      NarrativeGraph
-      NaturalLanguageLexer
-      NaturalLanguageParser
-      PrintParams
-      PrintUtils
-      Stories.DummyAdventure
-      Stories.NightmareAdventure
-      Stories.Trial
-      TextAdventureCore
-      TextReflow
+      Core.Launch
   other-modules:
       Paths_TextAdventure
   autogen-modules:
@@ -65,12 +56,10 @@ executable TextAdventure-exe
     , aeson
     , base >=4.7 && <5
     , bytestring
-    , containers
     , directory
     , filepath
     , optparse-applicative
     , prettyprinter
-    , prettyprinter-ansi-terminal
     , text
   default-language: Haskell2010
 
