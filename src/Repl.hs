@@ -1,10 +1,10 @@
 module Repl (loop) where
 
-import           Config            (quitCommands, replPrompt)
-import qualified Data.Text         as T
-import qualified Data.Text.IO      as TIO
-import           EvaluatorExamples
-import           System.IO         (hFlush, stdout)
+import           Config       (quitCommands, replPrompt)
+import qualified Data.Text    as T
+import qualified Data.Text.IO as TIO
+import           Parse        (parse)
+import           System.IO    (hFlush, stdout)
 
 loop :: IO Bool
 loop = do
@@ -21,7 +21,7 @@ read_ = TIO.putStr replPrompt >>
         TIO.getLine
 
 eval_ :: T.Text -> T.Text
-eval_ input = T.pack (emojiFinder (T.unpack input))
+eval_ = parse
 
 print_ :: T.Text -> IO ()
 print_ = TIO.putStrLn

@@ -28,6 +28,7 @@ library
       Config
       Core.Launch
       EvaluatorExamples
+      Parse
       Repl
   other-modules:
       Paths_TextAdventure
