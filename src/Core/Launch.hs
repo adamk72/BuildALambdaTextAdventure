@@ -1,10 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Core.Launch (launch) where
 
-import qualified Data.Text    as T
-import qualified Data.Text.IO as TIO
-import           System.IO    (hFlush, stdout)
-import Control.Monad ( unless )
+import           Control.Monad     (unless)
+import qualified Data.Text         as T
+import qualified Data.Text.IO      as TIO
+import           EvaluatorExamples
+import           System.IO         (hFlush, stdout)
 
 launch :: IO ()
 launch = do
@@ -18,7 +19,7 @@ read_ = TIO.putStr "REPL> " >>
         TIO.getLine
 
 eval_ :: T.Text -> T.Text
-eval_ input = input
+eval_ input = T.pack (emojiFinder (T.unpack input))
 
 print_ :: T.Text -> IO ()
 print_ = TIO.putStrLn

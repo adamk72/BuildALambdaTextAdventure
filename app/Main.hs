@@ -1,16 +1,15 @@
 {-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-import           CmdOptions                 as Cmd (parse, showHelp)
-import           Control.Monad              (void)
-import           Data.Text                  as T (Text, concat, intercalate,
-                                                  pack, unpack)
-import           JsonProcessing             as Help (AdventureDetail (description, fullName, shortName),
-                                                     getJsonFilePaths,
-                                                     processJsonFiles,
-                                                     storyDirectory)
-import           System.Environment         as E (getArgs)
-import qualified Core.Launch as Core
+import           CmdOptions         as Cmd (parse, showHelp)
+import           Control.Monad      (void)
+import qualified Core.Launch        as Core
+import           Data.Text          as T (Text, concat, intercalate, pack,
+                                          unpack)
+import           JsonProcessing     as Help (AdventureDetail (description, fullName, shortName),
+                                             getJsonFilePaths, processJsonFiles,
+                                             storyDirectory)
+import           System.Environment as E (getArgs)
 
 main :: IO ()
 main =
