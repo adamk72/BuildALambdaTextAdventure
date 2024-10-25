@@ -1,4 +1,4 @@
-module Config (quitCommands, replPrompt) where
+module Core.Config (quitCommands, replPrompt) where
 
 import qualified Data.Text as T
 

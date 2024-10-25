@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-missing-export-lists #-}
 {-# OPTIONS_GHC -Wno-type-defaults #-}
-module EvaluatorExamples where
+module Misc.EvaluatorExamples where
 
 import           Data.Char
 import           Data.List (intersect)

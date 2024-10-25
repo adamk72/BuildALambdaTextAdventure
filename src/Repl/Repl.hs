@@ -1,9 +1,9 @@
-module Repl (loop) where
+module Repl.Repl (loop) where
 
-import           Config       (quitCommands, replPrompt)
+import           Core.Config       (quitCommands, replPrompt)
 import qualified Data.Text    as T
 import qualified Data.Text.IO as TIO
-import           Parse        (parse)
+import           Repl.Parse        (parse)
 import           System.IO    (hFlush, stdout)
 
 loop :: IO Bool

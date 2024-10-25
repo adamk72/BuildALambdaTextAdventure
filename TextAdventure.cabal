@@ -25,11 +25,11 @@ source-repository head
 
 library
   exposed-modules:
-      Config
+      Core.Config
       Core.Launch
-      EvaluatorExamples
-      Parse
-      Repl
+      Misc.EvaluatorExamples
+      Repl.Parse
+      Repl.Repl
   other-modules:
       Paths_TextAdventure
   autogen-modules:

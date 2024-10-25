@@ -1,4 +1,4 @@
-module Parse (parse) where
+module Repl.Parse (parse) where
 
 import qualified Data.Text as T
 
