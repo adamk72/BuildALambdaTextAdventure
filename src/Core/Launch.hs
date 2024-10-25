@@ -1,7 +1,7 @@
 module Core.Launch (launch) where
 
-import           Repl
-import Control.Monad (unless)
+import           Control.Monad (unless)
+import           Repl          (loop)
 
 launch :: IO ()
 launch = do

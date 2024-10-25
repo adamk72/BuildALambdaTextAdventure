@@ -1,6 +1,6 @@
 module Repl (loop) where
 
-import Config (quitCommands, replPrompt)
+import           Config            (quitCommands, replPrompt)
 import qualified Data.Text         as T
 import qualified Data.Text.IO      as TIO
 import           EvaluatorExamples

@@ -14,7 +14,9 @@
 ### Coding Todos
 
 - [x] Get basic launch structure into place
-- [] Abstract things like the ":quit" command or "REPL> " prompt out of the code; what if I want to easily change or i18n those words?
+- [x] Abstract things like the ":quit" command or "REPL> " prompt out of the code; what if I want to easily change or i18n those words?
+- [x] On launch, the command selections should be dynamic, based on what is pulled from the JSON files.
+- [] Convert the old code over from String to Text only.
 
 ### Super Advanced Coding Todos
 
