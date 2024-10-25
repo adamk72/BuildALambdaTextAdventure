@@ -10,18 +10,20 @@ import           JsonProcessing     as Help (AdventureDetail (description, fullN
                                              storyDirectory)
 import           System.Environment as E (getArgs)
 
+validOptions :: [String]
+validOptions = ["Trial", "Foo", "Bar"]
+
 main :: IO ()
-main =
-    do
+main = do
     jsonPaths <- getJsonFilePaths storyDirectory
     content <- processJsonFiles jsonPaths
     E.getArgs >>= \case
-        ["-a", "Trial"]                 -> runGame
-        ["-a", invalid]                 -> do
+        ["-a", option] | option `elem` validOptions -> runGameWithOption option
+        ["-a", invalid] -> do
             putStrLn $ "Invalid adventure name: " ++ invalid ++ "\n"
             let adventureList = T.unpack $ T.intercalate "\n" (concatResults content)
             Cmd.showHelp adventureList
-        _                               -> displayHelp (concatResults content)
+        _ -> displayHelp (concatResults content)
         where
             concatResults :: [Either String AdventureDetail] -> [Text]
             concatResults = map formatResult
@@ -32,6 +34,11 @@ main =
 
 displayHelp :: [Text]-> IO ()
 displayHelp = void . Cmd.parse . T.unpack . T.intercalate "\n"
+
+runGameWithOption :: String -> IO ()
+runGameWithOption option = do
+    putStrLn $ "Running game with option: " ++ option
+    runGame
 
 runGame :: IO ()
 runGame = Core.launch
