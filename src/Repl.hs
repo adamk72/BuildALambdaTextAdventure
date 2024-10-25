@@ -1,6 +1,6 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Repl (loop) where
 
+import Config (quitCommands, replPrompt)
 import qualified Data.Text         as T
 import qualified Data.Text.IO      as TIO
 import           EvaluatorExamples
@@ -9,14 +9,14 @@ import           System.IO         (hFlush, stdout)
 loop :: IO Bool
 loop = do
   input <- read_
-  if input == ":quit"
+  if input `elem` quitCommands
      then return True
      else do
        print_ (eval_ input)
        return False
 
 read_ :: IO T.Text
-read_ = TIO.putStr "REPL> " >>
+read_ = TIO.putStr replPrompt >>
         hFlush stdout >>
         TIO.getLine
 

@@ -1,5 +1,4 @@
 {-# LANGUAGE LambdaCase        #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 import           CmdOptions         as Cmd (parse, showHelp)
 import           Control.Monad      (void)

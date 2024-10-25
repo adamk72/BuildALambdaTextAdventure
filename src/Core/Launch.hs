@@ -1,4 +1,3 @@
--- {-# LANGUAGE OverloadedStrings #-}
 module Core.Launch (launch) where
 
 import           Repl

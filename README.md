@@ -14,6 +14,7 @@
 ### Coding Todos
 
 - [x] Get basic launch structure into place
+- [] Abstract things like the ":quit" command or "REPL> " prompt out of the code; what if I want to easily change or i18n those words?
 
 ### Super Advanced Coding Todos
 
