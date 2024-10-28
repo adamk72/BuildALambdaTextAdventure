@@ -6,7 +6,7 @@ import           Core.State          (Player)
 import qualified Data.Text           as T
 import qualified Data.Text.IO        as TIO
 -- import           Repl.Parse          (parse)
-import           Story.Locations     (executeLook)
+import           Locations     (executeLook, isDirectionalLook)
 import           System.IO           (hFlush, stdout)
 
 loop :: Player -> IO Bool
@@ -43,16 +43,3 @@ eval_ input = do
             return text
         Nothing ->
             return $ "I don't know how to '" <> input <> "'."
-
--- Helper function to handle directional looking
-isDirectionalLook :: T.Text -> Maybe T.Text
-isDirectionalLook input =
-    let directions = ["north", "south", "east", "west"]
-        prefix = "look "
-    -- isPrefixOf: takes two Texts and returns True if and only if the first is a prefix of the second.
-    in if T.isPrefixOf prefix input
-       then let direction = T.drop (T.length prefix) input
-            in if direction `elem` directions
-               then Just direction
-               else Nothing
-       else Nothing

@@ -28,9 +28,9 @@ library
       Core.Config
       Core.Launch
       Core.State
+      Locations
       Misc.EvaluatorExamples
       Repl.Repl
-      Story.Locations
   other-modules:
       Paths_TextAdventure
   autogen-modules:
