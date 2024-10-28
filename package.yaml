@@ -42,6 +42,7 @@ library:
   - split
   - containers
   - text
+  - mtl
 
 executables:
   TextAdventure-exe:
