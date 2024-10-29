@@ -1,5 +1,34 @@
- {
-   "fullName": "Trial of Your Life",
-   "shortName": "Trial",
-   "description": "Another short adventure for testing."
- }
+{
+  "metadata": {
+    "title": "Trial of Your Life",
+    "launchTitle": "Trial",
+    "description": "A short adventure for testing.",
+    "version": "1.0",
+    "author": "Adam Kecskes"
+  },
+  "world": {
+    "startingCharacter": "alice",
+    "playableCharacters": [
+      {
+        "tag": "alice",
+        "name": "Alice the Adventurer",
+        "startingLocation": "Meadow"
+      },
+      {
+        "tag": "bob",
+        "name": "Bob the Burglar",
+        "startingLocation": "Cave"
+      }
+    ],
+    "locations": [
+      {
+        "tag": "meadow",
+        "name": "The Meadow"
+      },
+      {
+        "tag": "cave",
+        "name": "The Cave"
+      }
+    ]
+  }
+}
