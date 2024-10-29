@@ -39,10 +39,12 @@ ghc-options:
 library:
   source-dirs: src
   dependencies:
-  - split
+  - aeson
+  - bytestring
   - containers
-  - text
   - mtl
+  - split
+  - text
 
 executables:
   TextAdventure-exe:

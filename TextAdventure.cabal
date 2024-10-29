@@ -29,6 +29,7 @@ library
       Core.Config
       Core.Launch
       Core.State
+      Json
       Repl.Repl
   other-modules:
       Paths_TextAdventure
@@ -40,7 +41,9 @@ library
       OverloadedStrings
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
+    , bytestring
     , containers
     , mtl
     , split

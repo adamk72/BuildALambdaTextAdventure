@@ -2,7 +2,6 @@
 {-# HLINT ignore "Use newtype instead of data" #-}
 {-# LANGUAGE DeriveGeneric #-}
 module Core.State (Character(..), Location(..), initialWorld, GameEnvironment(..), GameWorld(..)) where
-
 import           Data.Text    as T
 import           GHC.Generics (Generic)
 
