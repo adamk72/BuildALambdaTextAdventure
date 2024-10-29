@@ -2,7 +2,7 @@
 {-# HLINT ignore "Use newtype instead of data" #-}
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric  #-}
-module Json (loadGameEnvironmentJSON) where
+module Json (loadGameEnvironmentJSON, JGameEnvironment(..)) where
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as B
 import           Data.Text    as T

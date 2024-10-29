@@ -7,7 +7,7 @@ import           GHC.Generics (Generic)
 
 data Metadata = Metadata {
     title       :: Text,
-    launchTitle :: Text,
+    launchTag :: Text,
     description :: Text,
     version     :: Text,
     author      ::Text

@@ -3,8 +3,8 @@
 module Command.Look (executeLook, isDirectionalLook) where
 
 import           Control.Monad.State
-import           Core.State          (Character (..), GameEnvironment (..), GameWorld(..),
-                                      Location (..))
+import           Core.State          (Character (..), GameEnvironment (..),
+                                      GameWorld (..), Location (..))
 import qualified Data.Text           as T
 
 executeLook :: Maybe T.Text -> State GameEnvironment T.Text

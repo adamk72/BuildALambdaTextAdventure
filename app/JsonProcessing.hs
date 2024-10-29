@@ -2,23 +2,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
-module JsonProcessing (storyDirectory, getJsonFilePaths, processJsonFiles, AdventureDetail, fullName, shortName, description) where
+module JsonProcessing (storyDirectory, getJsonFilePaths, processJsonFiles) where
 
 import           Data.Aeson           (FromJSON, ToJSON, eitherDecode)
 import qualified Data.ByteString.Lazy as B
 import           Data.Text            as T (Text)
 import           GHC.Generics         (Generic)
+import           Json                 (JGameEnvironment)
 import           System.Directory
 import           System.FilePath      (takeExtension, (</>))
-
-data AdventureDetail =
-  AdventureDetail { fullName    :: !T.Text
-                  , shortName   :: !T.Text
-                  , description :: !T.Text
-                  } deriving (Show,Generic)
-
-instance FromJSON AdventureDetail
-instance ToJSON AdventureDetail
 
 storyDirectory :: FilePath
 storyDirectory = "stories"
@@ -32,13 +24,13 @@ getJsonFilePaths dir = do
     else return (map (Right . (dir </>)) jsonFiles)
 
 
-readJsonFile :: Either String FilePath -> IO (Either String AdventureDetail)
+readJsonFile :: Either String FilePath -> IO (Either String JGameEnvironment)
 readJsonFile (Left err) = return (Left err)
 readJsonFile (Right filePath) = do
     contents <- B.readFile filePath
     return (eitherDecode contents)
 
-processJsonFiles :: [Either String FilePath] -> IO [Either String AdventureDetail]
+processJsonFiles :: [Either String FilePath] -> IO [Either String JGameEnvironment]
 processJsonFiles = mapM processFile
   where
     processFile file = do

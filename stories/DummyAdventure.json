@@ -1,5 +1,9 @@
- {
-   "fullName": "Dummy Adventure",
-   "shortName": "Dummy",
-   "description": "Sample story with a quick resolution."
- }
+{
+  "metadata": {
+    "title": "Dummy Adventure",
+    "launchTag": "Dummy",
+    "description": "Sample story with a quick resolution.",
+    "version": "1.0",
+    "author": "Adam Kecskes"
+  }
+}
