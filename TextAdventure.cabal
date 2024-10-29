@@ -25,11 +25,10 @@ source-repository head
 
 library
   exposed-modules:
+      Command.Look
       Core.Config
       Core.Launch
       Core.State
-      Locations
-      Misc.EvaluatorExamples
       Repl.Repl
   other-modules:
       Paths_TextAdventure

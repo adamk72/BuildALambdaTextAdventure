@@ -1,9 +1,10 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use newtype instead of data" #-}
-module Locations (executeLook, isDirectionalLook) where
+module Command.Look (executeLook, isDirectionalLook) where
 
 import           Control.Monad.State
-import           Core.State          (Character (..), Location (..), GameWorld (..))
+import           Core.State          (Character (..), GameWorld (..),
+                                      Location (..))
 import qualified Data.Text           as T
 
 executeLook :: Maybe T.Text -> State GameWorld T.Text

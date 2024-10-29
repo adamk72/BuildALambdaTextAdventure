@@ -6,7 +6,7 @@ import           Core.State          (GameWorld)
 import qualified Data.Text           as T
 import qualified Data.Text.IO        as TIO
 -- import           Repl.Parse          (parse)
-import           Locations     (executeLook, isDirectionalLook)
+import           Command.Look        (executeLook, isDirectionalLook)
 import           System.IO           (hFlush, stdout)
 
 loop :: GameWorld -> IO Bool
@@ -34,4 +34,4 @@ eval_ input = do
     "look around" -> executeLook (Just "around")
     other -> case isDirectionalLook other of
         Just direction -> executeLook (Just direction)
-        Nothing -> return $ "I don't know how to '" <> input <> "'."
+        Nothing        -> return $ "I don't know how to '" <> input <> "'."
