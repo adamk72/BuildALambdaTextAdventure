@@ -1,19 +1,42 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use newtype instead of data" #-}
-module Core.State (Character(..), Location(..), initialWorld, GameWorld(..)) where
+{-# LANGUAGE DeriveGeneric #-}
+module Core.State (Character(..), Location(..), initialWorld, GameEnvironment(..), GameWorld(..)) where
 
-import qualified Data.Text as T
+import           Data.Text    as T
+import           GHC.Generics (Generic)
 
-data GameWorld = GameWorld {
-    -- metadata :: Metadata,
-    -- regions :: [Region],
-    -- currentRegion :: String,
-    activeCharacter :: Character
+data Metadata = Metadata {
+    title       :: Text,
+    launchTitle :: Text,
+    description :: Text,
+    version     :: Text,
+    author      ::Text
+} deriving (Show, Generic)
+
+data Character = Character {
+  tag :: Text,
+  name :: Text,
+  currentLocation :: Location
 } deriving (Show)
 
-data Location = Location T.Text deriving Show
-data Character = Character {location :: Location} deriving Show
+data Location = Location {
+  ltag :: Text,
+  lname :: Text
+} deriving (Show)
 
-initialWorld :: GameWorld
-initialWorld = GameWorld $ Character (Location "Meadow")
+data GameWorld = GameWorld {
+  activeCharacter :: Character
+  -- playableCharacters :: [Character],
+  -- locations :: [Location]
+} deriving (Show)
+
+data GameEnvironment = GameEnvironment {
+    -- metadata :: Metadata
+    world :: GameWorld
+    -- currentRegion :: String,
+} deriving (Show)
+
+initialWorld :: GameEnvironment
+initialWorld = GameEnvironment $ GameWorld $ Character "alice" "Alice" (Location "meadow" "The Meadow")
 

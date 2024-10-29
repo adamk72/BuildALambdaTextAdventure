@@ -22,12 +22,12 @@
     ],
     "locations": [
       {
-        "tag": "meadow",
-        "name": "The Meadow"
+        "ltag": "meadow",
+        "lname": "The Meadow"
       },
       {
-        "tag": "cave",
-        "name": "The Cave"
+        "ltag": "cave",
+        "lname": "The Cave"
       }
     ]
   }
