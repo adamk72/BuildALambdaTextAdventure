@@ -3,18 +3,18 @@
 module Locations (executeLook, isDirectionalLook) where
 
 import           Control.Monad.State
-import           Core.State          (Location (..), Character (..))
+import           Core.State          (Character (..), Location (..), GameWorld (..))
 import qualified Data.Text           as T
 
-executeLook :: Maybe T.Text -> State Character T.Text
+executeLook :: Maybe T.Text -> State GameWorld T.Text
 executeLook (Just "around") = do
-    character <- get
-    let Location locName = location character
+    gw <- get
+    let Location locName = location $ activeCharacter gw
     return $ "You are in " <> locName <> ". " <>
                      "You look around carefully, taking in your surroundings."
 executeLook Nothing = do
-    character <- get
-    let Location locName = location character
+    gw <- get
+    let Location locName = location $ activeCharacter gw
     return $ "You are in " <> locName <> "."
 executeLook (Just direction) = do
     return ("You look " <> direction <> ", but see nothing special.")

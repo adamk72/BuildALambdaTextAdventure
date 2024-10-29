@@ -29,6 +29,7 @@
   1. [] Just get a simple gameWorld or player structure in place at launch.
   2. [] Structure the data.
   3. [] Pull in data from file.
+- [] Have REPL prompt dynamically update when the location (or other details) change.
 
 
 ### Super Advanced Coding Todos

@@ -7,4 +7,4 @@ quitCommands :: [T.Text]
 quitCommands = [":quit", ":q"]
 
 replPrompt :: T.Text
-replPrompt = "REPL> "
+replPrompt = "λ> "
