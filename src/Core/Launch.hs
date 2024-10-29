@@ -3,6 +3,7 @@ module Core.Launch (launch) where
 import           Control.Monad       (unless)
 import           Core.State          (GameEnvironment, initialWorld)
 import qualified Repl.Repl           as Repl (loop)
+import Json
 
 gameLoop :: GameEnvironment -> IO ()
 gameLoop gw = do
@@ -10,6 +11,7 @@ gameLoop gw = do
     unless quit (gameLoop gw)
 
 launch :: IO ()
-launch = do gameLoop initialWorld
-
--- initializeWorld =
+-- launch = do gameLoop initialWorld
+launch = do
+    world <- loadGameEnvironmentJSON "stories/TrialAdventure.json"
+    print world
