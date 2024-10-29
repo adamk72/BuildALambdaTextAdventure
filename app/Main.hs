@@ -11,35 +11,65 @@ import           JsonProcessing     as Help (getJsonFilePaths, readAllMetadata,
                                              storyDirectory)
 import           System.Environment as E (getArgs)
 
+newtype AdventureName = AdventureName { unAdventureName :: Text }
+data AdventureInfo = AdventureInfo
+    { advTitle       :: Text
+    , advLaunchTag   :: Text
+    , advDescription :: Text
+    } deriving (Show)
+
+-- Convert metadata to our domain type
+toAdventureInfo :: JMetadata -> AdventureInfo
+toAdventureInfo meta = AdventureInfo
+    { advTitle = title meta
+    , advLaunchTag = launchTag meta
+    , advDescription = description meta
+    }
+
+formatAdventureInfo :: AdventureInfo -> Text
+formatAdventureInfo adv = T.concat
+    [ advTitle adv
+    , " ("
+    , advLaunchTag adv
+    , ") -"
+    , advDescription adv
+    ]
+
+data Command
+    = RunAdventure AdventureName
+    | ShowHelp
+    | InvalidAdventure Text
+
+parseArgs :: [AdventureName] -> [String] -> Command
+parseArgs validNames = \case
+    ["-a", option] ->
+        let name = pack option
+        in if name `elem` map unAdventureName validNames
+           then RunAdventure (AdventureName name)
+           else InvalidAdventure name
+    _ -> ShowHelp
+
 main :: IO ()
 main = do
     jsonPaths <- getJsonFilePaths storyDirectory
-    -- print jsonPaths
-    allMetadata <- readAllMetadata jsonPaths
-    -- print allMetadata
-    E.getArgs >>= \case
-        ["-a", option] | T.pack option `elem` shortNames allMetadata -> runGameWithOption (T.pack option)
-        ["-a", invalid] -> do
-            putStrLn $ "Invalid adventure name: " ++ invalid ++ "\n"
-            let adventureList = T.unpack $ T.intercalate "\n" (concatResults allMetadata)
-            Cmd.showHelp adventureList
-        _ -> displayHelp (concatResults allMetadata)
-        where
-            -- Todo: clean all this code up.
-            shortNames :: [Either String JMetadata] -> [Text]
-            shortNames = map findShortNames
-                where
-                    findShortNames (Right adv) = T.concat [launchTag adv]
-                    findShortNames (Left err)  = T.concat [T.pack err]
-            concatResults :: [Either String JMetadata] -> [Text]
-            concatResults = map formatResult
-                where
-                    formatResult (Right adv) =
-                        T.concat [title adv, " (", launchTag adv, ") -", description adv]
-                    formatResult (Left err)= T.concat [T.pack err]
+    metadataResults <- readAllMetadata jsonPaths
+
+    let adventures = map toAdventureInfo metadataResults
+        validNames = map (AdventureName . advLaunchTag) adventures
+        formattedAdventures = map formatAdventureInfo adventures
+
+    E.getArgs >>= \args ->
+        case parseArgs validNames args of
+            RunAdventure name ->
+                runGameWithOption (unAdventureName name)
+            InvalidAdventure name -> do
+                TIO.putStrLn $ "Invalid adventure name: " <> name <> "\n"
+                Cmd.showHelp (unpack $ intercalate "\n" formattedAdventures)
+            ShowHelp ->
+                displayHelp formattedAdventures
 
 displayHelp :: [Text]-> IO ()
-displayHelp = void . Cmd.parse . T.unpack . T.intercalate "\n"
+displayHelp = void . Cmd.parse . unpack . intercalate "\n"
 
 runGameWithOption :: Text -> IO ()
 runGameWithOption option = do

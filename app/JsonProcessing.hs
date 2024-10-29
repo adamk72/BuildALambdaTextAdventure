@@ -1,13 +1,11 @@
-{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
 module JsonProcessing (storyDirectory, getJsonFilePaths, readAllMetadata) where
 
-import           Data.Aeson           (FromJSON, ToJSON, eitherDecode)
+import           Data.Aeson           (eitherDecode)
 import qualified Data.ByteString.Lazy as B
-import           Data.Text            as T (Text)
-import           GHC.Generics         (Generic)
+import qualified Data.Either        as Either
 import           Json                 (JGameEnvironment(..), JMetadata(..))
 import           System.Directory
 import           System.FilePath      (takeExtension, (</>))
@@ -24,15 +22,14 @@ getJsonFilePaths dir = do
     else return (map (Right . (dir </>)) jsonFiles)
 
 
-readMetadata :: Either String FilePath -> IO (Either String JMetadata)
-readMetadata (Left err) = return (Left err)
-readMetadata (Right filePath) = do
+readMetadata :: FilePath -> IO (Either String JMetadata)
+readMetadata filePath = do
     content <- B.readFile filePath
-    return $ fmap metadata $ eitherDecode content
+    return $ metadata <$> eitherDecode content
 
-readAllMetadata :: [Either String FilePath] -> IO [Either String JMetadata]
-readAllMetadata = mapM processFile
-  where
-    processFile file = do
-      readMetadata file
+readAllMetadata :: [Either String FilePath] -> IO [JMetadata]
+readAllMetadata filePaths = do
+    let validPaths = Either.rights filePaths -- filter out the bad files
+    results <- mapM readMetadata validPaths
+    return $ Either.rights results -- filter out the bad metadata
 
