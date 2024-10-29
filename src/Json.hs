@@ -2,15 +2,15 @@
 {-# HLINT ignore "Use newtype instead of data" #-}
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric  #-}
-module Json (loadGameEnvironmentJSON, JGameEnvironment(..)) where
+module Json (loadGameEnvironmentJSON, JGameEnvironment(..), JMetadata(..)) where
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as B
-import           Data.Text    as T
-import           GHC.Generics (Generic)
+import           Data.Text            as T
+import           GHC.Generics         (Generic)
 
 data JMetadata = JMetadata {
     title       :: Text,
-    launchTitle :: Text,
+    launchTag   :: Text,
     description :: Text,
     version     :: Text,
     author      :: Text
@@ -28,7 +28,7 @@ data JLocation = JLocation {
 } deriving (Show, Generic, FromJSON)
 
 data JGameWorld = JGameWorld {
-  startingCharacter    :: Text,
+  startingCharacter  :: Text,
   playableCharacters :: [JCharacter],
   locations          :: [JLocation]
 } deriving (Show, Generic, FromJSON)

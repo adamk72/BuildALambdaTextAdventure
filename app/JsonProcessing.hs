@@ -2,13 +2,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
-module JsonProcessing (storyDirectory, getJsonFilePaths, processJsonFiles) where
+module JsonProcessing (storyDirectory, getJsonFilePaths, readAllMetadata) where
 
 import           Data.Aeson           (FromJSON, ToJSON, eitherDecode)
 import qualified Data.ByteString.Lazy as B
 import           Data.Text            as T (Text)
 import           GHC.Generics         (Generic)
-import           Json                 (JGameEnvironment)
+import           Json                 (JGameEnvironment(..), JMetadata(..))
 import           System.Directory
 import           System.FilePath      (takeExtension, (</>))
 
@@ -24,15 +24,15 @@ getJsonFilePaths dir = do
     else return (map (Right . (dir </>)) jsonFiles)
 
 
-readJsonFile :: Either String FilePath -> IO (Either String JGameEnvironment)
-readJsonFile (Left err) = return (Left err)
-readJsonFile (Right filePath) = do
-    contents <- B.readFile filePath
-    return (eitherDecode contents)
+readMetadata :: Either String FilePath -> IO (Either String JMetadata)
+readMetadata (Left err) = return (Left err)
+readMetadata (Right filePath) = do
+    content <- B.readFile filePath
+    return $ fmap metadata $ eitherDecode content
 
-processJsonFiles :: [Either String FilePath] -> IO [Either String JGameEnvironment]
-processJsonFiles = mapM processFile
+readAllMetadata :: [Either String FilePath] -> IO [Either String JMetadata]
+readAllMetadata = mapM processFile
   where
     processFile file = do
-      readJsonFile file
+      readMetadata file
 
