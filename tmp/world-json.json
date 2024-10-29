@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "title": "My Adventure Game",
+    "version": "1.0",
+    "author": "John Doe"
+  },
+  "regions": [
+    {
+      "id": "cave-system",
+      "name": "Cave System",
+      "locations": {
+        "entrance": {
+          "id": "entrance",
+          "name": "Cave Entrance",
+          "type": "Cave",
+          "description": "A dark cave mouth opens before you, promising adventure.",
+          "connections": [
+            {
+              "direction": "North",
+              "targetId": "hall"
+            },
+            {
+              "direction": "East",
+              "targetId": "underground-lake"
+            }
+          ]
+        },
+        "hall": {
+          "id": "hall",
+          "name": "Main Hall",
+          "type": "Dungeon",
+          "description": "A vast hall with ancient pillars stretching into darkness.",
+          "connections": [
+            {
+              "direction": "South",
+              "targetId": "entrance"
+            }
+          ]
+        },
+        "underground-lake": {
+          "id": "underground-lake",
+          "name": "Underground Lake",
+          "type": "Lake",
+          "description": "A vast underground lake, its surface glimmering in the dim light.",
+          "connections": [
+            {
+              "direction": "West",
+              "targetId": "entrance"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "forest-region",
+      "name": "Enchanted Forest",
+      "locations": {
+        "forest-entrance": {
+          "id": "forest-entrance",
+          "name": "Forest Entrance",
+          "type": "Forest",
+          "description": "The entrance to a dense, ancient forest lies before you.",
+          "connections": [
+            {
+              "direction": "South",
+              "targetId": "forest-clearing"
+            }
+          ]
+        },
+        "forest-clearing": {
+          "id": "forest-clearing",
+          "name": "Forest Clearing",
+          "type": "Forest",
+          "description": "A small clearing in the forest, with a stream running through it.",
+          "connections": [
+            {
+              "direction": "North",
+              "targetId": "forest-entrance"
+            },
+            {
+              "direction": "East",
+              "targetId": "forest-path"
+            }
+          ]
+        },
+        "forest-path": {
+          "id": "forest-path",
+          "name": "Forest Path",
+          "type": "Forest",
+          "description": "A winding path leads deeper into the enchanted forest.",
+          "connections": [
+            {
+              "direction": "West",
+              "targetId": "forest-clearing"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
