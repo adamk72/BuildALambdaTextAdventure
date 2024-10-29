@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use newtype instead of data" #-}
 module Core.State (Player(..), Location(..), initialPlayer) where
 
 import qualified Data.Text as T

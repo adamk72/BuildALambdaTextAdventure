@@ -2,21 +2,22 @@
 {-# HLINT ignore "Use newtype instead of data" #-}
 module Locations (executeLook, isDirectionalLook) where
 
-import           Core.State (Player(..), Location(..))
-import qualified Data.Text  as T
+import           Control.Monad.State
+import           Core.State          (Location (..), Player (..))
+import qualified Data.Text           as T
 
-executeLook :: Player -> Maybe T.Text ->  T.Text
-executeLook player (Just "around") =
+executeLook :: Maybe T.Text -> State Player T.Text
+executeLook (Just "around") = do
+    player <- get
     let Location locName = location player
-        description = "You are in " <> locName <> ". " <>
+    return $ "You are in " <> locName <> ". " <>
                      "You look around carefully, taking in your surroundings."
-    in description  -- Return same player state with description
-executeLook player Nothing =
+executeLook Nothing = do
+    player <- get
     let Location locName = location player
-        description = "You are in " <> locName <> "."
-    in description
-executeLook _ (Just direction) =
-    "You look " <> direction <> ", but see nothing special."
+    return $ "You are in " <> locName <> "."
+executeLook (Just direction) = do
+    return ("You look " <> direction <> ", but see nothing special.")
 
 -- Helper function to handle directional looking
 isDirectionalLook :: T.Text -> Maybe T.Text

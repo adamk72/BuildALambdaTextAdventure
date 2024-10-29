@@ -28,18 +28,10 @@ print_ = TIO.putStrLn
 
 eval_ :: T.Text -> State Player T.Text
 eval_ input = do
-  player <- get
   let lowerCase = T.toLower input
   case lowerCase of
-    "look" -> do
-        let text = executeLook player Nothing
-        return text
-    "look around" -> do
-        let text = executeLook player (Just "around")
-        return text
+    "look" -> executeLook Nothing
+    "look around" -> executeLook (Just "around")
     other -> case isDirectionalLook other of
-        Just direction -> do
-            let text = executeLook player (Just direction)
-            return text
-        Nothing ->
-            return $ "I don't know how to '" <> input <> "'."
+        Just direction -> executeLook (Just direction)
+        Nothing -> return $ "I don't know how to '" <> input <> "'."
