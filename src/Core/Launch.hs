@@ -1,17 +1,16 @@
 module Core.Launch (launch) where
 
-import           Control.Monad       (unless)
-import           Core.State          (GameEnvironment, initialWorld)
-import qualified Repl.Repl           as Repl (loop)
-import Json
+import           Control.Monad (unless)
+import           Core.State    (GameEnvironment, initialWorld)
+import           Json
+import qualified Repl.Repl     as Repl (loop)
 
 gameLoop :: GameEnvironment -> IO ()
 gameLoop gw = do
     quit <- Repl.loop gw
     unless quit (gameLoop gw)
 
-launch :: IO ()
+launch :: FilePath -> IO ()
 -- launch = do gameLoop initialWorld
-launch = do
-    world <- loadGameEnvironmentJSON "stories/TrialAdventure.json"
-    print world
+launch fp =
+   loadGameEnvironmentJSON fp >>= print

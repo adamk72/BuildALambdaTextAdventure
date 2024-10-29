@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# LANGUAGE TupleSections #-}
 
 module JsonProcessing (storyDirectory, getJsonFilePaths, readAllMetadata) where
 
@@ -27,9 +28,13 @@ readMetadata filePath = do
     content <- B.readFile filePath
     return $ metadata <$> eitherDecode content
 
-readAllMetadata :: [Either String FilePath] -> IO [JMetadata]
+readAllMetadata :: [Either String FilePath] -> IO [(FilePath, JMetadata)]
 readAllMetadata filePaths = do
     let validPaths = Either.rights filePaths -- filter out the bad files
-    results <- mapM readMetadata validPaths
+    results <- mapM processFile validPaths
     return $ Either.rights results -- filter out the bad metadata
+  where
+    processFile filePath = do
+      md <- readMetadata filePath
+      return $ (filePath,) <$> md
 
