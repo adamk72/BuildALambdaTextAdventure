@@ -14,7 +14,7 @@ data Location = Location
     , directionDescs :: Map String String  -- Descriptions for each direction
     } deriving Show
 
-data Player = Player {location :: Location} deriving Show
+data Character = Character {location :: Location} deriving Show
 
 -- Helper function to create a location with all its descriptions
 makeLocation :: String -> String -> [(String, String)] -> Location
@@ -46,17 +46,17 @@ meadowLocation = makeLocation
     ]
 
 -- Enhanced executeLook function
-executeLook :: Player -> Maybe Text -> Text
-executeLook player Nothing =
-    let loc = location player
+executeLook :: Character -> Maybe Text -> Text
+executeLook character Nothing =
+    let loc = location character
     in T.pack $ "You are in " <> locationName loc <> "."
 
-executeLook player (Just "around") =
-    let loc = location player
+executeLook character (Just "around") =
+    let loc = location character
     in T.pack $ "You are in " <> locationName loc <> ". " <> lookDesc loc
 
-executeLook player (Just direction) =
-    let loc = location player
+executeLook character (Just direction) =
+    let loc = location character
         dirStr = T.unpack direction
         defaultDesc = "You look " <> dirStr <> ", but see nothing special."
     in T.pack $ case Map.lookup dirStr (directionDescs loc) of
@@ -76,20 +76,20 @@ isDirectionalLook input =
        else Nothing
 
 -- Main eval function
-eval :: Text -> State Player Text
+eval :: Text -> State Character Text
 eval input = do
-    player <- get
+    character <- get
     let lowerInput = T.toLower input
     case lowerInput of
         "look" -> do
-            return $ executeLook player Nothing
+            return $ executeLook character Nothing
 
         "look around" -> do
-            return $ executeLook player (Just "around")
+            return $ executeLook character (Just "around")
 
         other -> case isDirectionalLook other of
             Just direction -> do
-                return $ executeLook player (Just direction)
+                return $ executeLook character (Just direction)
 
             Nothing ->
                 return $ "I don't know how to '" <> input <> "'."
@@ -97,13 +97,13 @@ eval input = do
 -- Test function to demonstrate the location-specific descriptions
 testLocations :: IO ()
 testLocations = do
-    let forestPlayer = Player forestLocation
-        meadowPlayer = Player meadowLocation
+    let forestPlayer = Character forestLocation
+        meadowPlayer = Character meadowLocation
         commands = ["look", "look around", "look north", "look south",
                    "look east", "look west"]
 
-        runCommand player cmd =
-            let (result, _) = runState (eval (T.pack cmd)) player
+        runCommand character cmd =
+            let (result, _) = runState (eval (T.pack cmd)) character
             in T.unpack result
 
     putStrLn "Testing Dark Forest Location:"

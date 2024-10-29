@@ -3,18 +3,18 @@
 module Locations (executeLook, isDirectionalLook) where
 
 import           Control.Monad.State
-import           Core.State          (Location (..), Player (..))
+import           Core.State          (Location (..), Character (..))
 import qualified Data.Text           as T
 
-executeLook :: Maybe T.Text -> State Player T.Text
+executeLook :: Maybe T.Text -> State Character T.Text
 executeLook (Just "around") = do
-    player <- get
-    let Location locName = location player
+    character <- get
+    let Location locName = location character
     return $ "You are in " <> locName <> ". " <>
                      "You look around carefully, taking in your surroundings."
 executeLook Nothing = do
-    player <- get
-    let Location locName = location player
+    character <- get
+    let Location locName = location character
     return $ "You are in " <> locName <> "."
 executeLook (Just direction) = do
     return ("You look " <> direction <> ", but see nothing special.")
@@ -24,8 +24,7 @@ isDirectionalLook :: T.Text -> Maybe T.Text
 isDirectionalLook input =
     let directions = ["north", "south", "east", "west"]
         prefix = "look "
-    -- isPrefixOf: takes two Texts and returns True if and only if the first is a prefix of the second.
-    in if T.isPrefixOf prefix input
+    in if T.isPrefixOf prefix input -- isPrefixOf: takes two Texts and returns True if and only if the first is a prefix of the second.
        then let direction = T.drop (T.length prefix) input
             in if direction `elem` directions
                then Just direction

@@ -5,6 +5,13 @@
 - `stack build`
 - `stack run TextAdventure-exe -- --help`
 
+## Game Ideas
+
+- Allow the player to have multiple characters in multiple location:
+  - Have a command that let's the player switch between the characters;
+  - If in the same location, allow direct communication and exchange of goods;
+  - If in different locations, certain tools would allow for commands to be given from one character to another.
+  - The thought here is that characters could act as distractions or provide "simultaneous" actions to occur that may impact the story arc.
 ## Todos
 
 ### Doc/Blog Todos
@@ -18,6 +25,10 @@
 - [x] On launch, the command selections should be dynamic, based on what is pulled from the JSON files.
 - [] Convert the old code over from String to Text only.
 - [] Build a naive spell checker for checking input and making suggestions.
+- [] Import world from JSON file.
+  1. [] Just get a simple gameWorld or player structure in place at launch.
+  2. [] Structure the data.
+  3. [] Pull in data from file.
 
 
 ### Super Advanced Coding Todos
