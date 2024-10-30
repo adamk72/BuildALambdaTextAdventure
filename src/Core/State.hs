@@ -3,7 +3,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric  #-}
 {-# LANGUAGE LambdaCase     #-}
-module Core.State (Metadata(..), Location(..), GameEnvironment(..), GameWorld(..), loadGameEnvironmentJSON) where
+module Core.State (Character(..), Metadata(..), Location(..), GameEnvironment(..), GameWorld(..), loadGameEnvironmentJSON) where
 
 import           Control.Monad        (mzero)
 import           Data.Aeson
@@ -20,9 +20,9 @@ data Metadata = Metadata {
 } deriving (Show, Generic, FromJSON)
 
 data Character = Character {
-  charTag             :: Text,
-  charName            :: Text,
-  currentLocation :: Text
+  charTag         :: Text,
+  charName        :: Text,
+  currentLocation :: Location
 } deriving (Show, Generic)
 
 -- Another way of doing the mapping:
@@ -47,7 +47,7 @@ instance FromJSON Location where
   parseJSON _ = mzero
 
 data GameWorld = GameWorld {
-  activeCharacter  :: Text,
+  activeCharacter    :: Character,
   playableCharacters :: [Character],
   locations          :: [Location]
 } deriving (Show, Generic)

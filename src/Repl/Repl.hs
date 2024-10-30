@@ -2,14 +2,14 @@ module Repl.Repl (loop) where
 
 import           Control.Monad.State
 import           Core.Config         (quitCommands, replPrompt)
-import           Core.State          (GameEnvironment)
+import           Core.State          (GameWorld)
 import qualified Data.Text           as T
 import qualified Data.Text.IO        as TIO
 -- import           Repl.Parse          (parse)
 import           Command.Look        (executeLook, isDirectionalLook)
 import           System.IO           (hFlush, stdout)
 
-loop :: GameEnvironment -> IO Bool
+loop :: GameWorld -> IO Bool
 loop p = do
   input <- read_
   if input `elem` quitCommands
@@ -26,7 +26,7 @@ read_ = TIO.putStr replPrompt >>
 print_ :: T.Text -> IO ()
 print_ = TIO.putStrLn
 
-eval_ :: T.Text -> State GameEnvironment T.Text
+eval_ :: T.Text -> State GameWorld T.Text
 eval_ input = do
   let lowerCase = T.toLower input
   case lowerCase of

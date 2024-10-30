@@ -3,19 +3,20 @@
 module Command.Look (executeLook, isDirectionalLook) where
 
 import           Control.Monad.State
-import           Core.State          (GameEnvironment (..), Location (..))
+import           Core.State          (Character (..), GameWorld (..),
+                                      Location (..))
 import qualified Data.Text           as T
 
-executeLook :: Maybe T.Text -> State GameEnvironment T.Text
--- executeLook (Just "around") = do
---     ge <- get
---     let locName = lname $ currentLocation $ activeCharacter $ world ge
---     return $ "You are in " <> locName <> ". " <>
---                      "You look around carefully, taking in your surroundings."
--- executeLook Nothing = do
---     ge <- get
---     let locName = lname $ currentLocation $ activeCharacter $ world ge
---     return $ "You are in " <> locName <> "."
+executeLook :: Maybe T.Text -> State GameWorld T.Text
+executeLook (Just "around") = do
+    gw <- get
+    let loc = locName $ currentLocation $ activeCharacter $ gw
+    return $ "You are in " <> loc <> ". " <>
+                     "You look around carefully, taking in your surroundings."
+executeLook Nothing = do
+    gw <- get
+    let loc = locName $ currentLocation $ activeCharacter $ gw
+    return $ "You are in " <> loc <> "."
 executeLook (Just direction) = do
     return ("You look " <> direction <> ", but see nothing special.")
 

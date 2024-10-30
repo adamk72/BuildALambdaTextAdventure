@@ -7,17 +7,22 @@
     "author": "Adam Kecskes"
   },
   "world": {
-    "startingCharacter": "alice",
+    "startingCharacter": {
+      "tag": "alice",
+      "name": "Alice the Adventurer",
+      "startingLocation": {
+        "tag": "meadow",
+        "name": "The Meadow"
+      }
+    },
     "playableCharacters": [
-      {
-        "tag": "alice",
-        "name": "Alice the Adventurer",
-        "startingLocation": "Meadow"
-      },
       {
         "tag": "bob",
         "name": "Bob the Burglar",
-        "startingLocation": "Cave"
+        "startingLocation": {
+          "tag": "cave",
+          "name": "The Cave"
+        }
       }
     ],
     "locations": [
