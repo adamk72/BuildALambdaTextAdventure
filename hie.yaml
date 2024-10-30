@@ -1,19 +1,13 @@
 cradle:
   stack:
-    - path: "./app"
-      component: "TextAdventure:exe"
     - path: "./src"
       component: "TextAdventure:lib"
 
-# cradle:
-#   multi:
-#     - path: "./app"
-#       config:
-#         cradle:
-#           stack:
-#             component: "TextAdventure:exe:TextAdventure-exe"
-#     - path: "./src"
-#       config:
-#         cradle:
-#           stack:
-#             component: "TextAdventure:lib"
+    - path: "./app/Main.hs"
+      component: "TextAdventure:exe:TextAdventure-exe"
+
+    - path: "./app/CmdOptions.hs"
+      component: "TextAdventure:exe:TextAdventure-exe"
+
+    - path: "./app/JsonProcessing.hs"
+      component: "TextAdventure:exe:TextAdventure-exe"
