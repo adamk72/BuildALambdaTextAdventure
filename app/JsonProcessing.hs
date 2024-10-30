@@ -28,13 +28,13 @@ readMetadata filePath = do
     content <- B.readFile filePath
     return $ metadata <$> eitherDecode content
 
-readAllMetadata :: [Either String FilePath] -> IO [(FilePath, Metadata)]
+readAllMetadata :: [Either String FilePath] -> IO [(FilePath, Either String  Metadata)]
 readAllMetadata filePaths = do
     let validPaths = Either.rights filePaths -- filter out the bad files
     results <- mapM processFile validPaths
-    return $ Either.rights results -- filter out the bad metadata
+    return $ results
   where
     processFile filePath = do
       md <- readMetadata filePath
-      return $ (filePath,) <$> md
+      return $ (filePath, md)
 

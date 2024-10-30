@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 
 import           CmdOptions         as Cmd (parse, showHelp)
-import           Control.Monad      (void)
+import           Control.Monad
 import qualified Core.Launch        as Core
 import           Data.List          (find)
 
@@ -11,20 +11,30 @@ import           Data.Text          as T (Text, concat, intercalate, pack,
 import qualified Data.Text.IO       as TIO
 import           JsonProcessing     as Help (getJsonFilePaths, readAllMetadata,
                                              storyDirectory)
+import           Prelude            hiding (error)
 import           System.Environment as E (getArgs)
 
 newtype AdventureName = AdventureName { unAdventureName :: Text }
 data AdventureInfo = AdventureInfo
     { filePath       :: FilePath
+    , err          :: Maybe String
     , advTitle       :: Text
     , advLaunchTag   :: Text
     , advDescription :: Text
     } deriving (Show)
 
 -- Convert metadata to our domain type
-toAdventureInfo :: (FilePath, Metadata) -> AdventureInfo
-toAdventureInfo (fp, meta) = AdventureInfo
+toAdventureInfo :: (FilePath, Either String Metadata) -> AdventureInfo
+toAdventureInfo (fp, Left _err) = AdventureInfo
     { filePath = fp
+    , err = Just _err
+    , advTitle = ""          -- Empty text for error cases
+    , advLaunchTag = ""
+    , advDescription = ""
+    }
+toAdventureInfo (fp, Right meta) = AdventureInfo
+    { filePath = fp
+    , err = Nothing        -- No error for successful cases
     , advTitle = title meta
     , advLaunchTag = launchTag meta
     , advDescription = description meta
@@ -61,6 +71,13 @@ main = do
     let adventures = map toAdventureInfo metadataResults
         validNames = map (AdventureName . advLaunchTag) adventures
         formattedAdventures = map formatAdventureInfo adventures
+
+    forM_ adventures $ \adv ->
+        case err adv of
+            Just _err ->
+                TIO.putStrLn $ "Error loading " <> T.pack (filePath adv) <> ": " <> T.pack _err
+            Nothing ->
+                return ()
 
     E.getArgs >>= \args ->
         case parseArgs validNames args of
