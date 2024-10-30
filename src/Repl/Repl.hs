@@ -6,6 +6,7 @@ import           Core.State          (GameWorld)
 import qualified Data.Text           as T
 import qualified Data.Text.IO        as TIO
 import           Command.Look        (executeLook, isDirectionalLook)
+import            Command.Go
 import           System.IO           (hFlush, stdout)
 
 loop :: GameWorld -> IO Bool
@@ -29,6 +30,8 @@ eval_ :: T.Text -> State GameWorld T.Text
 eval_ input = do
   let lowerCase = T.toLower input
   case lowerCase of
+    "go cave" -> executeGo "cave"
+    "go meadow" -> executeGo "meadow"
     "look" -> executeLook Nothing
     "look around" -> executeLook (Just "around")
     other -> case isDirectionalLook other of
