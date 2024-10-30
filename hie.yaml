@@ -1,12 +1,19 @@
 cradle:
-  multi:
+  stack:
     - path: "./app"
-      config:
-        cradle:
-          stack:
-            component: "TextAdventure:exe:TextAdventure-exe"
+      component: "TextAdventure:exe"
     - path: "./src"
-      config:
-        cradle:
-          stack:
-            component: "TextAdventure:lib"
+      component: "TextAdventure:lib"
+
+# cradle:
+#   multi:
+#     - path: "./app"
+#       config:
+#         cradle:
+#           stack:
+#             component: "TextAdventure:exe:TextAdventure-exe"
+#     - path: "./src"
+#       config:
+#         cradle:
+#           stack:
+#             component: "TextAdventure:lib"
