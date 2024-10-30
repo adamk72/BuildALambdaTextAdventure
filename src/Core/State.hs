@@ -64,9 +64,6 @@ data GameEnvironment = GameEnvironment {
     world    :: GameWorld
 } deriving (Show, Generic, FromJSON)
 
--- initialWorld :: GameEnvironment
--- initialWorld = GameEnvironment $ GameWorld $ Character "alice" "Alice" (Location "meadow" "The Meadow")
-
 loadGameEnvironmentJSON :: FilePath -> IO (Either String GameEnvironment)
 loadGameEnvironmentJSON filePath = do
   jsonData <- B.readFile filePath
@@ -74,4 +71,3 @@ loadGameEnvironmentJSON filePath = do
         Left err -> return $ Left $ "Error parsing JSON: " ++ err
         Right worldData -> do
             return $ Right worldData
-

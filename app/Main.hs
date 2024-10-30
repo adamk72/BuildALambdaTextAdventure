@@ -28,13 +28,13 @@ toAdventureInfo :: (FilePath, Either String Metadata) -> AdventureInfo
 toAdventureInfo (fp, Left _err) = AdventureInfo
     { filePath = fp
     , err = Just _err
-    , advTitle = ""          -- Empty text for error cases
+    , advTitle = ""
     , advLaunchTag = ""
     , advDescription = ""
     }
 toAdventureInfo (fp, Right meta) = AdventureInfo
     { filePath = fp
-    , err = Nothing        -- No error for successful cases
+    , err = Nothing
     , advTitle = title meta
     , advLaunchTag = launchTag meta
     , advDescription = description meta
@@ -97,11 +97,7 @@ displayHelp = void . Cmd.parse . unpack . intercalate "\n"
 runGameWithOption :: FilePath -> IO ()
 runGameWithOption option = do
     putStrLn $ "Running game with option: " ++ option
-    runGame option
-
-runGame :: FilePath -> IO ()
-runGame = Core.launch
-
+    Core.launch option
 
 {- For later comparison on how `case` is very flexible:
 RunAdventure name -> do

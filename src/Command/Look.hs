@@ -20,7 +20,6 @@ executeLook Nothing = do
 executeLook (Just direction) = do
     return ("You look " <> direction <> ", but see nothing special.")
 
--- Helper function to handle directional looking
 isDirectionalLook :: T.Text -> Maybe T.Text
 isDirectionalLook input =
     let directions = ["north", "south", "east", "west"]

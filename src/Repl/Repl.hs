@@ -5,7 +5,6 @@ import           Core.Config         (quitCommands, replPrompt)
 import           Core.State          (GameWorld)
 import qualified Data.Text           as T
 import qualified Data.Text.IO        as TIO
--- import           Repl.Parse          (parse)
 import           Command.Look        (executeLook, isDirectionalLook)
 import           System.IO           (hFlush, stdout)
 

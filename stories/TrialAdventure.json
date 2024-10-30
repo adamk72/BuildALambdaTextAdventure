@@ -18,7 +18,7 @@
     "playableCharacters": [
       {
         "tag": "bob",
-        "name": "Bob the Burglar",
+        "name": "Bob the Brave",
         "startingLocation": {
           "tag": "cave",
           "name": "The Cave"
