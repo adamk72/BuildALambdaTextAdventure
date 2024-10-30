@@ -5,10 +5,10 @@ import           Control.Monad      (void)
 import qualified Core.Launch        as Core
 import           Data.List          (find)
 
+import           Core.State         (Metadata (..))
 import           Data.Text          as T (Text, concat, intercalate, pack,
                                           unpack)
 import qualified Data.Text.IO       as TIO
-import           Json               (JMetadata (..))
 import           JsonProcessing     as Help (getJsonFilePaths, readAllMetadata,
                                              storyDirectory)
 import           System.Environment as E (getArgs)
@@ -22,7 +22,7 @@ data AdventureInfo = AdventureInfo
     } deriving (Show)
 
 -- Convert metadata to our domain type
-toAdventureInfo :: (FilePath, JMetadata) -> AdventureInfo
+toAdventureInfo :: (FilePath, Metadata) -> AdventureInfo
 toAdventureInfo (fp, meta) = AdventureInfo
     { filePath = fp
     , advTitle = title meta

@@ -1,8 +1,7 @@
 module Core.Launch (launch) where
 
 import           Control.Monad (unless)
-import           Core.State    (GameEnvironment, initialWorld)
-import           Json
+import           Core.State    (GameEnvironment, loadGameEnvironmentJSON)
 import qualified Repl.Repl     as Repl (loop)
 
 gameLoop :: GameEnvironment -> IO ()
@@ -12,5 +11,6 @@ gameLoop gw = do
 
 launch :: FilePath -> IO ()
 -- launch = do gameLoop initialWorld
-launch fp =
-   loadGameEnvironmentJSON fp >>= print
+launch fp = do
+   adventure <- loadGameEnvironmentJSON fp
+   print adventure

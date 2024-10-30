@@ -1,13 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# LANGUAGE TupleSections #-}
+{-# LANGUAGE TupleSections     #-}
 
 module JsonProcessing (storyDirectory, getJsonFilePaths, readAllMetadata) where
 
+import           Core.State           (GameEnvironment (..), Metadata (..))
 import           Data.Aeson           (eitherDecode)
 import qualified Data.ByteString.Lazy as B
-import qualified Data.Either        as Either
-import           Json                 (JGameEnvironment(..), JMetadata(..))
+import qualified Data.Either          as Either
 import           System.Directory
 import           System.FilePath      (takeExtension, (</>))
 
@@ -23,12 +23,12 @@ getJsonFilePaths dir = do
     else return (map (Right . (dir </>)) jsonFiles)
 
 
-readMetadata :: FilePath -> IO (Either String JMetadata)
+readMetadata :: FilePath -> IO (Either String Metadata)
 readMetadata filePath = do
     content <- B.readFile filePath
     return $ metadata <$> eitherDecode content
 
-readAllMetadata :: [Either String FilePath] -> IO [(FilePath, JMetadata)]
+readAllMetadata :: [Either String FilePath] -> IO [(FilePath, Metadata)]
 readAllMetadata filePaths = do
     let validPaths = Either.rights filePaths -- filter out the bad files
     results <- mapM processFile validPaths

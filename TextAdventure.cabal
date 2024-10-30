@@ -29,7 +29,6 @@ library
       Core.Config
       Core.Launch
       Core.State
-      Json
       Repl.Repl
   other-modules:
       Paths_TextAdventure
