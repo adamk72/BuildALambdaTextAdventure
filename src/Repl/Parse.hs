@@ -27,18 +27,21 @@ tryCommand raw lower cmd = -- Todo: ask Claude about using Command{..} to replac
     then Just $ cmdExecute cmd (strip <$> stripPrefix (cmdName cmd) raw)
     else Nothing
 
-parse :: Text -> State GameWorld Text
+parse :: Text -> State GameWorld (Maybe Text)
 parse input = do
   let lower = toLower input
       -- Todo: Explain the foldr and <|> operator later in the blog; see below
       firstMatch = foldr (<|>) Nothing $ map (tryCommand input lower) commands
   case firstMatch of
-    Just action -> action
+    Just action -> do
+        Just <$> action
+        -- Todo: Note this as a trigger pattern
+        -- result <- action
+        -- return $ Just result
     Nothing     -> do
       if lower `elem` quitCommands
-      then return "quit"
-      else return $ "Don't know how to " <> lower <> "."
-
+      then return Nothing
+      else return $ Just $ "Don't know how to " <> lower <> "."
 
 {-
 (<|>) is the alternative operator from the Alternative typeclass in Haskell. For Maybe values, it acts like an "or" operation - it returns the first Just value it finds, or Nothing if both options are Nothing.
