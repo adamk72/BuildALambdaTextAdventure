@@ -18,13 +18,13 @@ data Metadata = Metadata {
     description :: Text,
     version     :: Text,
     author      :: Text
-} deriving (Show, Generic, FromJSON)
+} deriving (Show, Eq, Generic, FromJSON)
 
 data Character = Character {
   charTag         :: Text,
   charName        :: Text,
   currentLocation :: Location
-} deriving (Show, Generic)
+} deriving (Show, Eq, Generic)
 
 -- Another way of doing the mapping:
 instance FromJSON Character where
@@ -39,7 +39,7 @@ instance FromJSON Character where
 data Location = Location {
   locTag  :: Text,
   locName :: Text
-} deriving (Show, Generic)
+} deriving (Show, Eq, Generic)
 
 instance FromJSON Location where
   parseJSON (Object v) =
@@ -51,7 +51,7 @@ data GameWorld = GameWorld {
   activeCharacter    :: Character,
   playableCharacters :: [Character],
   locations          :: [Location]
-} deriving (Show, Generic)
+} deriving (Show, Eq, Generic)
 
 instance FromJSON GameWorld where
   parseJSON = genericParseJSON defaultOptions
@@ -63,7 +63,7 @@ instance FromJSON GameWorld where
 data GameEnvironment = GameEnvironment {
     metadata :: Metadata,
     world    :: GameWorld
-} deriving (Show, Generic, FromJSON)
+} deriving (Show, Eq, Generic, FromJSON)
 
 loadGameEnvironmentJSON :: FilePath -> IO (Either String GameEnvironment)
 loadGameEnvironmentJSON filePath = do

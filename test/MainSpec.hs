@@ -4,7 +4,10 @@ import           Control.Exception.Base (finally)
 import           Prelude                hiding (sin)
 import           System.Exit
 import           System.IO              hiding (stdin, stdout)
-import           System.Process
+import           System.Process         (CreateProcess (std_in, std_out),
+                                         ProcessHandle, StdStream (CreatePipe),
+                                         createProcess, proc, terminateProcess,
+                                         waitForProcess)
 import           Test.Hspec
 
 launchCmd :: CreateProcess

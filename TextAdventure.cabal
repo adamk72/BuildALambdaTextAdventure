@@ -80,6 +80,7 @@ test-suite TextAdventure-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Command.GoSpec
       MainSpec
       Paths_TextAdventure
   autogen-modules:
@@ -94,5 +95,7 @@ test-suite TextAdventure-test
     , TextAdventure
     , base >=4.7 && <5
     , hspec
+    , mtl
     , process
+    , text
   default-language: Haskell2010
