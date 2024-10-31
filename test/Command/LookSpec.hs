@@ -7,13 +7,47 @@ import           Core.State
 import qualified Data.Text            as T
 import           Mock.GameEnvironment
 import           Test.Hspec
+import Test.QuickCheck
 
 -- Helper function to execute state and get both result and final state
 runLookCommand :: Maybe T.Text -> GameWorld -> (T.Text, GameWorld)
 runLookCommand cmd = runState (executeLook cmd)
 
+newtype ValidDirection = ValidDirection T.Text
+    deriving (Show, Eq)
+
+instance Arbitrary ValidDirection where
+    arbitrary = ValidDirection . T.pack <$> elements ["north", "south", "east", "west"]
+
+newtype InvalidDirection = InvalidDirection T.Text
+    deriving (Show, Eq)
+
+instance Arbitrary InvalidDirection where
+    arbitrary = do
+        -- Generate random text that isn't a valid direction
+        txt <- arbitrary `suchThat` (`notElem` ["north", "south", "east", "west"])
+        return $ InvalidDirection $ T.pack txt
+
 spec :: Spec
 spec = do
+    describe "Look Command QuickCheck Properties" $ do
+        -- Property: Looking in any valid direction should return a consistent format
+        it "returns consistent format for all valid directions" $ property $
+            \(ValidDirection dir) ->
+                let result = evalState (executeLook (Just dir)) defaultGameWorld
+                in T.isPrefixOf "You look " result
+                   && T.isSuffixOf "but see nothing special." result
+
+        -- Property: All valid directions should be recognized by isDirectionalLook
+        it "recognizes all valid directions" $ property $
+            \(ValidDirection dir) ->
+                isDirectionalLook dir === Just dir
+
+        -- Property: Invalid directions should return Nothing from isDirectionalLook
+        it "rejects invalid directions" $ property $
+            \(InvalidDirection dir) ->
+                isDirectionalLook dir === Nothing
+
     describe "executeLook" $ do
         context "when looking with no direction (default look)" $ do
             it "returns basic location description" $ do
