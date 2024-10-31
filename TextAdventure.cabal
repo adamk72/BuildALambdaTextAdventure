@@ -82,6 +82,7 @@ test-suite TextAdventure-test
   other-modules:
       Command.GoSpec
       MainSpec
+      Mock.GameEnvironment
       Paths_TextAdventure
   autogen-modules:
       Paths_TextAdventure

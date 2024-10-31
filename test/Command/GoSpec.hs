@@ -4,29 +4,9 @@ import           Command.Go
 import           Control.Monad.State
 import           Core.State
 import           Data.Text           (Text)
+import           Mock.GameEnvironment
 import           Test.Hspec
 
--- Helper function to create a default GameWorld for testing
-defaultGameWorld :: GameWorld
-defaultGameWorld = GameWorld
-    { activeCharacter = Character
-        {
-          charTag = "alice",
-          charName = "Alice the Adventurer",
-          currentLocation = Location
-            { locTag = "cave"
-            , locName = "A dark cave"
-            }
-        },
-      playableCharacters = [],
-      locations = [Location
-            { locTag = "cave"
-            , locName = "A dark cave"
-            }, Location
-            { locTag = "meadow"
-            , locName = "A flowery meadow"
-            }]
-    }
 
 -- Helper function to execute state and get both result and final state
 runGoCommand :: Maybe Text -> GameWorld -> (Text, GameWorld)
@@ -38,8 +18,7 @@ spec = describe "executeGo" $ do
         it "allows moving to a new location" $ do
             let (result, newState) = runGoCommand (Just "meadow") defaultGameWorld
             result `shouldBe` "Moving to meadow."
-            (locName. currentLocation . activeCharacter) newState `shouldBe` "A flowery meadow"
-            (locTag . currentLocation . activeCharacter) newState `shouldBe` "meadow"
+            currentLocation (activeCharacter newState) `shouldBe` testMeadow
 
         it "prevents moving to current location" $ do
             let (result, newState) = runGoCommand (Just "cave") defaultGameWorld
