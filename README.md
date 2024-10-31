@@ -27,7 +27,6 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 
 ### Coding Todos
 
-- [] Current: You are about to pass the file to `runGame`. Finish this thought off.
 - [x] Get basic launch structure into place
 - [x] Abstract things like the ":quit" command or "REPL> " prompt out of the code; what if I want to easily change or i18n those words?
 - [x] On launch, the command selections should be dynamic, based on what is pulled from the JSON files.
@@ -38,6 +37,7 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
   2. [] Structure the data.
   3. [] Pull in data from file.
 - [] Create move command from Meadow to Cave and back.
+- [] move Quit commands over to the parser. How do I change the state from Text to Bool, though?
 - [] Have REPL prompt dynamically update when the location (or other details) change.
 
 ### Super Advanced Coding Todos

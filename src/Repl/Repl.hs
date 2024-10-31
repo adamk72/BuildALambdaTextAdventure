@@ -1,14 +1,12 @@
 module Repl.Repl (loop) where
 
-import           Command.Go
-import           Command.Look        (executeLook, isDirectionalLook)
 import           Control.Monad.State
 import           Core.Config         (quitCommands, replPrompt)
 import           Core.State          (GameWorld)
-import           Data.Text           (Text, toLower)
+import           Data.Text           (Text)
 import qualified Data.Text.IO        as TIO
+import           Repl.Parse          (parse)
 import           System.IO           (hFlush, stdout)
-import Repl.Parse (parse)
 
 loop :: GameWorld -> IO (Maybe GameWorld)
 loop p = do
@@ -31,13 +29,4 @@ print_ = TIO.putStrLn
 eval_ :: Text -> State GameWorld Text
 eval_ input = do
   parse input
-  -- let lowerCase = toLower input
-  -- case lowerCase of
-  --   "go cave" -> executeGo "cave"
-  --   "go meadow" -> executeGo "meadow"
-  --   "look" -> executeLook Nothing
-  --   "look around" -> executeLook (Just "around")
-  --   other -> case isDirectionalLook other of
-  --       Just direction -> executeLook (Just direction)
-  --       Nothing        -> return $ "I don't know how to '" <> input <> "'."
 
