@@ -5,6 +5,12 @@
 - `stack build`
 - `stack run TextAdventure-exe -- --help`
 
+## GameWorld
+
+```
+GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the Adventurer", currentLocation = Location {locTag = "meadow", locName = "The Meadow"}}, playableCharacters = [Character {charTag = "bob", charName = "Bob the Burglar", currentLocation = Location {locTag = "cave", locName = "The Cave"}}], locations = [Location {locTag = "meadow", locName = "The Meadow"},Location {locTag = "cave", locName = "The Cave"}]}
+```
+
 ## Game Ideas
 
 - Allow the player to have multiple characters in multiple location:
@@ -12,6 +18,7 @@
   - If in the same location, allow direct communication and exchange of goods;
   - If in different locations, certain tools would allow for commands to be given from one character to another.
   - The thought here is that characters could act as distractions or provide "simultaneous" actions to occur that may impact the story arc.
+
 ## Todos
 
 ### Doc/Blog Todos
@@ -32,7 +39,6 @@
   3. [] Pull in data from file.
 - [] Create move command from Meadow to Cave and back.
 - [] Have REPL prompt dynamically update when the location (or other details) change.
-
 
 ### Super Advanced Coding Todos
 

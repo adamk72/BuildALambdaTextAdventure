@@ -1,34 +1,35 @@
 module Repl.Repl (loop) where
 
+import           Command.Go
+import           Command.Look        (executeLook, isDirectionalLook)
 import           Control.Monad.State
 import           Core.Config         (quitCommands, replPrompt)
 import           Core.State          (GameWorld)
-import qualified Data.Text           as T
+import           Data.Text           (Text, toLower)
 import qualified Data.Text.IO        as TIO
-import           Command.Look        (executeLook, isDirectionalLook)
-import            Command.Go
 import           System.IO           (hFlush, stdout)
 
-loop :: GameWorld -> IO Bool
+loop :: GameWorld -> IO (Maybe GameWorld)
 loop p = do
   input <- read_
   if input `elem` quitCommands
-     then return True
+     then return Nothing
      else do
-       print_ (evalState (eval_ input) p)
-       return False
+      let (o, s) = runState (eval_ input) p
+      print_ o
+      return (Just s)
 
-read_ :: IO T.Text
+read_ :: IO Text
 read_ = TIO.putStr replPrompt >>
         hFlush stdout >>
         TIO.getLine
 
-print_ :: T.Text -> IO ()
+print_ :: Text -> IO ()
 print_ = TIO.putStrLn
 
-eval_ :: T.Text -> State GameWorld T.Text
+eval_ :: Text -> State GameWorld Text
 eval_ input = do
-  let lowerCase = T.toLower input
+  let lowerCase = toLower input
   case lowerCase of
     "go cave" -> executeGo "cave"
     "go meadow" -> executeGo "meadow"
@@ -37,3 +38,4 @@ eval_ input = do
     other -> case isDirectionalLook other of
         Just direction -> executeLook (Just direction)
         Nothing        -> return $ "I don't know how to '" <> input <> "'."
+
