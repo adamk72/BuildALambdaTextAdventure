@@ -75,3 +75,22 @@ executable TextAdventure-exe
     , prettyprinter
     , text
   default-language: Haskell2010
+
+test-suite TextAdventure-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_TextAdventure
+  autogen-modules:
+      Paths_TextAdventure
+  hs-source-dirs:
+      test
+  default-extensions:
+      OverloadedStrings
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      QuickCheck
+    , TextAdventure
+    , base >=4.7 && <5
+    , hspec
+  default-language: Haskell2010

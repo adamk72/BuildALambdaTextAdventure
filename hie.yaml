@@ -11,3 +11,6 @@ cradle:
 
     - path: "./app/JsonProcessing.hs"
       component: "TextAdventure:exe:TextAdventure-exe"
+
+    - path: "./test"
+      component: "TextAdventure:test:TextAdventure-test"
