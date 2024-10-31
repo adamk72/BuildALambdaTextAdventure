@@ -17,7 +17,7 @@ import           System.Environment as E (getArgs)
 newtype AdventureName = AdventureName { unAdventureName :: Text }
 data AdventureInfo = AdventureInfo
     { filePath       :: FilePath
-    , err          :: Maybe String
+    , err            :: Maybe String
     , advTitle       :: Text
     , advLaunchTag   :: Text
     , advDescription :: Text
@@ -32,6 +32,7 @@ toAdventureInfo (fp, Left _err) = AdventureInfo
     , advLaunchTag = ""
     , advDescription = ""
     }
+
 toAdventureInfo (fp, Right meta) = AdventureInfo
     { filePath = fp
     , err = Nothing

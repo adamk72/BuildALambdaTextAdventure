@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use newtype instead of data" #-}
+
 module Command.Look (executeLook, isDirectionalLook) where
 
 import           Control.Monad.State

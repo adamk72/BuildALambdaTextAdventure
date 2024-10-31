@@ -1,6 +1,8 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Fuse foldr/map" #-}
+
 module Repl.Parse (parse) where
+
 import           Command.Go          (executeGo)
 import           Command.Look        (executeLook)
 import           Control.Applicative
@@ -31,8 +33,8 @@ parse :: Text -> State GameWorld (Maybe Text)
 parse input = do
   let lower = toLower input
       -- Todo: Explain the foldr and <|> operator later in the blog; see below
-      firstMatch = foldr (<|>) Nothing $ map (tryCommand input lower) commands
-  case firstMatch of
+      match = foldr (<|>) Nothing $ map (tryCommand input lower) commands
+  case match of
     Just action -> do
         Just <$> action
         -- Todo: Note this as a trigger pattern

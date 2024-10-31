@@ -32,4 +32,3 @@ print_ = TIO.putStrLn
 eval_ :: Text -> State GameWorld (Maybe Text)
 eval_ input = do
   parse input
-

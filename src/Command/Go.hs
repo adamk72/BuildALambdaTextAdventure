@@ -23,5 +23,3 @@ executeGo gotoLoc = do
         return $ "Moving to " <> known <> "."
     Just l -> return $ "Unknown location: " <> l <> "."
     Nothing -> return "Unable to find a location at all."
-
-

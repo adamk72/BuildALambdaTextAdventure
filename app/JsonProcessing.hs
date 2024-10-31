@@ -1,6 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# LANGUAGE TupleSections     #-}
 
 module JsonProcessing (storyDirectory, getJsonFilePaths, readAllMetadata) where
 
@@ -22,7 +21,6 @@ getJsonFilePaths dir = do
     then return [Left "No adventure files found!"]
     else return (map (Right . (dir </>)) jsonFiles)
 
-
 readMetadata :: FilePath -> IO (Either String Metadata)
 readMetadata filePath = do
     content <- B.readFile filePath
@@ -30,11 +28,14 @@ readMetadata filePath = do
 
 readAllMetadata :: [Either String FilePath] -> IO [(FilePath, Either String  Metadata)]
 readAllMetadata filePaths = do
-    let validPaths = Either.rights filePaths -- filter out the bad files
-    results <- mapM processFile validPaths
-    return $ results
+    let validPaths = Either.rights filePaths
+    mapM processFile validPaths
+    -- Todo: add to trigger list (Redundant Return; mapM)
+    -- let validPaths = Either.rights filePaths -- filter out the bad files
+    -- results <- mapM processFile validPaths
+    -- return $ results
   where
     processFile filePath = do
       md <- readMetadata filePath
-      return $ (filePath, md)
+      return (filePath, md)
 

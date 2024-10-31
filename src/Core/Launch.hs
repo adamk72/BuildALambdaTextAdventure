@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use forM_" #-}
+
 module Core.Launch (launch) where
 
 import           Core.State (GameEnvironment (world), GameWorld,
@@ -12,8 +13,15 @@ gameLoop initialState = do
     case nextState of
         Just newState -> gameLoop newState
         Nothing       -> return ()
- -- Data.Foldable.forM_ nextState gameLoop -- Advanced version, based on LSP suggestion.
+    -- Data.Foldable.forM_ nextState gameLoop -- Advanced version, based on LSP suggestion.
 
+launch :: FilePath -> IO ()
+launch fp = loadGameEnvironmentJSON fp >>= either print (startGame . world) -- `either` comes in handy here.
+  where
+    startGame w = print w >> gameLoop w
+
+-- Todo: Note this as a trigger pattern
+{- Previous version for comparison
 launch :: FilePath -> IO ()
 launch fp = do
    geJSON <- loadGameEnvironmentJSON fp
@@ -22,3 +30,4 @@ launch fp = do
         print $ world adventure
         gameLoop $ world adventure
     Left e -> print e
+-}

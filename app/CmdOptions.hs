@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module CmdOptions (parse, AdventureOptions(AdventureOptions), showHelp) where
 
 import           Options.Applicative (ParseError (ShowHelpText), Parser,
@@ -37,8 +38,8 @@ showHelp s = do
 
 opts :: String -> ParserInfo AdventureOptions
 opts s = info (choice <**> versionOption s <**> helper)
-      ( fullDesc
-      <> progDesc "Run the named text adventure."
-      <> header "Haskell Adventure - a journey into fun!"
-      <> (progDescDoc . Just $ indent 2 $ vsep [pretty s])
-      )
+    ( fullDesc
+    <> progDesc "Run the named text adventure."
+    <> header "Haskell Adventure - a journey into fun!"
+    <> (progDescDoc . Just $ indent 2 $ vsep [pretty s])
+    )
