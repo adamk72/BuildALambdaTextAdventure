@@ -1,16 +1,16 @@
 cradle:
-  stack:
-    - path: "./src"
-      component: "TextAdventure:lib"
+  cabal:
+    - path: "src"
+      component: "lib:TextAdventure"
 
-    - path: "./app/Main.hs"
+    - path: "app/Main.hs"
       component: "TextAdventure:exe:TextAdventure-exe"
 
-    - path: "./app/CmdOptions.hs"
+    - path: "app/CmdOptions.hs"
       component: "TextAdventure:exe:TextAdventure-exe"
 
-    - path: "./app/JsonProcessing.hs"
+    - path: "app/JsonProcessing.hs"
       component: "TextAdventure:exe:TextAdventure-exe"
 
-    - path: "./test"
+    - path: "test"
       component: "TextAdventure:test:TextAdventure-test"
