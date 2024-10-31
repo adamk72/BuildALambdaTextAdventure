@@ -75,3 +75,4 @@ tests:
     - TextAdventure
     - hspec
     - QuickCheck
+    - process

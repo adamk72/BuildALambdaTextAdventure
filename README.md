@@ -28,7 +28,6 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 ### Coding Todos
 
 - [] Next: Properly update the Character's location when moving.
-- [] Add proper testing back in since I'm learning from AI but results need to be confirmed.
 - [x] Get basic launch structure into place.
 - [x] Abstract things like the ":quit" command or "REPL> " prompt out of the code; what if I want to easily change or i18n those words?
 - [x] On launch, the command selections should be dynamic, based on what is pulled from the JSON files.
@@ -42,6 +41,10 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 - [x] Move Quit commands over to the parser.
   - [] Fix it so that it returns a proper Maybe or Either rather than a Text.
 - [] Have REPL prompt dynamically update when the location (or other details) change.
+- [] Add proper testing back in since I'm learning from AI but results need to be confirmed.
+  - [x] Figure out to handle :q command.
+  - [] Learn how to set up pre-test config to eliminate the redundant use of the same processConfig arguments.
+  - [x] Figure out how to put dummy instances of the missing pattern matching so I can get rid of the OPTIONS_GHC warning which is currently suppressed.
 
 ### Super Advanced Coding Todos
 

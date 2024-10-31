@@ -18,7 +18,7 @@ gameLoop initialState = do
 launch :: FilePath -> IO ()
 launch fp = loadGameEnvironmentJSON fp >>= either print (startGame . world) -- `either` comes in handy here.
   where
-    startGame w = print w >> gameLoop w
+    startGame = gameLoop
 
 -- Todo: Note this as a trigger pattern
 {- Previous version for comparison

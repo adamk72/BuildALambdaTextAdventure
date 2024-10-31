@@ -98,7 +98,7 @@ displayHelp = void . Cmd.parse . unpack . intercalate "\n"
 
 runGameWithOption :: FilePath -> IO ()
 runGameWithOption option = do
-    putStrLn $ "Running game with option: " ++ option
+    -- putStrLn $ "Running game with option: " ++ option
     Core.launch option
     putStrLn "Thanks for playing!"
     exitSuccess
