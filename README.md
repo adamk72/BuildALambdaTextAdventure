@@ -45,6 +45,7 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
   - [x] Figure out to handle :q command.
   - [] Learn how to set up pre-test config to eliminate the redundant use of the same processConfig arguments.
   - [x] Figure out how to put dummy instances of the missing pattern matching so I can get rid of the OPTIONS_GHC warning which is currently suppressed.
+  - [] Determine if QuickCheck will be useful in this context. (https://hspec.github.io/quickcheck.html)
 
 ### Super Advanced Coding Todos
 
