@@ -1,10 +1,9 @@
-{-# LANGUAGE LambdaCase #-}
 module MainSpec (spec) where
 
-import           Control.Exception (bracket)
-import           Prelude           hiding (sin)
+import           Control.Exception.Base (finally)
+import           Prelude                hiding (sin)
 import           System.Exit
-import           System.IO         hiding (stdin, stdout)
+import           System.IO              hiding (stdin, stdout)
 import           System.Process
 import           Test.Hspec
 
@@ -26,6 +25,23 @@ closeHandles sin sout ph = do
                         mapM_ hClose sout
                         terminateProcess ph
 
+{- The `finally` version -}
+actionWrapper :: ((Handle, Handle, ProcessHandle) -> IO a) -> IO a
+actionWrapper testAction = do
+    result <- createProcess launchWithPipes
+    case result of
+        (Just stdin, Just stdout, _, ph) -> do
+            let cleanup = closeStdInOut stdin stdout ph
+            testAction (stdin, stdout, ph) `finally` cleanup
+        (stdin, stdout, _, ph) -> do
+            let cleanup = closeHandles stdin stdout ph
+            cleanup  -- Clean up immediately if we didn't get valid handles
+            fail "Failed to get process handles"
+
+{- Using `bracket` instead.
+-- this actually handles things slightly different with the tests;
+-- when I went from this to the above version, I encountered a problem where it
+-- got caught on an Error that the this `bracket` version ignored.
 actionWrapper :: ((Handle, Handle, ProcessHandle) -> IO a) -> IO a
 actionWrapper testAction =
     bracket
@@ -36,6 +52,7 @@ actionWrapper testAction =
         (\case
             (Just stdin, Just stdout, _, ph) -> testAction (stdin, stdout, ph)
             _ -> fail "Failed to get process handles")
+-}
 
 spec :: Spec
 spec = do
@@ -44,6 +61,7 @@ spec = do
             actionWrapper $ \(stdin, stdout, ph) -> do
                 hPutStrLn stdin ":q"
                 hFlush stdin
+                _ <- hGetLine stdout         -- for use with the `finally` version of actionWrapper; skip the error message that _currently_ haunts the output.
                 goodbye <- hGetLine stdout
                 goodbye `shouldBe` "λ> Thanks for playing!"
                 exitCode <- waitForProcess ph
