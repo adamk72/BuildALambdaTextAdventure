@@ -8,12 +8,12 @@ import           Data.Text           (Text)
 validLocs :: [Text]
 validLocs = ["cave", "meadow"]
 
-executeGo :: Text -> State GameWorld Text
+executeGo :: Maybe Text -> State GameWorld Text
 executeGo gotoLoc = do
   gw <- get
   let ac = activeCharacter gw
   case gotoLoc of
-    known | known `elem` validLocs  ->
+    Just known | known `elem` validLocs  ->
       if locTag (currentLocation ac) == known
       then return $ "You're already in " <> known <> "."
       else do
@@ -21,6 +21,7 @@ executeGo gotoLoc = do
         let newAc = ac { currentLocation = newLoc }
         put gw { activeCharacter = newAc  }
         return $ "Moving to " <> known <> "."
-    _ -> return $ "Unknown location: " <> gotoLoc <> "."
+    Just l -> return $ "Unknown location: " <> l <> "."
+    Nothing -> return "Unable to find a location at all."
 
 
