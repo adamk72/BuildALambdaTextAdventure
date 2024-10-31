@@ -37,7 +37,8 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
   2. [] Structure the data.
   3. [] Pull in data from file.
 - [] Create move command from Meadow to Cave and back.
-- [] move Quit commands over to the parser. How do I change the state from Text to Bool, though?
+- [x] Move Quit commands over to the parser.
+  - [] Fix it so that it returns a proper Maybe or Either rather than a Text.
 - [] Have REPL prompt dynamically update when the location (or other details) change.
 
 ### Super Advanced Coding Todos

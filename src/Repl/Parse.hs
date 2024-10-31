@@ -1,11 +1,11 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Fuse foldr/map" #-}
 module Repl.Parse (parse) where
--- import           Command.Go   (executeGo)
 import           Command.Go          (executeGo)
 import           Command.Look        (executeLook)
 import           Control.Applicative
 import           Control.Monad.State
+import           Core.Config         (quitCommands)
 import           Core.State          (GameWorld)
 import           Data.Text           (Text, isPrefixOf, strip, stripPrefix,
                                       toLower)
@@ -34,7 +34,11 @@ parse input = do
       firstMatch = foldr (<|>) Nothing $ map (tryCommand input lower) commands
   case firstMatch of
     Just action -> action
-    Nothing     -> return $ "Don't know how to " <> lower <> "."
+    Nothing     -> do
+      if lower `elem` quitCommands
+      then return "quit"
+      else return $ "Don't know how to " <> lower <> "."
+
 
 {-
 (<|>) is the alternative operator from the Alternative typeclass in Haskell. For Maybe values, it acts like an "or" operation - it returns the first Just value it finds, or Nothing if both options are Nothing.
