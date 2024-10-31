@@ -2,6 +2,7 @@
 module MainSpec (spec) where
 
 import           Control.Exception (bracket)
+import           Prelude           hiding (sin)
 import           System.Exit
 import           System.IO         hiding (stdin, stdout)
 import           System.Process
@@ -13,77 +14,53 @@ launchCmd = proc "stack" ["run", "TextAdventure-exe", "--", "-a", "Trial"]
 launchWithPipes :: CreateProcess
 launchWithPipes = launchCmd { std_in = CreatePipe , std_out = CreatePipe }
 
+closeStdInOut :: Handle -> Handle -> ProcessHandle -> IO ()
+closeStdInOut sin sout ph = do
+                        hClose sin
+                        hClose sout
+                        terminateProcess ph
+
+closeHandles :: Maybe Handle -> Maybe Handle -> ProcessHandle -> IO ()
+closeHandles sin sout ph = do
+                        mapM_ hClose sin
+                        mapM_ hClose sout
+                        terminateProcess ph
+
+actionWrapper :: ((Handle, Handle, ProcessHandle) -> IO a) -> IO a
+actionWrapper testAction =
+    bracket
+        (createProcess launchWithPipes)
+        (\case
+            (Just stdin, Just stdout, _, ph) -> closeStdInOut stdin stdout ph
+            (stdin, stdout, _, ph) -> closeHandles stdin stdout ph)
+        (\case
+            (Just stdin, Just stdout, _, ph) -> testAction (stdin, stdout, ph)
+            _ -> fail "Failed to get process handles")
+
 spec :: Spec
 spec = do
       describe "Basic inputs and outputs" $ do
         it "should exit successfully with :q command" $ do
-            let processConfig = launchWithPipes
-            bracket
-                (createProcess processConfig)
-                 (\case
-                    (Just stdin, Just stdout, _, ph) -> do
-                        hClose stdin
-                        hClose stdout
-                        terminateProcess ph
-                    (stdin, stdout, _, ph) -> do
-                        -- Close handles if they exist
-                        mapM_ hClose stdin
-                        mapM_ hClose stdout
-                        terminateProcess ph)
-                (\case
-                    (Just stdin, Just stdout, _, ph) -> do
-                        _ <- hGetLine stdout  -- skip initial prompt
-                        hPutStrLn stdin ":q"
-                        hFlush stdin
-                        goodbye <- hGetLine stdout
-                        goodbye `shouldBe` "λ> Thanks for playing!"
-                        exitCode <- waitForProcess ph
-                        exitCode `shouldBe` ExitSuccess
-                    _ -> fail "Failed to get process handles")
+            actionWrapper $ \(stdin, stdout, ph) -> do
+                hPutStrLn stdin ":q"
+                hFlush stdin
+                goodbye <- hGetLine stdout
+                goodbye `shouldBe` "λ> Thanks for playing!"
+                exitCode <- waitForProcess ph
+                exitCode `shouldBe` ExitSuccess
 
         it "should handle unknown inputs" $ do
-            let processConfig = launchWithPipes
-            bracket
-                (createProcess processConfig)
-                 (\case
-                    (Just stdin, Just stdout, _, ph) -> do
-                        hClose stdin
-                        hClose stdout
-                        terminateProcess ph
-                    (stdin, stdout, _, ph) -> do
-                        -- Close handles if they exist
-                        mapM_ hClose stdin
-                        mapM_ hClose stdout
-                        terminateProcess ph)
-                (\case
-                    (Just stdin, Just stdout, _, _) -> do
-                        hPutStrLn stdin "hello"
-                        hFlush stdin
-                        _ <- hGetLine stdout
-                        response <- hGetLine stdout
-                        response `shouldBe` "λ> Don't know how to hello."
-                    _ -> fail "Failed to get process handles")
-
+            actionWrapper $ \(stdin, stdout, _ph) -> do
+                hPutStrLn stdin "hello"
+                hFlush stdin
+                _ <- hGetLine stdout
+                response <- hGetLine stdout
+                response `shouldBe` "λ> Don't know how to hello."
 
         it "should handle unknown locations" $ do
-            let processConfig = launchWithPipes
-            bracket
-                (createProcess processConfig)
-                 (\case
-                    (Just stdin, Just stdout, _, ph) -> do
-                        hClose stdin
-                        hClose stdout
-                        terminateProcess ph
-                    (stdin, stdout, _, ph) -> do
-                        -- Close handles if they exist
-                        mapM_ hClose stdin
-                        mapM_ hClose stdout
-                        terminateProcess ph)
-                (\case
-                    (Just stdin, Just stdout, _, _) -> do
-                        hPutStrLn stdin "go foo"
-                        hFlush stdin
-                        _ <- hGetLine stdout
-                        response <- hGetLine stdout
-                        response `shouldBe` "λ> Unknown location: foo."
-                    _ -> fail "Failed to get process handles")
+            actionWrapper $ \(stdin, stdout, _ph) -> do
+                hPutStrLn stdin "go foo"
+                hFlush stdin
+                _ <- hGetLine stdout
+                response <- hGetLine stdout
+                response `shouldBe` "λ> Unknown location: foo."

@@ -3,6 +3,7 @@
     "lname",
     "ltag",
     "metavar",
-    "prettyprinter"
+    "prettyprinter",
+    "sout"
   ]
 }
