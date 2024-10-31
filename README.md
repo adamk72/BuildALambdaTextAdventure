@@ -8,7 +8,7 @@
 ## GameWorld
 
 ```
-GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the Adventurer", currentLocation = Location {locTag = "meadow", locName = "The Meadow"}}, playableCharacters = [Character {charTag = "bob", charName = "Bob the Burglar", currentLocation = Location {locTag = "cave", locName = "The Cave"}}], locations = [Location {locTag = "meadow", locName = "The Meadow"},Location {locTag = "cave", locName = "The Cave"}]}
+GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the Adventurer", currentLocation = Location {locTag = "meadow", locName = "The Meadow"}}, playableCharacters = [Character {charTag = "bob", charName = "Bob the Brave", currentLocation = Location {locTag = "cave", locName = "The Cave"}}], locations = [Location {locTag = "meadow", locName = "The Meadow"},Location {locTag = "cave", locName = "The Cave"}]}
 ```
 
 ## Game Ideas
@@ -27,8 +27,9 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 
 ### Coding Todos
 
-- [] Next: Properly update the Character's location when moving
-- [x] Get basic launch structure into place
+- [] Next: Properly update the Character's location when moving.
+- [] Add proper testing back in since I'm learning from AI but results need to be confirmed.
+- [x] Get basic launch structure into place.
 - [x] Abstract things like the ":quit" command or "REPL> " prompt out of the code; what if I want to easily change or i18n those words?
 - [x] On launch, the command selections should be dynamic, based on what is pulled from the JSON files.
 - [] Convert the old code over from String to Text only.
