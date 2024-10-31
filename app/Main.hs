@@ -13,6 +13,7 @@ import           JsonProcessing     as Help (getJsonFilePaths, readAllMetadata,
                                              storyDirectory)
 import           Prelude            hiding (error)
 import           System.Environment as E (getArgs)
+import System.Exit (exitSuccess)
 
 newtype AdventureName = AdventureName { unAdventureName :: Text }
 data AdventureInfo = AdventureInfo
@@ -99,6 +100,8 @@ runGameWithOption :: FilePath -> IO ()
 runGameWithOption option = do
     putStrLn $ "Running game with option: " ++ option
     Core.launch option
+    putStrLn "Thanks for playing!"
+    exitSuccess
 
 {- For later comparison on how `case` is very flexible:
 RunAdventure name -> do
