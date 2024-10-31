@@ -81,6 +81,7 @@ test-suite TextAdventure-test
   main-is: Spec.hs
   other-modules:
       Command.GoSpec
+      Command.LookSpec
       MainSpec
       Mock.GameEnvironment
       Paths_TextAdventure
