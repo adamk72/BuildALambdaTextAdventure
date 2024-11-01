@@ -5,6 +5,11 @@
 - `stack build`
 - `stack run TextAdventure-exe -- --help`
 
+## How to test
+
+- `stack test`
+- `stack test --test-arguments "--match=Look"` to run an individual test (that matches the word "Look" in this case)
+
 ## GameWorld
 
 ```

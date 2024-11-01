@@ -64,7 +64,6 @@ spec = do
             actionWrapper $ \(stdin, stdout, ph) -> do
                 hPutStrLn stdin ":q"
                 hFlush stdin
-                _ <- hGetLine stdout         -- for use with the `finally` version of actionWrapper; skip the error message that _currently_ haunts the output.
                 goodbye <- hGetLine stdout
                 goodbye `shouldBe` "λ> Thanks for playing!"
                 exitCode <- waitForProcess ph
@@ -74,7 +73,6 @@ spec = do
             actionWrapper $ \(stdin, stdout, _ph) -> do
                 hPutStrLn stdin "hello"
                 hFlush stdin
-                _ <- hGetLine stdout
                 response <- hGetLine stdout
                 response `shouldBe` "λ> Don't know how to hello."
 
@@ -82,6 +80,5 @@ spec = do
             actionWrapper $ \(stdin, stdout, _ph) -> do
                 hPutStrLn stdin "go foo"
                 hFlush stdin
-                _ <- hGetLine stdout
                 response <- hGetLine stdout
                 response `shouldBe` "λ> Unknown location: foo."
