@@ -31,7 +31,7 @@ spec = describe "executeGo" $ do
     context "when given a valid location" $ do
         it "prevents going to an unconnected location" $ do
             let (result, newState) = runGoCommand (Just noAllowFromStartTag) testGW
-            result `shouldBe` renderMessage (UnknownLocation noAllowFromStartTag)
+            result `shouldBe` renderMessage (NoPath noAllowFromStartTag)
             newState `shouldBe` testGW
 
         it "allows moving to a new, connected location" $ do
@@ -47,7 +47,7 @@ spec = describe "executeGo" $ do
     context "when given an invalid location" $ do
         it "handles unknown locations" $ do
             let (result, newState) = runGoCommand (Just "nonexistent") testGW
-            result `shouldBe` renderMessage (UnknownLocation "nonexistent")
+            result `shouldBe` renderMessage (NoPath "nonexistent")
             newState `shouldBe` testGW
 
     context "when given no location" $ do

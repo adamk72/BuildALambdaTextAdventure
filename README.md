@@ -52,6 +52,8 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
   - [x] Figure out how to put dummy instances of the missing pattern matching so I can get rid of the OPTIONS_GHC warning which is currently suppressed.
   - [] Abstract out the hard-coded strings.
   - [] Determine if QuickCheck will be useful in this context. (https://hspec.github.io/quickcheck.html)
+- [] Validate the JSON file
+  - [] Validate that the destinationTags lists contain only tags that have "full" membership in the `locations` field.
 
 ### Super Advanced Coding Todos
 

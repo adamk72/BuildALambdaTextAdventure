@@ -6,37 +6,38 @@ import           Control.Monad.State
 import           Core.State          (Character (..), GameWorld (..),
                                       Location (..))
 import           Data.List           (find)
-import           Data.Text           (Text)
+import           Data.Text           (Text, unpack)
 
 data GoMessage
   = AlreadyAtLocation Text
   | MovingToLocation Text
-  | UnknownLocation Text
+  | DoesNotExist Text
   | NoLocationSpecified
+  | NoPath Text
   deriving (Eq, Show)
 
 renderMessage :: GoMessage -> Text
 renderMessage = \case
   AlreadyAtLocation loc -> "You're already in " <> loc <> "."
   MovingToLocation loc -> "Moving to " <> loc <> "."
-  UnknownLocation loc -> "Unknown location: " <> loc <> "."
+  DoesNotExist loc -> "Location does not exist in this game world: " <> loc <> "."
+  NoPath loc -> "There is no indication there's a way to get to " <> loc <> "."
   NoLocationSpecified -> "Unable to find a location at all."
 
 executeGo :: Maybe Text -> State GameWorld Text
-executeGo gotoLoc = do
+executeGo target = do
   gw <- get
   let ac = activeCharacter gw
-      validLocs = locations gw
-  case gotoLoc of
-    Just targetLocTag | targetLocTag `elem` map locTag validLocs  ->
-      if locTag (currentLocation ac) == targetLocTag
-      then return $ renderMessage $ AlreadyAtLocation targetLocTag
-      else do
-        case find (\loc -> locTag loc == targetLocTag) validLocs of
-          Just newLoc -> do
-            let newAc = ac { currentLocation = newLoc }
-            put gw { activeCharacter = newAc  }
-            return $ renderMessage $ MovingToLocation targetLocTag
-          Nothing -> return $ renderMessage $ UnknownLocation targetLocTag
-    Just unknown -> return $ renderMessage $ UnknownLocation unknown
+      validLocTags = destinationTags $ currentLocation ac
+  case target of
+    Just moveTo | moveTo `elem` validLocTags  ->
+      case find (\loc -> locTag loc == moveTo) (locations gw) of -- check is a legit location.
+        Just newLoc -> do
+          let newAc = ac { currentLocation = newLoc }
+          put gw { activeCharacter = newAc  }
+          return $ renderMessage $ MovingToLocation moveTo
+        Nothing -> error $ unpack $ renderMessage $ DoesNotExist moveTo -- this means the JSON file was malformed.
+    Just already | already == (locTag $ currentLocation ac) ->
+      return $ renderMessage $ AlreadyAtLocation already
+    Just noWay -> return $ renderMessage $ NoPath noWay
     Nothing -> return $ renderMessage NoLocationSpecified
