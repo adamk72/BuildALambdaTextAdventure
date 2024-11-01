@@ -1,8 +1,10 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# OPTIONS_GHC -Wno-unused-top-binds #-}
 {-# HLINT ignore "Use newtype instead of data" #-}
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DeriveGeneric  #-}
-{-# LANGUAGE LambdaCase     #-}
+{-# LANGUAGE DeriveAnyClass  #-}
+{-# LANGUAGE DeriveGeneric   #-}
+{-# LANGUAGE LambdaCase      #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Core.State (Character(..), Metadata(..), Location(..), GameEnvironment(..), GameWorld(..), loadGameEnvironmentJSON) where
 
@@ -10,9 +12,27 @@ import           Control.Monad        (mzero)
 import           Data.Aeson
 import           Data.Aeson.Types     (Parser)
 import qualified Data.ByteString.Lazy as B
-import qualified Data.List as List
+import qualified Data.List            as List
 import           Data.Text            (Text)
 import           GHC.Generics         (Generic)
+
+class Tagged a where
+    getTag :: a -> Text
+    getName :: a -> Text
+
+-- example usages
+{-
+findByTag :: Tagged a => Text -> [a] -> Maybe a
+findByTag searchTag = find (\x -> getTag x == searchTag)
+
+displayName :: Tagged a => a -> Text
+displayName = getName
+-}
+
+data TaggedEntity = TaggedEntity
+    { tag  :: Text
+    , name :: Text
+    } deriving (Show, Eq, Generic, FromJSON)
 
 data Metadata = Metadata {
     title       :: Text,
@@ -23,11 +43,14 @@ data Metadata = Metadata {
 } deriving (Show, Eq, Generic, FromJSON)
 
 data Character = Character {
-  charTag             :: Text,
-  charName            :: Text,
+  charTag             :: TaggedEntity,
   startingLocationTag :: Maybe Text,
   currentLocation     :: Location
 } deriving (Show, Eq, Generic)
+
+instance Tagged Character where
+    getTag = tag .charTag
+    getName = name .charTag
 
 instance FromJSON Character where
   parseJSON = withObject "Character" $ \v -> do
@@ -37,8 +60,8 @@ instance FromJSON Character where
 
     -- For now, we'll just store the tag and let GameWorld resolve the location
     return Character
-      { charTag = tag
-      , charName = name
+      {
+        charTag = TaggedEntity {..}
       , startingLocationTag = maybeLocTag
       , currentLocation = error "Location not yet resolved"  -- This will be filled in by GameWorld
       }
