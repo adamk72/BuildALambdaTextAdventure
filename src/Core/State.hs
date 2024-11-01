@@ -62,7 +62,7 @@ instance FromJSON GameWorld where
 
 data GameEnvironment = GameEnvironment {
     metadata :: Metadata,
-    world    :: GameWorld
+    world    :: Maybe GameWorld
 } deriving (Show, Eq, Generic, FromJSON)
 
 loadGameEnvironmentJSON :: FilePath -> IO (Either String GameEnvironment)

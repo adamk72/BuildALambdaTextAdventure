@@ -5,18 +5,24 @@ module Core.Launch (launch) where
 
 import           Core.State (GameEnvironment (world), GameWorld,
                              loadGameEnvironmentJSON)
+import           Data.Text  (Text, pack)
 import           Repl.Repl  (loop)
 
-gameLoop :: GameWorld -> IO ()
-gameLoop initialState = do
+gameLoop :: Maybe GameWorld -> IO (Either Text ())
+gameLoop Nothing = return (Left "No game world found!")
+gameLoop (Just initialState) = do
     nextState <- loop initialState
     case nextState of
-        Just newState -> gameLoop newState
-        Nothing       -> return ()
+        Just newState -> gameLoop (Just newState)
+        Nothing       -> return (Right ())
     -- Data.Foldable.forM_ nextState gameLoop -- Advanced version, based on LSP suggestion.
 
-launch :: FilePath -> IO ()
-launch fp = loadGameEnvironmentJSON fp >>= either print (startGame . world) -- `either` comes in handy here.
+launch :: FilePath -> IO (Either Text ())
+launch fp = do
+    result <- loadGameEnvironmentJSON fp
+    case result of
+        Left err -> return (Left $ "Error loading game: " <> pack (show err))
+        Right gameEnv -> startGame (world gameEnv)
   where
     startGame = gameLoop
 
