@@ -8,8 +8,10 @@ module Core.State (Character(..), Metadata(..), Location(..), GameEnvironment(..
 
 import           Control.Monad        (mzero)
 import           Data.Aeson
+import           Data.Aeson.Types     (Parser)
 import qualified Data.ByteString.Lazy as B
-import           Data.Text            as T
+import qualified Data.List as List
+import           Data.Text            (Text)
 import           GHC.Generics         (Generic)
 
 data Metadata = Metadata {
@@ -21,20 +23,25 @@ data Metadata = Metadata {
 } deriving (Show, Eq, Generic, FromJSON)
 
 data Character = Character {
-  charTag         :: Text,
-  charName        :: Text,
-  currentLocation :: Location
+  charTag             :: Text,
+  charName            :: Text,
+  startingLocationTag :: Maybe Text,
+  currentLocation     :: Location
 } deriving (Show, Eq, Generic)
 
--- Another way of doing the mapping:
 instance FromJSON Character where
-  parseJSON = genericParseJSON defaultOptions
-    { fieldLabelModifier = \case
-        "currentLocation" -> "startingLocation"
-        "charTag" -> "tag"
-        "charName" -> "name"
-        other -> other
-    }
+  parseJSON = withObject "Character" $ \v -> do
+    tag <- v .: "tag"
+    name <- v .: "name"
+    maybeLocTag <- v .:? "startingLocationTag"
+
+    -- For now, we'll just store the tag and let GameWorld resolve the location
+    return Character
+      { charTag = tag
+      , charName = name
+      , startingLocationTag = maybeLocTag
+      , currentLocation = error "Location not yet resolved"  -- This will be filled in by GameWorld
+      }
 
 data Location = Location {
   locTag  :: Text,
@@ -53,12 +60,30 @@ data GameWorld = GameWorld {
   locations          :: [Location]
 } deriving (Show, Eq, Generic)
 
+resolveCharacterLocation :: [Location] -> Character -> Parser Character
+resolveCharacterLocation locs char =
+  case startingLocationTag char of
+    Just targetTag ->
+      case List.find (\loc -> locTag loc == targetTag) locs of
+        Just loc -> return char { currentLocation = loc }
+        Nothing -> fail $ "Location with tag " ++ show targetTag ++ " not found"
+    Nothing -> fail "No starting location tag provided"
+
+-- Check that the characters are actually starting in valid locations, based on their location tags.
 instance FromJSON GameWorld where
-  parseJSON = genericParseJSON defaultOptions
-    { fieldLabelModifier = \case
-        "activeCharacter" -> "startingCharacter"
-        other -> other
-    }
+  parseJSON = withObject "GameWorld" $ \v -> do
+    locs <- v .: "locations"
+    rawStartingChar <- v .: "startingCharacter"
+    rawPlayableChars <- v .: "playableCharacters"
+
+    startingChar <- resolveCharacterLocation locs rawStartingChar
+    playableChars <- mapM (resolveCharacterLocation locs) rawPlayableChars
+
+    return GameWorld
+      { activeCharacter = startingChar
+      , playableCharacters = playableChars
+      , locations = locs
+      }
 
 data GameEnvironment = GameEnvironment {
     metadata :: Metadata,

@@ -10,19 +10,13 @@
     "startingCharacter": {
       "tag": "alice",
       "name": "Alice the Adventurer",
-      "startingLocation": {
-        "tag": "meadow",
-        "name": "The Meadow"
-      }
+      "startingLocationTag": "meadow"
     },
     "playableCharacters": [
       {
         "tag": "bob",
         "name": "Bob the Brave",
-        "startingLocation": {
-          "tag": "cave",
-          "name": "The Cave"
-        }
+        "startingLocationTag": "cave"
       }
     ],
     "locations": [
@@ -33,6 +27,10 @@
       {
         "tag": "cave",
         "name": "The Cave"
+      },
+      {
+        "tag": "forest",
+        "name": "A dense forest"
       }
     ]
   }
