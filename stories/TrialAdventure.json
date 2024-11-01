@@ -22,15 +22,18 @@
     "locations": [
       {
         "tag": "meadow",
-        "name": "The Meadow"
+        "name": "A flowery meadow",
+        "destinationTags": ["cave"]
       },
       {
         "tag": "cave",
-        "name": "The Cave"
+        "name": "A dark cave",
+        "destinationTags": ["meadow", "forest"]
       },
       {
         "tag": "forest",
-        "name": "A dense forest"
+        "name": "A dense forest",
+        "destinationTags": ["cave"]
       }
     ]
   }

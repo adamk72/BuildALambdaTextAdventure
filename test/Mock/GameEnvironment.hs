@@ -8,18 +8,21 @@ testCave :: Location
 testCave = Location
     { locTag = "cave"
     , locName = "A dark cave"
+    , destinationTags = ["meadow", "forest"]
     }
 
 testMeadow :: Location
 testMeadow = Location
     { locTag = "meadow"
     , locName = "A flowery meadow"
+    , destinationTags = ["cave"]
     }
 
 testForest :: Location
 testForest = Location
     { locTag = "forest"
     , locName = "A dense forest"
+    , destinationTags = ["cave"]
     }
 
 -- Common test characters

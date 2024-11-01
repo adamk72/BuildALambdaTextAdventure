@@ -15,7 +15,14 @@ runGoCommand cmd = runState (executeGo cmd)
 spec :: Spec
 spec = describe "executeGo" $ do
     context "when given a valid location" $ do
-        it "allows moving to a new location" $ do
+        -- it "prevents going to an unconnected location" $ do
+        --     let (result, newState) = runGoCommand (Just "forest") defaultGameWorld
+        --     result `shouldBe` renderMessage (UnknownLocation "forest")
+        --     currentLocation (activeCharacter newState) `shouldBe` testMeadow
+
+        it "allows moving to a new, connected location" $ do
+            -- let acLoc = currentLocation activeCharacter defaultGameWorld
+            -- acLoc `shouldSatisfy` "meadow"
             let (result, newState) = runGoCommand (Just "meadow") defaultGameWorld
             result `shouldBe` renderMessage (MovingToLocation "meadow")
             currentLocation (activeCharacter newState) `shouldBe` testMeadow

@@ -6,7 +6,7 @@
 {-# LANGUAGE LambdaCase      #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Core.State ( Character(..) , Metadata(..) , Location(..) , GameEnvironment(..) , GameWorld(..) , loadGameEnvironmentJSON , TaggedEntity(..)) where
+module Core.State (Character(..), Metadata(..), Location(..), GameEnvironment(..), GameWorld(..), loadGameEnvironmentJSON, TaggedEntity(..)) where
 
 import           Control.Monad        (mzero)
 import           Data.Aeson
@@ -83,14 +83,16 @@ convertCharacter locs CharacterJSON{..} = do
       Nothing -> fail "No starting location tag provided"
 
 data Location = Location {
-  locTag  :: Text,
-  locName :: Text
+  locTag          :: Text,
+  locName         :: Text,
+  destinationTags :: [Text]
 } deriving (Show, Eq, Generic)
 
 instance FromJSON Location where
   parseJSON (Object v) =
     Location <$> v .: "tag"
              <*> v .: "name"
+             <*> v .:? "destinationTags" .!= []
   parseJSON _ = mzero
 
 data GameWorld = GameWorld {
