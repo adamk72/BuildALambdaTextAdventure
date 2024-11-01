@@ -17,22 +17,22 @@ spec = describe "executeGo" $ do
     context "when given a valid location" $ do
         it "allows moving to a new location" $ do
             let (result, newState) = runGoCommand (Just "meadow") defaultGameWorld
-            result `shouldBe` "Moving to meadow."
+            result `shouldBe` renderMessage (MovingToLocation "meadow")
             currentLocation (activeCharacter newState) `shouldBe` testMeadow
 
         it "prevents moving to current location" $ do
             let (result, newState) = runGoCommand (Just "cave") defaultGameWorld
-            result `shouldBe` "You're already in cave."
+            result `shouldBe` renderMessage (AlreadyAtLocation "cave")
             newState `shouldBe` defaultGameWorld
 
     context "when given an invalid location" $ do
         it "handles unknown locations" $ do
             let (result, newState) = runGoCommand (Just "nonexistent") defaultGameWorld
-            result `shouldBe` "Unknown location: nonexistent."
+            result `shouldBe` renderMessage (UnknownLocation "nonexistent")
             newState `shouldBe` defaultGameWorld
 
     context "when given no location" $ do
         it "handles Nothing input" $ do
             let (result, newState) = runGoCommand Nothing defaultGameWorld
-            result `shouldBe` "Unable to find a location at all."
+            result `shouldBe` renderMessage NoLocationSpecified
             newState `shouldBe` defaultGameWorld
