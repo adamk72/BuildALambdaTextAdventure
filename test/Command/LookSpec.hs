@@ -34,7 +34,7 @@ spec = do
         -- Property: Looking in any valid direction should return a consistent format
         it "returns consistent format for all valid directions" $ property $
             \(ValidDirection dir) ->
-                let result = evalState (executeLook (Just dir)) defaultGameWorld
+                let result = evalState (executeLook (Just dir)) testGW
                 in T.isPrefixOf "You look " result
                    && T.isSuffixOf "but see nothing special." result
 
@@ -51,40 +51,40 @@ spec = do
     describe "executeLook" $ do
         context "when looking with no direction (default look)" $ do
             it "returns basic location description" $ do
-                let (result, _) = runLookCommand Nothing defaultGameWorld
+                let (result, _) = runLookCommand Nothing testGW
                 result `shouldBe` "You are in A dark cave."
 
         context "when looking 'around'" $ do
             it "returns detailed location description" $ do
-                let (result, _) = runLookCommand (Just "around") defaultGameWorld
+                let (result, _) = runLookCommand (Just "around") testGW
                 result `shouldBe` "You are in A dark cave. You look around carefully, taking in your surroundings."
 
         context "when looking in valid directions" $ do
             it "handles looking north" $ do
-                let (result, _) = runLookCommand (Just "north") defaultGameWorld
+                let (result, _) = runLookCommand (Just "north") testGW
                 result `shouldBe` "You look north, but see nothing special."
 
             it "handles looking south" $ do
-                let (result, _) = runLookCommand (Just "south") defaultGameWorld
+                let (result, _) = runLookCommand (Just "south") testGW
                 result `shouldBe` "You look south, but see nothing special."
 
             it "handles looking east" $ do
-                let (result, _) = runLookCommand (Just "east") defaultGameWorld
+                let (result, _) = runLookCommand (Just "east") testGW
                 result `shouldBe` "You look east, but see nothing special."
 
             it "handles looking west" $ do
-                let (result, _) = runLookCommand (Just "west") defaultGameWorld
+                let (result, _) = runLookCommand (Just "west") testGW
                 result `shouldBe` "You look west, but see nothing special."
 
         context "when looking in invalid directions" $ do
             it "handles invalid direction gracefully" $ do
-                let (result, _) = runLookCommand (Just "up") defaultGameWorld
+                let (result, _) = runLookCommand (Just "up") testGW
                 result `shouldBe` "You look up, but see nothing special."
 
         context "state remains unchanged after looking" $ do
             it "doesn't modify game state when looking" $ do
-                let (_, newState) = runLookCommand Nothing defaultGameWorld
-                newState `shouldBe` defaultGameWorld
+                let (_, newState) = runLookCommand Nothing testGW
+                newState `shouldBe` testGW
 
     describe "isDirectionalLook" $ do
         context "with valid directions" $ do

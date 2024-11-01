@@ -1,7 +1,7 @@
-module Mock.GameEnvironment where
+module Mock.GameEnvironment  (module Mock.GameEnvironment) where
 
 import           Core.State
-import           Test.Hspec
+import           Test.Hspec ()
 
 -- Common test locations
 testCave :: Location
@@ -47,25 +47,16 @@ makeTestWorld active playable locs = GameWorld
     }
 
 -- Common world configurations
-defaultGameWorld :: GameWorld
-defaultGameWorld = makeTestWorld
-    (testAlice testCave)
-    []
-    [testCave, testMeadow]
-
-worldWithMultipleCharacters :: GameWorld
-worldWithMultipleCharacters = makeTestWorld
-    (testAlice testCave)
-    [testBob testMeadow]
-    [testCave, testMeadow, testForest]
+testGW :: GameWorld
+testGW = makeTestWorld (testAlice testMeadow) [testBob testMeadow] [testCave, testMeadow, testForest]
 
 -- Helper functions for common test operations
-withCharacterAt :: GameWorld -> Location -> GameWorld
-withCharacterAt world newLoc = world
-    { activeCharacter = (activeCharacter world) { currentLocation = newLoc } }
+-- withCharacterAt :: GameWorld -> Location -> GameWorld
+-- withCharacterAt world newLoc = world
+--     { activeCharacter = (activeCharacter world) { currentLocation = newLoc } }
 
-withPlayableCharacters :: GameWorld -> [Character] -> GameWorld
-withPlayableCharacters world chars = world { playableCharacters = chars }
+-- withPlayableCharacters :: GameWorld -> [Character] -> GameWorld
+-- withPlayableCharacters world chars = world { playableCharacters = chars }
 
-withLocations :: GameWorld -> [Location] -> GameWorld
-withLocations world locs = world { locations = locs }
+-- withLocations :: GameWorld -> [Location] -> GameWorld
+-- withLocations world locs = world { locations = locs }
