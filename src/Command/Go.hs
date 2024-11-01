@@ -1,6 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 
-module Command.Go (executeGo, GameMessage(..), renderMessage) where
+module Command.Go (executeGo, GoMessage(..), renderMessage) where
 
 import           Control.Monad.State
 import           Core.State          (Character (..), GameWorld (..),
@@ -8,14 +8,14 @@ import           Core.State          (Character (..), GameWorld (..),
 import           Data.List           (find)
 import           Data.Text           (Text)
 
-data GameMessage
+data GoMessage
   = AlreadyAtLocation Text
   | MovingToLocation Text
   | UnknownLocation Text
   | NoLocationSpecified
   deriving (Eq, Show)
 
-renderMessage :: GameMessage -> Text
+renderMessage :: GoMessage -> Text
 renderMessage = \case
   AlreadyAtLocation loc -> "You're already in " <> loc <> "."
   MovingToLocation loc -> "Moving to " <> loc <> "."

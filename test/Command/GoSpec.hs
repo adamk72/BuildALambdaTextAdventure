@@ -8,7 +8,6 @@ import           Data.Text            (Text)
 import           Mock.GameEnvironment
 import           Test.Hspec
 
-
 -- Helper function to execute state and get both result and final state
 runGoCommand :: Maybe Text -> GameWorld -> (Text, GameWorld)
 runGoCommand cmd = runState (executeGo cmd)

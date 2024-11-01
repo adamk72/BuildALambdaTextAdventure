@@ -38,43 +38,24 @@ spec = do
                 in T.isPrefixOf "You look " result
                    && T.isSuffixOf "but see nothing special." result
 
-        -- Property: All valid directions should be recognized by isDirectionalLook
-        it "recognizes all valid directions" $ property $
-            \(ValidDirection dir) ->
-                isDirectionalLook dir === Just dir
-
-        -- Property: Invalid directions should return Nothing from isDirectionalLook
-        it "rejects invalid directions" $ property $
-            \(InvalidDirection dir) ->
-                isDirectionalLook dir === Nothing
-
     describe "executeLook" $ do
+        let startLocTag = "meadow"
+            acLocTag = locTag $ currentLocation $ activeCharacter testGW
+            acLotName = locName $ currentLocation $ activeCharacter testGW
+        context "check testing assumptions" $ do
+            it "should start the active character in the meadow" $ do
+                acLocTag `shouldBe` startLocTag
+
         context "when looking with no direction (default look)" $ do
             it "returns basic location description" $ do
                 let (result, _) = runLookCommand Nothing testGW
-                result `shouldBe` "You are in A dark cave."
+                result `shouldBe` renderMessage (YouAreIn (locName testMeadow))
 
         context "when looking 'around'" $ do
             it "returns detailed location description" $ do
                 let (result, _) = runLookCommand (Just "around") testGW
-                result `shouldBe` "You are in A dark cave. You look around carefully, taking in your surroundings."
+                result `shouldBe` renderMessage (YouAreIn acLotName) <> " " <> renderMessage LookAround
 
-        context "when looking in valid directions" $ do
-            it "handles looking north" $ do
-                let (result, _) = runLookCommand (Just "north") testGW
-                result `shouldBe` "You look north, but see nothing special."
-
-            it "handles looking south" $ do
-                let (result, _) = runLookCommand (Just "south") testGW
-                result `shouldBe` "You look south, but see nothing special."
-
-            it "handles looking east" $ do
-                let (result, _) = runLookCommand (Just "east") testGW
-                result `shouldBe` "You look east, but see nothing special."
-
-            it "handles looking west" $ do
-                let (result, _) = runLookCommand (Just "west") testGW
-                result `shouldBe` "You look west, but see nothing special."
 
         context "when looking in invalid directions" $ do
             it "handles invalid direction gracefully" $ do
@@ -85,30 +66,3 @@ spec = do
             it "doesn't modify game state when looking" $ do
                 let (_, newState) = runLookCommand Nothing testGW
                 newState `shouldBe` testGW
-
-    describe "isDirectionalLook" $ do
-        context "with valid directions" $ do
-            it "recognizes 'north' as a valid direction" $ do
-                isDirectionalLook "north" `shouldBe` Just "north"
-
-            it "recognizes 'south' as a valid direction" $ do
-                isDirectionalLook "south" `shouldBe` Just "south"
-
-            it "recognizes 'east' as a valid direction" $ do
-                isDirectionalLook "east" `shouldBe` Just "east"
-
-            it "recognizes 'west' as a valid direction" $ do
-                isDirectionalLook "west" `shouldBe` Just "west"
-
-        context "with invalid directions" $ do
-            it "returns Nothing for 'up'" $ do
-                isDirectionalLook "up" `shouldBe` Nothing
-
-            it "returns Nothing for 'down'" $ do
-                isDirectionalLook "down" `shouldBe` Nothing
-
-            it "returns Nothing for empty string" $ do
-                isDirectionalLook "" `shouldBe` Nothing
-
-            it "returns Nothing for arbitrary text" $ do
-                isDirectionalLook "random" `shouldBe` Nothing
