@@ -25,15 +25,13 @@ testForest = Location
 -- Common test characters
 testAlice :: Location -> Character
 testAlice loc = Character
-    { charTag = "alice"
-    , charName = "Alice the Adventurer"
+    { charTag = TaggedEntity { tag = "alice" , name = "Alice the Adventurer" }
     , currentLocation = loc
     }
 
 testBob :: Location -> Character
 testBob loc = Character
-    { charTag = "bob"
-    , charName = "Bob the Builder"
+    { charTag = TaggedEntity { tag = "bob" , name = "Bob the Brave" }
     , currentLocation = loc
     }
 

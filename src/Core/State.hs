@@ -6,7 +6,7 @@
 {-# LANGUAGE LambdaCase      #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Core.State (Character(..), Metadata(..), Location(..), GameEnvironment(..), GameWorld(..), loadGameEnvironmentJSON) where
+module Core.State ( Character(..) , Metadata(..) , Location(..) , GameEnvironment(..) , GameWorld(..) , loadGameEnvironmentJSON , TaggedEntity(..)) where
 
 import           Control.Monad        (mzero)
 import           Data.Aeson
@@ -42,29 +42,45 @@ data Metadata = Metadata {
     author      :: Text
 } deriving (Show, Eq, Generic, FromJSON)
 
+-- Runtime Character structure (no startingLocationTag)
 data Character = Character {
-  charTag             :: TaggedEntity,
-  startingLocationTag :: Maybe Text,
-  currentLocation     :: Location
+    charTag          :: TaggedEntity,
+    currentLocation  :: Location
 } deriving (Show, Eq, Generic)
 
 instance Tagged Character where
-    getTag = tag .charTag
-    getName = name .charTag
+    getTag = tag . charTag
+    getName = name . charTag
 
-instance FromJSON Character where
-  parseJSON = withObject "Character" $ \v -> do
-    tag <- v .: "tag"
-    name <- v .: "name"
-    maybeLocTag <- v .:? "startingLocationTag"
+-- JSON parsing structure for Character
+data CharacterJSON = CharacterJSON {
+    jCharTag               :: Text,
+    jCharName              :: Text,
+    jStartingLocationTag :: Maybe Text
+} deriving (Show, Eq, Generic)
 
-    -- For now, we'll just store the tag and let GameWorld resolve the location
-    return Character
-      {
-        charTag = TaggedEntity {..}
-      , startingLocationTag = maybeLocTag
-      , currentLocation = error "Location not yet resolved"  -- This will be filled in by GameWorld
-      }
+instance FromJSON CharacterJSON where
+    parseJSON = withObject "CharacterJSON" $ \v ->
+        CharacterJSON
+            <$> v .: "tag"
+            <*> v .: "name"
+            <*> v .: "startingLocationTag"
+
+-- Convert CharacterJSON to Character by resolving the location
+convertCharacter :: [Location] -> CharacterJSON -> Parser Character
+convertCharacter locs CharacterJSON{..} = do
+    case jStartingLocationTag of
+      Just targetTag ->
+        case List.find (\loc -> locTag loc == targetTag) locs of
+                  Just loc -> return $ Character
+                    { charTag = TaggedEntity
+                        { tag = jCharTag
+                        , name = jCharName
+                        }
+                    , currentLocation = loc
+                    }
+                  Nothing -> fail $ "Location with tag " ++ show targetTag ++ " not found"
+      Nothing -> fail "No starting location tag provided"
 
 data Location = Location {
   locTag  :: Text,
@@ -83,30 +99,32 @@ data GameWorld = GameWorld {
   locations          :: [Location]
 } deriving (Show, Eq, Generic)
 
-resolveCharacterLocation :: [Location] -> Character -> Parser Character
-resolveCharacterLocation locs char =
-  case startingLocationTag char of
-    Just targetTag ->
-      case List.find (\loc -> locTag loc == targetTag) locs of
-        Just loc -> return char { currentLocation = loc }
-        Nothing -> fail $ "Location with tag " ++ show targetTag ++ " not found"
-    Nothing -> fail "No starting location tag provided"
 
--- Check that the characters are actually starting in valid locations, based on their location tags.
+-- JSON parsing structure for GameWorld
+data GameWorldJSON = GameWorldJSON {
+    jStartingCharacter  :: CharacterJSON,
+    jPlayableCharacters :: [CharacterJSON],
+    jLocations         :: [Location]
+} deriving (Show, Eq, Generic)
+
+instance FromJSON GameWorldJSON where
+    parseJSON = withObject "GameWorldJSON" $ \v ->
+        GameWorldJSON
+            <$> v .: "startingCharacter"
+            <*> v .: "playableCharacters"
+            <*> v .: "locations"
+
 instance FromJSON GameWorld where
-  parseJSON = withObject "GameWorld" $ \v -> do
-    locs <- v .: "locations"
-    rawStartingChar <- v .: "startingCharacter"
-    rawPlayableChars <- v .: "playableCharacters"
-
-    startingChar <- resolveCharacterLocation locs rawStartingChar
-    playableChars <- mapM (resolveCharacterLocation locs) rawPlayableChars
-
-    return GameWorld
-      { activeCharacter = startingChar
-      , playableCharacters = playableChars
-      , locations = locs
-      }
+    parseJSON v = do
+        worldJSON <- parseJSON v :: Parser GameWorldJSON
+        let locs = jLocations worldJSON
+        startingChar <- convertCharacter locs (jStartingCharacter worldJSON)
+        playableChars <- mapM (convertCharacter locs) (jPlayableCharacters worldJSON)
+        return GameWorld
+            { activeCharacter = startingChar
+            , playableCharacters = playableChars
+            , locations = locs
+            }
 
 data GameEnvironment = GameEnvironment {
     metadata :: Metadata,
@@ -118,5 +136,4 @@ loadGameEnvironmentJSON filePath = do
   jsonData <- B.readFile filePath
   case eitherDecode jsonData of
         Left err -> return $ Left $ "Error parsing JSON: " ++ err
-        Right worldData -> do
-            return $ Right worldData
+        Right worldData -> return $ Right worldData

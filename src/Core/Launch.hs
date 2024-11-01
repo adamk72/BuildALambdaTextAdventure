@@ -24,7 +24,8 @@ launch fp = do
         Left err -> return (Left $ "Error loading game: " <> pack (show err))
         Right gameEnv -> startGame (world gameEnv)
   where
-    startGame w = print w >> gameLoop w
+    startGame = gameLoop
+    -- startGame w = print w >> gameLoop w  -- keep for debugging
 
 -- Todo: Note this as a trigger pattern
 {- Previous version for comparison
