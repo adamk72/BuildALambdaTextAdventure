@@ -10,14 +10,17 @@
     "startingCharacter": {
       "tag": "alice",
       "name": "Alice the Adventurer",
-      "startingLocationTag": "meadow"
+      "locationTag": "meadow"
     },
     "playableCharacters": [
       {
         "tag": "bob",
         "name": "Bob the Brave",
-        "startingLocationTag": "cave"
+        "locationTag": "cave"
       }
+    ],
+    "interactables": [
+      {"tag": "silver coin", "name": "a sliver coin"}
     ],
     "locations": [
       {

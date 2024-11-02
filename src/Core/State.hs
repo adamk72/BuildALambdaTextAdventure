@@ -5,7 +5,8 @@
 {-# LANGUAGE DeriveGeneric   #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Core.State (Character(..), Metadata(..), Location(..), GameEnvironment(..), GameWorld(..), loadGameEnvironmentJSON, TaggedEntity(..)) where
+-- Todo: later, fix this so only the state items are exported
+module Core.State (module Core.State) where
 
 import           Control.Monad        (mzero)
 import           Data.Aeson
@@ -43,8 +44,8 @@ data Metadata = Metadata {
 
 -- Runtime Character structure (no startingLocationTag)
 data Character = Character {
-    charTag          :: TaggedEntity,
-    currentLocation  :: Location
+    charTag         :: TaggedEntity,
+    currentLocation :: Location
 } deriving (Show, Eq, Generic)
 
 instance Tagged Character where
@@ -53,9 +54,9 @@ instance Tagged Character where
 
 -- JSON parsing structure for Character
 data CharacterJSON = CharacterJSON {
-    jCharTag               :: Text,
-    jCharName              :: Text,
-    jStartingLocationTag :: Maybe Text
+    jCharTag     :: Text,
+    jCharName    :: Text,
+    jLocationTag :: Maybe Text
 } deriving (Show, Eq, Generic)
 
 instance FromJSON CharacterJSON where
@@ -63,12 +64,12 @@ instance FromJSON CharacterJSON where
         CharacterJSON
             <$> v .: "tag"
             <*> v .: "name"
-            <*> v .: "startingLocationTag"
+            <*> v .: "locationTag"
 
 -- Convert CharacterJSON to Character by resolving the location
 convertCharacter :: [Location] -> CharacterJSON -> Parser Character
 convertCharacter locs CharacterJSON{..} = do
-    case jStartingLocationTag of
+    case jLocationTag of
       Just targetTag ->
         case List.find (\loc -> locTag loc == targetTag) locs of
                   Just loc -> return $ Character
@@ -80,6 +81,14 @@ convertCharacter locs CharacterJSON{..} = do
                     }
                   Nothing -> fail $ "Location with tag " ++ show targetTag ++ " not found"
       Nothing -> fail "No starting location tag provided"
+
+data Interactable = Interactable {
+  interTag :: TaggedEntity
+} deriving (Show, Eq, Generic)
+
+instance FromJSON Interactable where
+    parseJSON = withObject "Interactable" $ \v ->
+        Interactable <$> parseJSON (Object v)
 
 data Location = Location {
   locTag          :: Text,
@@ -97,7 +106,8 @@ instance FromJSON Location where
 data GameWorld = GameWorld {
   activeCharacter    :: Character,
   playableCharacters :: [Character],
-  locations          :: [Location]
+  locations          :: [Location],
+  interactables      :: [Interactable]
 } deriving (Show, Eq, Generic)
 
 
@@ -105,7 +115,8 @@ data GameWorld = GameWorld {
 data GameWorldJSON = GameWorldJSON {
     jStartingCharacter  :: CharacterJSON,
     jPlayableCharacters :: [CharacterJSON],
-    jLocations         :: [Location]
+    jLocations          :: [Location],
+    jObjects            :: [Interactable]
 } deriving (Show, Eq, Generic)
 
 instance FromJSON GameWorldJSON where
@@ -114,6 +125,7 @@ instance FromJSON GameWorldJSON where
             <$> v .: "startingCharacter"
             <*> v .: "playableCharacters"
             <*> v .: "locations"
+            <*> v .: "interactables"
 
 instance FromJSON GameWorld where
     parseJSON v = do
@@ -125,6 +137,7 @@ instance FromJSON GameWorld where
             { activeCharacter = startingChar
             , playableCharacters = playableChars
             , locations = locs
+            , interactables = undefined
             }
 
 data GameEnvironment = GameEnvironment {
@@ -136,5 +149,5 @@ loadGameEnvironmentJSON :: FilePath -> IO (Either String GameEnvironment)
 loadGameEnvironmentJSON filePath = do
   jsonData <- B.readFile filePath
   case eitherDecode jsonData of
-        Left err -> return $ Left $ "Error parsing JSON: " ++ err
+        Left err        -> return $ Left $ "Error parsing JSON: " ++ err
         Right worldData -> return $ Right worldData

@@ -38,17 +38,21 @@ testBob loc = Character
     , currentLocation = loc
     }
 
+testInteractables :: [Interactable]
+testInteractables = [ Interactable { interTag = TaggedEntity  {tag = "silver coin", name = "a sliver coin"} }]
+
 -- World builders
-makeTestWorld :: Character -> [Character] -> [Location] -> GameWorld
-makeTestWorld active playable locs = GameWorld
+makeTestWorld :: Character -> [Character] -> [Location] -> [Interactable] -> GameWorld
+makeTestWorld active playable locs inters = GameWorld
     { activeCharacter = active
     , playableCharacters = playable
     , locations = locs
+    , interactables = inters
     }
 
 -- Common world configurations
 defaultGW :: GameWorld
-defaultGW = makeTestWorld (testAlice testMeadow) [testBob testMeadow] [testCave, testMeadow, testForest]
+defaultGW = makeTestWorld (testAlice testMeadow) [testBob testMeadow] [testCave, testMeadow, testForest] testInteractables
 
 -- Helper functions for common test operations
 withCharacterAt :: GameWorld -> Location -> GameWorld
