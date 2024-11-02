@@ -31,7 +31,7 @@ executeGo target = do
       validLocTags = destinationTags $ currentLocation ac
   case target of
     Just moveTo | moveTo `elem` validLocTags  ->
-      case find (\loc -> locTag loc == moveTo) (locations gw) of -- check is a legit location.
+      case find (\loc -> locTag loc == moveTo) (locations gw) of -- check it's legit and get the full Location.
         Just newLoc -> do
           let newAc = ac { currentLocation = newLoc }
           put gw { activeCharacter = newAc  }

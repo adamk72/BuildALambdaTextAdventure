@@ -47,16 +47,16 @@ makeTestWorld active playable locs = GameWorld
     }
 
 -- Common world configurations
-testGW :: GameWorld
-testGW = makeTestWorld (testAlice testMeadow) [testBob testMeadow] [testCave, testMeadow, testForest]
+defaultGW :: GameWorld
+defaultGW = makeTestWorld (testAlice testMeadow) [testBob testMeadow] [testCave, testMeadow, testForest]
 
 -- Helper functions for common test operations
--- withCharacterAt :: GameWorld -> Location -> GameWorld
--- withCharacterAt world newLoc = world
---     { activeCharacter = (activeCharacter world) { currentLocation = newLoc } }
+withCharacterAt :: GameWorld -> Location -> GameWorld
+withCharacterAt world newLoc = world
+    { activeCharacter = (activeCharacter world) { currentLocation = newLoc } }
+
+withLocations :: GameWorld -> [Location] -> GameWorld
+withLocations world locs = world { locations = locs }
 
 -- withPlayableCharacters :: GameWorld -> [Character] -> GameWorld
 -- withPlayableCharacters world chars = world { playableCharacters = chars }
-
--- withLocations :: GameWorld -> [Location] -> GameWorld
--- withLocations world locs = world { locations = locs }
