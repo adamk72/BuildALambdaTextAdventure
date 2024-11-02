@@ -1,6 +1,8 @@
 module MainSpec (spec) where
 
+import           Command.Go
 import           Control.Exception.Base (finally)
+import Data.Text (unpack)
 import           Prelude                hiding (sin)
 import           System.Exit
 import           System.IO              hiding (stdin, stdout)
@@ -81,4 +83,4 @@ spec = do
                 hPutStrLn stdin "go foo"
                 hFlush stdin
                 response <- hGetLine stdout
-                response `shouldBe` "λ> Unknown location: foo."
+                response `shouldBe` "λ> " <> (unpack $ renderMessage $ NoPath "foo")
