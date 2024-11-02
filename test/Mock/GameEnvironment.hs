@@ -28,18 +28,16 @@ testForest = Location
 -- Common test characters
 testAlice :: Location -> Character
 testAlice loc = Character
-    { charTag = TaggedEntity { tag = "alice" , name = "Alice the Adventurer" }
-    , currentLocation = loc
+    { charTag = TaggedEntity { tag = "alice" , name = "Alice the Adventurer", location = loc}
     }
 
 testBob :: Location -> Character
 testBob loc = Character
-    { charTag = TaggedEntity { tag = "bob" , name = "Bob the Brave" }
-    , currentLocation = loc
+    { charTag = TaggedEntity { tag = "bob" , name = "Bob the Brave", location = loc }
     }
 
 testInteractables :: [Interactable]
-testInteractables = [ Interactable { interTag = TaggedEntity  {tag = "silver coin", name = "a sliver coin"} }]
+testInteractables = [ Interactable { interTag = TaggedEntity  {tag = "silver coin", name = "a sliver coin", location = testForest} }]
 
 -- World builders
 makeTestWorld :: Character -> [Character] -> [Location] -> [Interactable] -> GameWorld
@@ -56,8 +54,8 @@ defaultGW = makeTestWorld (testAlice testMeadow) [testBob testMeadow] [testCave,
 
 -- Helper functions for common test operations
 withCharacterAt :: GameWorld -> Location -> GameWorld
-withCharacterAt w newLoc =w
-    { activeCharacter = (activeCharacter w) { currentLocation = newLoc } }
+withCharacterAt w newLoc = w
+    { activeCharacter = setCharLoc newLoc (activeCharacter w) }
 
 withLocations :: GameWorld -> [Location] -> GameWorld
 withLocations w locs = w { locations = locs }

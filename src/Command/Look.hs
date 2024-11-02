@@ -5,8 +5,7 @@
 module Command.Look (executeLook, LookMessage(..), renderMessage) where
 
 import           Control.Monad.State
-import           Core.State          (Character (..), GameWorld (..),
-                                      Location (..))
+import           Core.State
 import           Data.Text           as T
 
 data LookMessage
@@ -23,11 +22,11 @@ renderMessage = \case
 executeLook :: Maybe Text -> State GameWorld Text
 executeLook (Just "around") = do
     gw <- get
-    let loc = locName $ currentLocation $ activeCharacter gw
+    let loc = locName $ getActiveCharLocFromGW activeCharacter gw
     return $ renderMessage (YouAreIn loc) <> " " <> renderMessage LookAround
 executeLook Nothing = do
     gw <- get
-    let loc = locName $ currentLocation $ activeCharacter gw
+    let loc = locName $ getActiveCharLocFromGW activeCharacter gw
     return $ renderMessage $ YouAreIn loc
 executeLook (Just direction) = do
     return (renderMessage $ LookTowards direction)

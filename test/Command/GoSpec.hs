@@ -1,7 +1,7 @@
 module Command.GoSpec (spec) where
 
 import           Command.Go
-import           Control.Exception    (evaluate, ErrorCall(..))
+import           Control.Exception    (ErrorCall (..), evaluate)
 import           Control.Monad.State
 import           Core.State
 import           Data.List            (find)
@@ -21,7 +21,7 @@ spec = describe "executeGo" $ do
 
     context "check testing assumptions" $ do
         it "should start the active character in the meadow" $ do
-            let acLoc = locTag $ currentLocation $ activeCharacter defaultGW
+            let acLoc = locTag $ getActiveCharLocFromGW activeCharacter defaultGW
             acLoc `shouldBe` startLocTag
 
         it "should have all location tags in list of locations" $ do
@@ -39,7 +39,7 @@ spec = describe "executeGo" $ do
         it "allows moving to a new, connected location" $ do
             let (result, newState) = runGoCommand (Just allowFromStartTag) defaultGW
             result `shouldBe` renderMessage (MovingToLocation allowFromStartTag)
-            currentLocation (activeCharacter newState) `shouldBe` testCave
+            getLocation (activeCharacter newState) `shouldBe` testCave
 
         it "prevents moving to current location" $ do
             let (result, newState) = runGoCommand (Just startLocTag) defaultGW

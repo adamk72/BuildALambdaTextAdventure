@@ -4,10 +4,10 @@ module Command.LookSpec (spec) where
 import           Command.Look
 import           Control.Monad.State
 import           Core.State
-import  Data.Text
+import           Data.Text
 import           Mock.GameEnvironment
 import           Test.Hspec
-import Test.QuickCheck
+import           Test.QuickCheck
 
 -- Helper function to execute state and get both result and final state
 runLookCommand :: Maybe Text -> GameWorld -> (Text, GameWorld)
@@ -40,8 +40,8 @@ spec = do
 
     describe "executeLook" $ do
         let startLocTag = "meadow"
-            acLocTag = locTag $ currentLocation $ activeCharacter defaultGW
-            acLotName = locName $ currentLocation $ activeCharacter defaultGW
+            acLocTag = locTag $ getActiveCharLocFromGW activeCharacter defaultGW
+            acLotName = locName $ getActiveCharLocFromGW activeCharacter defaultGW
         context "check testing assumptions" $ do
             it "should start the active character in the meadow" $ do
                 acLocTag `shouldBe` startLocTag

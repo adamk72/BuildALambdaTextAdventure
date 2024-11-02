@@ -32,6 +32,7 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 
 ### Coding Todos
 
+- [] Determine if it's worth consolidating the concept of "interactables" with that of "locations," since the code might end up being very similar (same with "characters").
 - [x] Properly update the Character's location when moving.
 - [x] Get basic launch structure into place.
 - [x] Abstract things like the ":quit" command or "REPL> " prompt out of the code; what if I want to easily change or i18n those words?

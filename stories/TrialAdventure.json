@@ -20,23 +20,34 @@
       }
     ],
     "interactables": [
-      {"tag": "silver coin", "name": "a sliver coin"}
+      {
+        "tag": "silver coin",
+        "name": "a sliver coin",
+        "locationTag": "cave"
+      }
     ],
     "locations": [
       {
         "tag": "meadow",
         "name": "A flowery meadow",
-        "destinationTags": ["cave"]
+        "destinationTags": [
+          "cave"
+        ]
       },
       {
         "tag": "cave",
         "name": "A dark cave",
-        "destinationTags": ["meadow", "forest"]
+        "destinationTags": [
+          "meadow",
+          "forest"
+        ]
       },
       {
         "tag": "forest",
         "name": "A dense forest",
-        "destinationTags": ["cave"]
+        "destinationTags": [
+          "cave"
+        ]
       }
     ]
   }
