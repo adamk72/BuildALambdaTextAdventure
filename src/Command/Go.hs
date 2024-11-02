@@ -37,7 +37,7 @@ executeGo target = do
           put gw { activeCharacter = newAc  }
           return $ renderMessage $ MovingToLocation moveTo
         Nothing -> error $ unpack $ renderMessage $ DoesNotExist moveTo -- this means the JSON file was malformed.
-    Just already | already == (locTag $ currentLocation ac) ->
+    Just already | already == locTag (currentLocation ac) ->
       return $ renderMessage $ AlreadyAtLocation already
     Just noWay -> return $ renderMessage $ NoPath noWay
     Nothing -> return $ renderMessage NoLocationSpecified

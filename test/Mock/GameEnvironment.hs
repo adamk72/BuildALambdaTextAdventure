@@ -52,11 +52,11 @@ defaultGW = makeTestWorld (testAlice testMeadow) [testBob testMeadow] [testCave,
 
 -- Helper functions for common test operations
 withCharacterAt :: GameWorld -> Location -> GameWorld
-withCharacterAt world newLoc = world
-    { activeCharacter = (activeCharacter world) { currentLocation = newLoc } }
+withCharacterAt w newLoc =w
+    { activeCharacter = (activeCharacter w) { currentLocation = newLoc } }
 
 withLocations :: GameWorld -> [Location] -> GameWorld
-withLocations world locs = world { locations = locs }
+withLocations w locs = w { locations = locs }
 
 -- withPlayableCharacters :: GameWorld -> [Character] -> GameWorld
 -- withPlayableCharacters world chars = world { playableCharacters = chars }

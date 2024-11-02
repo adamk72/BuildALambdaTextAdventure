@@ -83,4 +83,4 @@ spec = do
                 hPutStrLn stdin "go foo"
                 hFlush stdin
                 response <- hGetLine stdout
-                response `shouldBe` "λ> " <> (unpack $ renderMessage $ NoPath "foo")
+                response `shouldBe` "λ> " <> unpack (renderMessage $ NoPath "foo")

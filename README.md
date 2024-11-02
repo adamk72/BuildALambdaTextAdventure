@@ -32,26 +32,26 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 
 ### Coding Todos
 
-- [] Next: Properly update the Character's location when moving.
+- [x] Properly update the Character's location when moving.
 - [x] Get basic launch structure into place.
 - [x] Abstract things like the ":quit" command or "REPL> " prompt out of the code; what if I want to easily change or i18n those words?
 - [x] On launch, the command selections should be dynamic, based on what is pulled from the JSON files.
-- [] Convert the old code over from String to Text only.
+- [x] Convert the old code over from String to Text only.
 - [] Build a naive spell checker for checking input and making suggestions.
-- [] Import world from JSON file.
-  1. [] Just get a simple gameWorld or player structure in place at launch.
-  2. [] Structure the data.
-  3. [] Pull in data from file.
+- [x] Import world from JSON file.
+  1. [x] Just get a simple gameWorld or player structure in place at launch.
+  2. [x] Structure the data.
+  3. [x] Pull in data from file.
 - [] Create move command from Meadow to Cave and back.
 - [x] Move Quit commands over to the parser.
-  - [] Fix it so that it returns a proper Maybe or Either rather than a Text.
+  - [x] Fix it so that it returns a proper Maybe or Either rather than a Text.
 - [] Have REPL prompt dynamically update when the location (or other details) change.
-- [] Add proper testing back in since I'm learning from AI but results need to be confirmed.
+- [x] Add proper testing back in since I'm learning from AI but results need to be confirmed.
   - [x] Figure out to handle :q command.
-  - [] Learn how to set up pre-test config to eliminate the redundant use of the same processConfig arguments.
+  - [x] Learn how to set up pre-test config to eliminate the redundant use of the same processConfig arguments.
   - [x] Figure out how to put dummy instances of the missing pattern matching so I can get rid of the OPTIONS_GHC warning which is currently suppressed.
-  - [] Abstract out the hard-coded strings.
-  - [] Determine if QuickCheck will be useful in this context. (https://hspec.github.io/quickcheck.html)
+  - [x] Abstract out the hard-coded strings (ongoing).
+- [] Determine if QuickCheck will be useful in this context. (https://hspec.github.io/quickcheck.html)
 - [] Validate the JSON file
   - [] Validate that the destinationTags lists contain only tags that have "full" membership in the `locations` field.
 

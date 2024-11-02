@@ -4,29 +4,29 @@ module Command.LookSpec (spec) where
 import           Command.Look
 import           Control.Monad.State
 import           Core.State
-import qualified Data.Text            as T
+import  Data.Text
 import           Mock.GameEnvironment
 import           Test.Hspec
 import Test.QuickCheck
 
 -- Helper function to execute state and get both result and final state
-runLookCommand :: Maybe T.Text -> GameWorld -> (T.Text, GameWorld)
+runLookCommand :: Maybe Text -> GameWorld -> (Text, GameWorld)
 runLookCommand cmd = runState (executeLook cmd)
 
-newtype ValidDirection = ValidDirection T.Text
+newtype ValidDirection = ValidDirection Text
     deriving (Show, Eq)
 
 instance Arbitrary ValidDirection where
-    arbitrary = ValidDirection . T.pack <$> elements ["north", "south", "east", "west"]
+    arbitrary = ValidDirection . pack <$> elements ["north", "south", "east", "west"]
 
-newtype InvalidDirection = InvalidDirection T.Text
+newtype InvalidDirection = InvalidDirection Text
     deriving (Show, Eq)
 
 instance Arbitrary InvalidDirection where
     arbitrary = do
         -- Generate random text that isn't a valid direction
         txt <- arbitrary `suchThat` (`notElem` ["north", "south", "east", "west"])
-        return $ InvalidDirection $ T.pack txt
+        return $ InvalidDirection $ pack txt
 
 spec :: Spec
 spec = do
@@ -35,8 +35,8 @@ spec = do
         it "returns consistent format for all valid directions" $ property $
             \(ValidDirection dir) ->
                 let result = evalState (executeLook (Just dir)) defaultGW
-                in T.isPrefixOf "You look " result
-                   && T.isSuffixOf "but see nothing special." result
+                in isPrefixOf "You look " result
+                   && isSuffixOf "but see nothing special." result
 
     describe "executeLook" $ do
         let startLocTag = "meadow"

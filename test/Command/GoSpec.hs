@@ -26,9 +26,9 @@ spec = describe "executeGo" $ do
 
         it "should have all location tags in list of locations" $ do
             let locs = locations defaultGW
-            (find (\x -> locTag x == startLocTag) locs) `shouldBe` (Just testMeadow)
-            (find (\x -> locTag x == allowFromStartTag) locs) `shouldBe` (Just testCave)
-            (find (\x -> locTag x == noAllowFromStartTag) locs) `shouldBe` (Just testForest)
+            find (\x -> locTag x == startLocTag) locs `shouldBe` Just testMeadow
+            find (\x -> locTag x == allowFromStartTag) locs `shouldBe` Just testCave
+            find (\x -> locTag x == noAllowFromStartTag) locs `shouldBe` Just testForest
 
     context "when given a valid location" $ do
         it "prevents going to an unconnected location" $ do
@@ -57,14 +57,13 @@ spec = describe "executeGo" $ do
             -- from the character's current location; there's a JSON mismatch that breaks the game.
             let badSetupWorld = withLocations (withCharacterAt defaultGW testForest) [testMeadow]
                 caveResult = evaluate (runGoCommand (Just "cave") badSetupWorld)
-            caveResult `shouldThrow` (\(ErrorCall msg) -> msg == (unpack $ renderMessage $ DoesNotExist "cave"))
+            caveResult `shouldThrow` (\(ErrorCall msg) -> msg == unpack (renderMessage $ DoesNotExist "cave"))
 
             -- alternate versions of badSetupWorld:
             -- let badSetupWorld = (flip withLocations [testMeadow] . flip withCharacterAt testForest) defaultGW
             -- let badSetupWorld = defaultGW & flip withCharacterAt testForest & flip withLocations [testMeadow]
 
-    context "when given no location" $ do
-        it "handles Nothing input" $ do
-            let (result, newState) = runGoCommand Nothing defaultGW
-            result `shouldBe` renderMessage NoLocationSpecified
-            newState `shouldBe` defaultGW
+    context "when given no location" $ it "handles Nothing input" $ do
+        let (result, newState) = runGoCommand Nothing defaultGW
+        result `shouldBe` renderMessage NoLocationSpecified
+        newState `shouldBe` defaultGW
