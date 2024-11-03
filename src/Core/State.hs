@@ -4,6 +4,7 @@
 {-# LANGUAGE DeriveAnyClass  #-}
 {-# LANGUAGE DeriveGeneric   #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE PatternSynonyms #-}
 
 -- Todo: later, fix this so only the state items are exported
 module Core.State (module Core.State) where
@@ -16,23 +17,46 @@ import qualified Data.List            as List
 import           Data.Text            (Text)
 import           GHC.Generics         (Generic)
 
-class Tagged a where
-    getTag :: a -> Text
-    getName :: a -> Text
-    getLocation :: a -> Location
+data Entity = Entity {
+    entityTag  :: TaggedEntity,
+    entityType :: EntityType
+} deriving (Show, Eq, Generic)
 
--- example usages
-{-
-findByTag :: Tagged a => Text -> [a] -> Maybe a
-findByTag searchTag = find (\x -> getTag x == searchTag)
+data EntityType = CharacterType | InteractableType
+    deriving (Show, Eq, Generic)
 
-displayName :: Tagged a => a -> Text
-displayName = getName
--}
+type Character = Entity
+type Interactable = Entity
 
+-- Pattern synonyms for backward compatibility
+pattern Character :: TaggedEntity -> Entity
+pattern Character t <- Entity t CharacterType
+    where Character t = Entity t CharacterType
+
+pattern Interactable :: TaggedEntity -> Entity
+pattern Interactable t <- Entity t InteractableType
+    where Interactable t = Entity t InteractableType
+
+-- Smart constructors
+mkCharacter :: TaggedEntity -> Entity
+mkCharacter t = Entity t CharacterType
+
+mkInteractable :: TaggedEntity -> Entity
+mkInteractable t = Entity t InteractableType
+
+-- Helper functions for type checking
+isCharacter :: Entity -> Bool
+isCharacter (Entity _ CharacterType) = True
+isCharacter _ = False
+
+isInteractable :: Entity -> Bool
+isInteractable (Entity _ InteractableType) = True
+isInteractable _ = False
+
+-- The rest of your original character functions can be preserved
 setCharLoc :: Location -> Character -> Character
 setCharLoc newLoc char =
-    char { charTag = (charTag char) { location = newLoc } }
+    char { entityTag = (entityTag char) { location = newLoc } }
 
 getActiveCharLocFromGW :: (GameWorld -> Character) -> GameWorld -> Location
 getActiveCharLocFromGW ac gw = getLocation $ ac gw
@@ -43,91 +67,66 @@ data TaggedEntity = TaggedEntity
     , location :: Location
     } deriving (Show, Eq, Generic, FromJSON)
 
-data Metadata = Metadata {
-    title       :: Text,
-    launchTag   :: Text,
-    description :: Text,
-    version     :: Text,
-    author      :: Text
-} deriving (Show, Eq, Generic, FromJSON)
+class Tagged a where
+    getTag :: a -> Text
+    getName :: a -> Text
+    getLocation :: a -> Location
 
--- Runtime Character structure (no startingLocationTag)
-data Character = Character {
-    charTag         :: TaggedEntity
+instance Tagged Entity where
+    getTag = tag . entityTag
+    getName = name . entityTag
+    getLocation = location . entityTag
+
+-- example usages
+{-
+findByTag :: Tagged a => Text -> [a] -> Maybe a
+findByTag searchTag = find (\x -> getTag x == searchTag)
+
+displayName :: Tagged a => a -> Text
+displayName = getName
+-}
+
+data EntityJSON = EntityJSON {
+    jTag    :: Text,
+    jName   :: Text,
+    jLocTag :: Maybe Text
 } deriving (Show, Eq, Generic)
 
-instance Tagged Character where
-    getTag = tag . charTag
-    getName = name . charTag
-    getLocation = location . charTag
-
--- JSON parsing structure for Character
-data CharacterJSON = CharacterJSON {
-    jCharTag    :: Text,
-    jCharName   :: Text,
-    jCharLocTag :: Maybe Text
-} deriving (Show, Eq, Generic)
-
-instance FromJSON CharacterJSON where
-    parseJSON = withObject "CharacterJSON" $ \v ->
-        CharacterJSON
+instance FromJSON EntityJSON where
+    parseJSON = withObject "EntityJSON" $ \v ->
+        EntityJSON
             <$> v .: "tag"
             <*> v .: "name"
             <*> v .: "locationTag"
 
--- Convert CharacterJSON to Character by resolving the location
-convertCharacter :: [Location] -> CharacterJSON -> Parser Character
-convertCharacter locs CharacterJSON{..} = do
-    case jCharLocTag of
-      Just targetTag ->
-        case List.find (\loc -> locTag loc == targetTag) locs of
-                  Just loc -> return $ Character
-                    { charTag = TaggedEntity
-                        { tag = jCharTag
-                        , name = jCharName
+convertCharacter :: [Location] -> EntityJSON -> Parser Entity
+convertCharacter = convertEntityWithType CharacterType
+
+convertInteractable :: [Location] -> EntityJSON -> Parser Entity
+convertInteractable = convertEntityWithType InteractableType
+
+convertEntityWithType :: EntityType -> [Location] -> EntityJSON -> Parser Entity
+convertEntityWithType entityType locs EntityJSON{..} = do
+    case jLocTag of
+        Just targetTag ->
+            case List.find (\loc -> locTag loc == targetTag) locs of
+                Just loc -> return $ Entity
+                    { entityTag = TaggedEntity
+                        { tag = jTag
+                        , name = jName
                         , location = loc
                         }
+                    , entityType = entityType
                     }
-                  Nothing -> fail $ "Location with tag " ++ show targetTag ++ " not found"
-      Nothing -> fail "No location tag provided for a character."
+                Nothing -> fail $ "Location with tag " ++ show targetTag ++ " not found"
+        Nothing -> fail "No location tag provided for entity"
 
+setEntityLoc :: Location -> Entity -> Entity
+setEntityLoc newLoc entity =
+    entity { entityTag = (entityTag entity) { location = newLoc } }
 
-data InteractableJSON = InteractableJSON {
-    jInterTag    :: Text,
-    jInterName   :: Text,
-    jInterLocTag :: Maybe Text
-} deriving (Show, Eq, Generic)
-
-instance FromJSON InteractableJSON where
-    parseJSON = withObject "InteractableJSON" $ \v ->
-        InteractableJSON
-            <$> v .: "tag"
-            <*> v .: "name"
-            <*> v .: "locationTag"
-
-data Interactable = Interactable {
-  interTag :: TaggedEntity
-} deriving (Show, Eq, Generic)
-
-instance Tagged Interactable where
-    getTag = tag . interTag
-    getName = name . interTag
-    getLocation = location . interTag
-
-createInteractables :: [Location] -> InteractableJSON -> Parser Interactable
-createInteractables locs InteractableJSON{..} = do
-    case jInterLocTag of
-      Just targetTag ->
-        case List.find (\loc -> locTag loc == targetTag) locs of
-                  Just loc -> return $ Interactable
-                    { interTag = TaggedEntity
-                        { tag = jInterTag
-                        , name = jInterName
-                        , location = loc
-                        }
-                    }
-                  Nothing -> fail $ "Location with tag " ++ show targetTag ++ " not found"
-      Nothing -> fail "No starting location tag provided for an interactable."
+getActiveEntityLocFromGW :: (GameWorld -> Entity) -> GameWorld -> Location
+getActiveEntityLocFromGW ae gw = getLocation $ ae gw
 
 data Location = Location {
   locTag          :: Text,
@@ -143,19 +142,17 @@ instance FromJSON Location where
   parseJSON _ = mzero
 
 data GameWorld = GameWorld {
-  activeCharacter    :: Character,
-  playableCharacters :: [Character],
-  locations          :: [Location],
-  interactables      :: [Interactable]
+    activeCharacter    :: Entity,
+    playableCharacters :: [Entity],
+    locations          :: [Location],
+    interactables      :: [Entity]
 } deriving (Show, Eq, Generic)
 
-
--- JSON parsing structure for GameWorld
 data GameWorldJSON = GameWorldJSON {
-    jStartingCharacter  :: CharacterJSON,
-    jPlayableCharacters :: [CharacterJSON],
+    jStartingCharacter  :: EntityJSON,
+    jPlayableCharacters :: [EntityJSON],
     jLocations          :: [Location],
-    jInteractables      :: [InteractableJSON]
+    jInteractables      :: [EntityJSON]
 } deriving (Show, Eq, Generic)
 
 instance FromJSON GameWorldJSON where
@@ -172,13 +169,21 @@ instance FromJSON GameWorld where
         let locs = jLocations worldJSON
         startingChar <- convertCharacter locs (jStartingCharacter worldJSON)
         playableChars <- mapM (convertCharacter locs) (jPlayableCharacters worldJSON)
-        interactables <- mapM (createInteractables locs) (jInteractables worldJSON)
+        interactables <- mapM (convertInteractable locs) (jInteractables worldJSON)
         return GameWorld
             { activeCharacter = startingChar
             , playableCharacters = playableChars
             , locations = locs
             , interactables = interactables
             }
+
+data Metadata = Metadata {
+    title       :: Text,
+    launchTag   :: Text,
+    description :: Text,
+    version     :: Text,
+    author      :: Text
+} deriving (Show, Eq, Generic, FromJSON)
 
 data GameEnvironment = GameEnvironment {
     metadata :: Metadata,
