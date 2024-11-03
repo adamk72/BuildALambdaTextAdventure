@@ -40,8 +40,8 @@ spec = do
 
     describe "executeLook" $ do
         let startLocTag = "meadow"
-            acLocTag = locTag $ getActiveCharLocFromGW activeCharacter defaultGW
-            acLotName = locName $ getActiveCharLocFromGW activeCharacter defaultGW
+            acLocTag = locTag $ getActiveEntityLocFromGW activeCharacter defaultGW
+            acLotName = locName $ getActiveEntityLocFromGW activeCharacter defaultGW
         context "check testing assumptions" $ do
             it "should start the active character in the meadow" $ do
                 acLocTag `shouldBe` startLocTag

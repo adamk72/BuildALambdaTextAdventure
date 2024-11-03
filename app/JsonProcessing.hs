@@ -4,6 +4,7 @@
 module JsonProcessing (storyDirectory, getJsonFilePaths, readAllMetadata) where
 
 import           Core.State           (GameEnvironment (..), Metadata (..))
+import           Core.State.JSON      (GameEnvironmentJSON(..))
 import           Data.Aeson           (eitherDecode)
 import qualified Data.ByteString.Lazy as B
 import qualified Data.Either          as Either
@@ -24,7 +25,7 @@ getJsonFilePaths dir = do
 readMetadata :: FilePath -> IO (Either String Metadata)
 readMetadata filePath = do
     content <- B.readFile filePath
-    return $ metadata <$> eitherDecode content
+    return $ metadata . unGameEnvironment <$> (eitherDecode content :: Either String GameEnvironmentJSON)
 
 readAllMetadata :: [Either String FilePath] -> IO [(FilePath, Either String  Metadata)]
 readAllMetadata filePaths = do
@@ -38,4 +39,3 @@ readAllMetadata filePaths = do
     processFile filePath = do
       md <- readMetadata filePath
       return (filePath, md)
-

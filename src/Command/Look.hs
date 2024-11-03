@@ -22,11 +22,11 @@ renderMessage = \case
 executeLook :: Maybe Text -> State GameWorld Text
 executeLook (Just "around") = do
     gw <- get
-    let loc = locName $ getActiveCharLocFromGW activeCharacter gw
+    let loc = locName $ getActiveEntityLocFromGW activeCharacter gw
     return $ renderMessage (YouAreIn loc) <> " " <> renderMessage LookAround
 executeLook Nothing = do
     gw <- get
-    let loc = locName $ getActiveCharLocFromGW activeCharacter gw
+    let loc = locName $ getActiveEntityLocFromGW activeCharacter gw
     return $ renderMessage $ YouAreIn loc
 executeLook (Just direction) = do
     return (renderMessage $ LookTowards direction)

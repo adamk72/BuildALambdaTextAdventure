@@ -30,6 +30,12 @@ library
       Core.Config
       Core.Launch
       Core.State
+      Core.State.Entity
+      Core.State.GameState
+      Core.State.JSON
+      Core.State.Location
+      Core.State.Operations
+      Core.State.TaggedEntity
       Repl.Parse
       Repl.Repl
   other-modules:

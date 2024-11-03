@@ -21,7 +21,7 @@ spec = describe "executeGo" $ do
 
     context "check testing assumptions" $ do
         it "should start the active character in the meadow" $ do
-            let acLoc = locTag $ getActiveCharLocFromGW activeCharacter defaultGW
+            let acLoc = locTag $ getActiveEntityLocFromGW activeCharacter defaultGW
             acLoc `shouldBe` startLocTag
 
         it "should have all location tags in list of locations" $ do
