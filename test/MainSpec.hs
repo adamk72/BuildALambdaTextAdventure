@@ -61,26 +61,29 @@ actionWrapper testAction =
 
 spec :: Spec
 spec = do
-      describe "Basic inputs and outputs" $ do
-        it "should exit successfully with :q command" $ do
-            actionWrapper $ \(stdin, stdout, ph) -> do
-                hPutStrLn stdin ":q"
-                hFlush stdin
-                goodbye <- hGetLine stdout
-                goodbye `shouldBe` "λ> Thanks for playing!"
-                exitCode <- waitForProcess ph
-                exitCode `shouldBe` ExitSuccess
+      describe "Wide spectrum checks" $ do
+        context "Basic inputs and outputs" $ do
+            it "should exit successfully with :q command" $ do
+                actionWrapper $ \(stdin, stdout, ph) -> do
+                    hPutStrLn stdin ":q"
+                    hFlush stdin
+                    goodbye <- hGetLine stdout
+                    goodbye `shouldBe` "λ> Thanks for playing!"
+                    exitCode <- waitForProcess ph
+                    exitCode `shouldBe` ExitSuccess
 
-        it "should handle unknown inputs" $ do
-            actionWrapper $ \(stdin, stdout, _ph) -> do
-                hPutStrLn stdin "hello"
-                hFlush stdin
-                response <- hGetLine stdout
-                response `shouldBe` "λ> Don't know how to hello."
+            it "should handle unknown inputs" $ do
+                actionWrapper $ \(stdin, stdout, _ph) -> do
+                    hPutStrLn stdin "hello"
+                    hFlush stdin
+                    response <- hGetLine stdout
+                    response `shouldBe` "λ> Don't know how to hello."
 
-        it "should handle unknown locations" $ do
-            actionWrapper $ \(stdin, stdout, _ph) -> do
-                hPutStrLn stdin "go foo"
-                hFlush stdin
-                response <- hGetLine stdout
-                response `shouldBe` "λ> " <> unpack (renderMessage $ NoPath "foo")
+            it "should handle unknown locations" $ do
+                actionWrapper $ \(stdin, stdout, _ph) -> do
+                    hPutStrLn stdin "go foo"
+                    hFlush stdin
+                    response <- hGetLine stdout
+                    response `shouldBe` "λ> " <> unpack (renderMessage $ NoPath "foo")
+
+

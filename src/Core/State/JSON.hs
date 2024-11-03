@@ -1,14 +1,7 @@
 {-# LANGUAGE DeriveGeneric   #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Core.State.JSON
-    ( EntityJSON(..)
-    , GameWorldJSON(..)
-    , GameEnvironmentJSON(..)  -- Add this export
-    , loadGameEnvironmentJSON
-    , convertCharacter
-    , convertInteractable
-    ) where
+module Core.State.JSON (module Core.State.JSON) where
 
 import           Core.State.Entity
 import           Core.State.GameState
@@ -39,10 +32,10 @@ instance FromJSON EntityJSON where
             <*> v .: "locationTag"
 
 data GameWorldJSON = GameWorldJSON {
-    jStartingCharacter  :: EntityJSON,
-    jPlayableCharacters :: [EntityJSON],
-    jLocations          :: [Location],
-    jInteractables      :: [EntityJSON]
+    jStartingCharacterTag :: Text,
+    jPlayableCharacters   :: [EntityJSON],
+    jLocations            :: [Location],
+    jInteractables        :: [EntityJSON]
 } deriving (Show, Eq, Generic)
 
 instance FromJSON GameWorldJSON where
@@ -53,6 +46,8 @@ instance FromJSON GameWorldJSON where
             <*> v .: "locations"
             <*> v .: "interactables"
 
+
+
 -- Define FromJSON for the wrapper instead of GameEnvironment directly
 instance FromJSON GameEnvironmentJSON where
     parseJSON = withObject "GameEnvironment" $ \v -> do
@@ -62,9 +57,11 @@ instance FromJSON GameEnvironmentJSON where
             Nothing -> return $ GameEnvironmentJSON $ GameEnvironment metadata Nothing
             Just worldData -> do
                 let locs = jLocations worldData
-                startingChar <- convertCharacter locs (jStartingCharacter worldData)
                 playableChars <- mapM (convertCharacter locs) (jPlayableCharacters worldData)
                 interactables <- mapM (convertInteractable locs) (jInteractables worldData)
+                startingChar <- case findStartingCharacter (jStartingCharacterTag worldData) playableChars of
+                    Right char -> return char
+                    Left err -> fail err
                 let world = GameWorld
                         { activeCharacter = startingChar
                         , playableCharacters = playableChars
@@ -73,11 +70,17 @@ instance FromJSON GameEnvironmentJSON where
                         }
                 return $ GameEnvironmentJSON $ GameEnvironment metadata (Just world)
 
+findStartingCharacter :: Text -> [Character] -> Either String Character
+findStartingCharacter startingTag chars =
+    case List.find (\c -> getTag c == startingTag) chars of
+        Just char -> Right char
+        Nothing -> Left $ "Starting character with tag " ++ show startingTag ++ " not found"
+
 convertCharacter :: [Location] -> EntityJSON -> Parser Character
-convertCharacter locs  = convertEntityWithType CharacterType locs
+convertCharacter = convertEntityWithType CharacterType
 
 convertInteractable :: [Location] -> EntityJSON -> Parser Interactable
-convertInteractable locs  = convertEntityWithType InteractableType locs
+convertInteractable = convertEntityWithType InteractableType
 
 convertEntityWithType :: EntityType -> [Location] -> EntityJSON -> Parser Entity
 convertEntityWithType entityType locs EntityJSON{..} = do

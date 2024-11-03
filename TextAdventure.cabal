@@ -88,6 +88,7 @@ test-suite TextAdventure-test
   other-modules:
       Command.GoSpec
       Command.LookSpec
+      JSONSpec
       MainSpec
       Mock.GameEnvironment
       Paths_TextAdventure
@@ -101,9 +102,12 @@ test-suite TextAdventure-test
   build-depends:
       QuickCheck
     , TextAdventure
+    , aeson
     , base >=4.7 && <5
+    , bytestring
     , hspec
     , mtl
     , process
+    , raw-strings-qq
     , text
   default-language: Haskell2010

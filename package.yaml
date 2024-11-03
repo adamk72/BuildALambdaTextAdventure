@@ -74,7 +74,10 @@ tests:
     dependencies:
     - TextAdventure
     - QuickCheck
+    - aeson
+    - bytestring
     - hspec
     - mtl
     - process
     - text
+    - raw-strings-qq

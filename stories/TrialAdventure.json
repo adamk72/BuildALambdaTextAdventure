@@ -7,12 +7,13 @@
     "author": "Adam Kecskes"
   },
   "world": {
-    "startingCharacter": {
-      "tag": "alice",
-      "name": "Alice the Adventurer",
-      "locationTag": "meadow"
-    },
+    "startingCharacter": "alice",
     "playableCharacters": [
+      {
+        "tag": "alice",
+        "name": "Alice the Adventurer",
+        "locationTag": "meadow"
+      },
       {
         "tag": "bob",
         "name": "Bob the Brave",
