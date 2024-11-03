@@ -25,6 +25,21 @@
         "tag": "silver coin",
         "name": "a sliver coin",
         "locationTag": "cave"
+      },
+      {
+        "tag": "tardis",
+        "name": "A large blue phone booth",
+        "locationTag": "meadow"
+      },
+      {
+        "tag": "magic globe",
+        "name": "A magic globe that you can see another world within",
+        "locationTag": "meadow"
+      },
+      {
+        "tag": "bag of holding",
+        "name": "A satchel that is inky black on the inside",
+        "locationTag": "meadow"
       }
     ],
     "locations": [

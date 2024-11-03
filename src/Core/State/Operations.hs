@@ -1,5 +1,3 @@
-{-# LANGUAGE PatternSynonyms #-}
-
 module Core.State.Operations
     ( setEntityLoc
     , setCharLoc

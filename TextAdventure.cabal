@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      Command.Get
       Command.Go
       Command.Look
       Core.Config
@@ -86,6 +87,7 @@ test-suite TextAdventure-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Command.GetSpec
       Command.GoSpec
       Command.LookSpec
       JSONSpec

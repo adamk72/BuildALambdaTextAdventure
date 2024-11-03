@@ -134,7 +134,7 @@ invalidJson = [r|
 
 spec :: Spec
 spec = describe "GameWorld JSON Parsing" $ do
-    describe "Valid JSON parsing" $ do
+    context "Valid JSON parsing" $ do
         it "successfully parses" $ do
             let result = eitherDecode validJson :: Either String GameEnvironmentJSON
             result `shouldSatisfy` isRight
@@ -157,7 +157,7 @@ spec = describe "GameWorld JSON Parsing" $ do
                     foundChar `shouldBe` True
                 Nothing -> expectationFailure "Expected GameWorld to be present"
 
-    describe "Invalid JSON parsing" $ do
+    context "Invalid JSON parsing" $ do
         it "provides appropriate error message for missing starting character" $ do
             let result = eitherDecode invalidJson :: Either String GameEnvironmentJSON
             case result of
