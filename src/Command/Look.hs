@@ -15,7 +15,7 @@ data LookMessage
 
 renderMessage :: LookMessage -> Text
 renderMessage = \case
-    LookAround objs -> "You look around and see " <> (intercalate ", " $ Prelude.map (T.toLower .getName) objs) <> "."
+    LookAround objs -> "You look around and see " <> intercalate ", " (Prelude.map (T.toLower .getName) objs) <> "."
     YouAreIn loc ->  "You are in " <> T.toLower loc <> "."
     LookTowards dir -> "You look " <> T.toLower dir <> ", but see nothing special."
 

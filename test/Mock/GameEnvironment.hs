@@ -1,7 +1,7 @@
 module Mock.GameEnvironment  (module Mock.GameEnvironment) where
 
 import           Core.State
-import           Test.Hspec ()
+import           Test.Hspec              ()
 
 -- Common test locations
 testCave :: Location
@@ -31,6 +31,7 @@ testAlice loc = mkCharacter TaggedEntity
     { tag = "alice"
     , name = "Alice the Adventurer"
     , location = loc
+    , inventory = Just [Location { locTag = "alice", locName = "your pockets", destinationTags = [] }]
     }
 
 testBob :: Location -> Character
@@ -38,6 +39,7 @@ testBob loc = mkCharacter TaggedEntity
     { tag = "bob"
     , name = "Bob the Brave"
     , location = loc
+    , inventory = Just [Location { locTag = "bob", locName = "your pockets", destinationTags = [] }]
     }
 
 testInteractables :: [Interactable]
@@ -47,11 +49,13 @@ testInteractables =
         { tag = "silver coin"
         , name = "a sliver coin"
         , location = testMeadow
+        , inventory = Nothing
         },
     mkInteractable TaggedEntity
         { tag = "eight ball"
         , name = "a magic eight ball"
         , location = testForest
+        , inventory = Nothing
         }
     ]
 

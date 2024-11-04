@@ -1,21 +1,11 @@
 {-# LANGUAGE DeriveGeneric   #-}
 {-# LANGUAGE PatternSynonyms #-}
 
-module Core.State.Entity
-    ( Entity(..)
-    , EntityType(..)
-    , Character
-    , Interactable
-    , pattern Character
-    , pattern Interactable
-    , mkCharacter
-    , mkInteractable
-    , isCharacter
-    , isInteractable
-    ) where
+module Core.State.Entity (module Core.State.Entity) where
 
 import           GHC.Generics         (Generic)
 import           Core.State.TaggedEntity
+
 
 data Entity = Entity {
     entityTag :: TaggedEntity,
@@ -54,3 +44,4 @@ instance Tagged Entity where
     getTag = tag . entityTag
     getName = name . entityTag
     getLocation = location . entityTag
+    getInventory = inventory . entityTag

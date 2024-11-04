@@ -1,4 +1,4 @@
-module Command.Get where
+module Command.Get (module Command.Get) where
 
 import Data.Text
 import Control.Monad.State
