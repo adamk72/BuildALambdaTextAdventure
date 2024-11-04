@@ -3,8 +3,9 @@
 
 module Repl.Parse (parse) where
 
-import           Command.Go          (executeGo)
-import           Command.Look        (executeLook)
+import           Command.Get
+import           Command.Go
+import           Command.Look
 import           Control.Applicative
 import           Control.Monad.State
 import           Core.Config         (quitCommands)
@@ -21,6 +22,7 @@ commands :: [Command]
 commands =
   [ Command "look" executeLook
   , Command "go" executeGo
+  , Command "get" executeGet
   ]
 
 tryCommand :: Text -> Text -> Command -> Maybe (State GameWorld Text)

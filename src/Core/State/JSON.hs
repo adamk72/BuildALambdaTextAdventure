@@ -92,7 +92,7 @@ convertEntityWithType entityType locs EntityJSON{..} = do
                         { tag = jTag
                         , name = jName
                         , location = loc
-                        , inventory = if entityType == CharacterType then Just [Location { locTag = "character", locName = "your pockets", destinationTags = [] }] else Nothing
+                        , inventory = if entityType == CharacterType then Just [Location { locTag = jTag, locName = "your pockets", destinationTags = [] }] else Nothing
                         }
                     , entityType = entityType
                     }

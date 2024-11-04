@@ -15,23 +15,25 @@ runGetCommand cmd = runState (executeGet cmd)
 
 spec :: Spec
 spec = describe "executeGet" $ do
+    let ac = activeCharacter defaultGW
+        startLoc = getActiveEntityLocFromGW activeCharacter defaultGW
     context "check testing assumptions" $ do
         it "should have the silver coin in the starting location" $ do
-            let startLoc = getActiveEntityLocFromGW activeCharacter defaultGW
-                coin = List.find (\inter -> getTag inter == "silver coin") (interactables defaultGW)
+            let coin = List.find (\inter -> getTag inter == "silver coin") (interactables defaultGW)
             fmap getLocation coin `shouldBe` Just startLoc
-
         it "should have the active character in the correct starting location" $ do
-            let ac = activeCharacter defaultGW
-            getLocation ac `shouldBe` getActiveEntityLocFromGW activeCharacter defaultGW
+            getLocation ac `shouldBe` startLoc
 
     context "when picking up objects" $ do
-        it "can transfer from location to person" $ do
-            let (_, newState) = runGetCommand (Just "silver coin") defaultGW
-                ac = activeCharacter defaultGW
-                coin = List.find (\inter -> getTag inter == "silver coin") (interactables newState)
-                expectedLoc = fromJust $ findLocationInInventory "alice" ac
+        let (_, newState) = runGetCommand (Just "silver coin") defaultGW
+            coin = List.find (\inter -> getTag inter == "silver coin") (interactables newState)
+            expectedLoc = fromJust $ findLocationInInventory "alice" ac
+            objs = Prelude.filter (\inter -> getLocation inter == getLocation ac) (interactables newState)
+        it "can transfer sliver coin from location to person" $ do
             fmap getLocation coin `shouldBe` Just expectedLoc
+        it "is no longer an element in the environment" $ do
+            notElem (fromJust coin) objs `shouldBe` True
+
 
         -- it "handles attempting to get nonexistent objects" $ do
         --     let (result, newState) = runGetCommand (Just "nonexistent") defaultGW
