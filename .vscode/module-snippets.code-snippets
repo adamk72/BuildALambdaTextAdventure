@@ -20,6 +20,7 @@
 		"prefix": "spectemplate",
 		"body": [
 			"module Command.$1 (spec) where\n",
+			"import           Command.Utils\n",
 			"import           Test.Hspec\n",
 			"spec :: Spec",
 			"spec = describe \"$2\" $ do",

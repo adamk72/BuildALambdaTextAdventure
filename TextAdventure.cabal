@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Command.Common
+      Command.Drop
       Command.Get
       Command.Go
       Command.Look
@@ -89,6 +90,7 @@ test-suite TextAdventure-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Command.DropSpec
       Command.GetSpec
       Command.GoSpec
       Command.LookSpec
