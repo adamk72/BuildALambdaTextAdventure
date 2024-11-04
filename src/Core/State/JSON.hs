@@ -35,18 +35,16 @@ data GameWorldJSON = GameWorldJSON {
     jStartingCharacterTag :: Text,
     jPlayableCharacters   :: [EntityJSON],
     jLocations            :: [Location],
-    jItems        :: [EntityJSON]
+    jItems                :: [EntityJSON]
 } deriving (Show, Eq, Generic)
 
 instance FromJSON GameWorldJSON where
     parseJSON = withObject "GameWorldJSON" $ \v ->
         GameWorldJSON
             <$> v .: "startingCharacter"
-            <*> v .: "playableCharacters"
+            <*> v .: "characters"
             <*> v .: "locations"
             <*> v .: "items"
-
-
 
 -- Define FromJSON for the wrapper instead of GameEnvironment directly
 instance FromJSON GameEnvironmentJSON where
@@ -60,8 +58,8 @@ instance FromJSON GameEnvironmentJSON where
                 playableChars <- mapM (convertCharacter locs) (jPlayableCharacters worldData)
                 gwItems <- mapM (convertItem locs) (jItems worldData)
                 startingChar <- case findStartingCharacter (jStartingCharacterTag worldData) playableChars of
-                    Right char -> return char
-                    Left err -> fail err
+                    Right actor -> return actor
+                    Left err    -> fail err
                 let world = GameWorld
                         { gwActiveCharacter = startingChar
                         , gwPlayableCharacters = playableChars
@@ -70,13 +68,13 @@ instance FromJSON GameEnvironmentJSON where
                         }
                 return $ GameEnvironmentJSON $ GameEnvironment metadata (Just world)
 
-findStartingCharacter :: Text -> [Character] -> Either String Character
+findStartingCharacter :: Text -> [Actor] -> Either String Actor
 findStartingCharacter startingTag chars =
     case List.find (\c -> getTag c == startingTag) chars of
-        Just char -> Right char
+        Just actor -> Right actor
         Nothing -> Left $ "Starting character with tag " ++ show startingTag ++ " not found"
 
-convertCharacter :: [Location] -> EntityJSON -> Parser Character
+convertCharacter :: [Location] -> EntityJSON -> Parser Actor
 convertCharacter = convertEntityWithType CharacterType
 
 convertItem :: [Location] -> EntityJSON -> Parser Item

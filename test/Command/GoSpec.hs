@@ -1,7 +1,7 @@
 module Command.GoSpec (spec) where
 
-import           Command.Go
 import           Command.Common
+import           Command.Go
 import           Control.Exception    (ErrorCall (..), evaluate)
 import           Control.Monad.State
 import           Core.State
@@ -54,7 +54,7 @@ spec = describe "executeGo" $ do
             newState `shouldBe` defaultGW
 
         it "errors out on bad starting location" $ do
-            -- Character tries moving to 'cave' which is not in the gwLocations list, but there is a locTag to
+            -- Actor tries moving to 'cave' which is not in the gwLocations list, but there is a locTag to
             -- from the character's current location; there's a JSON mismatch that breaks the game.
             let badSetupWorld = withLocations (withCharacterAt defaultGW testForest) [testMeadow]
                 caveResult = evaluate (runGoCommand (Just "cave") badSetupWorld)

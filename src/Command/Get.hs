@@ -9,7 +9,7 @@ import           Data.Maybe          (fromJust)
 import           Data.Text           (Text, unpack)
 
 data GetMessage
-    = PickedUp Text Text  -- (item, character)
+    = PickedUp Text Text
     | InvalidItem Text
     | DoesNotExist Text
     | NoItemSpecified
@@ -17,7 +17,7 @@ data GetMessage
 
 instance CommandMessage GetMessage where
     renderMessage = \case
-        PickedUp item char -> "Moved " <> item <> " to " <> char
+        PickedUp item actor -> "Moved " <> item <> " to " <> actor
         InvalidItem item -> "Cannot pick up " <> item
         NoItemSpecified -> "What do you want to get?"
         DoesNotExist item -> "Item does not exist in this game world: " <> item <> "."

@@ -1,7 +1,7 @@
 module MainSpec (spec) where
 
-import           Command.Go
 import           Command.Common
+import           Command.Go
 import           Control.Exception.Base (finally)
 import           Data.Text              (unpack)
 import           Prelude                hiding (sin)

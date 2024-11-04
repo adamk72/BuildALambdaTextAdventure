@@ -1,11 +1,11 @@
 {-# LANGUAGE LambdaCase #-}
 module Command.Go (module Command.Go) where
 
-import Command.Common
-import Control.Monad.State
-import Core.State
-import Data.Text (Text, unpack)
-import Data.List (find)
+import           Command.Common
+import           Control.Monad.State
+import           Core.State
+import           Data.List           (find)
+import           Data.Text           (Text, unpack)
 
 data GoMessage
     = AlreadyAtLocation Text

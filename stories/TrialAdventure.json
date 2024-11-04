@@ -8,7 +8,7 @@
   },
   "world": {
     "startingCharacter": "alice",
-    "playableCharacters": [
+    "characters": [
       {
         "tag": "alice",
         "name": "Alice the Adventurer",

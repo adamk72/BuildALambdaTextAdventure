@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Helper (module Helper) where
 
-import Data.Text (Text, intercalate, toLower)
-import Core.State
+import           Core.State
+import           Data.Text  (Text, intercalate, toLower)
 
 oxfordEntityNames :: [Entity] -> Text
 oxfordEntityNames = oxfordComma . map (toLower . getName)

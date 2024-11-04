@@ -9,7 +9,7 @@ setEntityLoc :: Location -> Entity -> Entity
 setEntityLoc newLoc entity =
     entity { entityTag = (entityTag entity) { location = newLoc } }
 
-setCharLoc :: Location -> Character -> Character
+setCharLoc :: Location -> Actor -> Actor
 setCharLoc = setEntityLoc
 
 getActiveEntityLocFromGW :: (GameWorld -> Entity) -> GameWorld -> Location

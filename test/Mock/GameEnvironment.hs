@@ -26,7 +26,7 @@ testForest = Location
     }
 
 -- Common test characters
-testAlice :: Location -> Character
+testAlice :: Location -> Actor
 testAlice loc = mkCharacter TaggedEntity
     { tag = "alice"
     , name = "Alice the Adventurer"
@@ -34,7 +34,7 @@ testAlice loc = mkCharacter TaggedEntity
     , inventory = Just [Location { locTag = "alice", locName = "your pockets", destinationTags = [] }]
     }
 
-testBob :: Location -> Character
+testBob :: Location -> Actor
 testBob loc = mkCharacter TaggedEntity
     { tag = "bob"
     , name = "Bob the Brave"
@@ -60,7 +60,7 @@ testItems =
     ]
 
 -- World builders
-makeTestWorld :: Character -> [Character] -> [Location] -> [Item] -> GameWorld
+makeTestWorld :: Actor -> [Actor] -> [Location] -> [Item] -> GameWorld
 makeTestWorld active playable locs inters = GameWorld
     { gwActiveCharacter = active
     , gwPlayableCharacters = playable
@@ -84,5 +84,5 @@ withCharacterAt w newLoc = w
 withLocations :: GameWorld -> [Location] -> GameWorld
 withLocations w locs = w { gwLocations = locs }
 
--- withPlayableCharacters :: GameWorld -> [Character] -> GameWorld
+-- withPlayableCharacters :: GameWorld -> [Actor] -> GameWorld
 -- withPlayableCharacters world chars = world { gwPlayableCharacters = chars }

@@ -1,5 +1,5 @@
-{-# LANGUAGE DeriveGeneric   #-}
-{-# LANGUAGE DeriveAnyClass  #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveGeneric  #-}
 
 module Core.State.GameState
     ( GameWorld(..)
@@ -7,18 +7,18 @@ module Core.State.GameState
     , Metadata(..)
     ) where
 
-import           Data.Text            (Text)
-import           GHC.Generics         (Generic)
-import           Data.Aeson           (FromJSON)
-import           Core.State.Location  (Location)
-import           Core.State.Entity    (Character, Item)
+import           Core.State.Entity   (Actor, Item)
+import           Core.State.Location (Location)
+import           Data.Aeson          (FromJSON)
+import           Data.Text           (Text)
+import           GHC.Generics        (Generic)
 
 -- Todo: Refactor to to use Control.Lens
 data GameWorld = GameWorld {
-    gwActiveCharacter    :: Character,
-    gwPlayableCharacters :: [Character],
+    gwActiveCharacter    :: Actor,
+    gwPlayableCharacters :: [Actor],
     gwLocations          :: [Location],
-    gwItems     :: [Item]
+    gwItems              :: [Item]
 } deriving (Show, Eq, Generic)
 
 -- Note: FromJSON instance will be defined in JSON.hs
