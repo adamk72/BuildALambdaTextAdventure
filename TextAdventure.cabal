@@ -38,9 +38,9 @@ library
       Core.State.Location
       Core.State.Operations
       Core.State.TaggedEntity
-      Helper
       Repl.Parse
       Repl.Repl
+      Utils
   other-modules:
       Paths_TextAdventure
   autogen-modules:
@@ -92,6 +92,7 @@ test-suite TextAdventure-test
       Command.GetSpec
       Command.GoSpec
       Command.LookSpec
+      Command.Utils
       JSONSpec
       MainSpec
       Mock.GameEnvironment

@@ -4,6 +4,8 @@ import           Core.State.Entity
 import           Core.State.GameState    (GameWorld (..))
 import           Core.State.Location     (Location)
 import           Core.State.TaggedEntity
+import Data.Text (Text)
+import qualified Data.List as List
 
 setEntityLoc :: Location -> Entity -> Entity
 setEntityLoc newLoc entity =
@@ -17,6 +19,14 @@ getActiveEntityLocFromGW ae gw = location $ entityTag $ ae gw
 
 getActiveCharLoc :: GameWorld -> Location
 getActiveCharLoc = getActiveEntityLocFromGW  gwActiveCharacter
+
+-- Helper to get objects at a location
+getItemsAtLoc :: Location -> GameWorld -> [Item]
+getItemsAtLoc loc gw =
+    filter (\item -> getLocation item == loc) (gwItems gw)
+
+findItemByLocTag :: Text -> GameWorld -> Maybe Item
+findItemByLocTag itemTag gw = List.find (\item -> getTag item == itemTag) (gwItems gw)
 
 updateItem :: (Item -> Item) -> Item -> GameWorld -> GameWorld
 updateItem updateFn targetItem gameWorld =

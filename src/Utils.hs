@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Helper (module Helper) where
+module Utils (module Utils) where
 
 import           Core.State
 import           Data.Text  (Text, intercalate, toLower)

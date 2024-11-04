@@ -8,7 +8,7 @@ import           Command.Common
 import           Control.Monad.State
 import           Core.State
 import           Data.Text           as T
-import           Helper
+import           Utils
 
 data LookMessage
     = LookAround [Item]

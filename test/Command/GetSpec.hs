@@ -1,38 +1,41 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Command.GetSpec (spec) where
 
--- import           Control.Exception    (ErrorCall (..), evaluate)
+import           Command.Common
 import           Command.Get
-import           Control.Monad.State
+import           Command.Utils
 import           Core.State
 import           Data.List            as List (find)
 import           Data.Maybe           (fromJust)
-import           Data.Text            (Text)
 import           Mock.GameEnvironment
 import           Test.Hspec
-
-runGetCommand :: Maybe Text -> GameWorld -> (Text, GameWorld)
-runGetCommand cmd = runState (executeGet cmd)
 
 spec :: Spec
 spec = describe "executeGet" $ do
     let ac = gwActiveCharacter defaultGW
         startLoc = getActiveCharLoc defaultGW
+
     context "check testing assumptions" $ do
         it "should have the silver coin in the starting location" $ do
             let coin = List.find (\item -> getTag item == "silver coin") (gwItems defaultGW)
             fmap getLocation coin `shouldBe` Just startLoc
-        it "should have the active character in the correct starting location" $ do
-            getLocation ac `shouldBe` startLoc
+
+        it "should have the active character in the correct location" $ do
+            verifyStartLocation defaultGW "meadow"
 
     context "when picking up objects" $ do
-        let (_, newState) = runGetCommand (Just "silver coin") defaultGW
-            coin = List.find (\item -> getTag item == "silver coin") (gwItems newState)
+        let cmdResult = runCommand executeGet (Just "silver coin") defaultGW
+            coin = findItemByLocTag "silver coin" (snd cmdResult)
             expectedLoc = fromJust $ findLocationInInventory "alice" ac
-            objs = Prelude.filter (\item -> getLocation item == getLocation ac) (gwItems newState)
-        it "can transfer sliver coin from location to person" $ do
+
+        it "can transfer silver coin from location to person" $ do
             fmap getLocation coin `shouldBe` Just expectedLoc
+
         it "is no longer an element in the environment" $ do
+            let objs = getItemsAtLoc (getLocation ac) (snd cmdResult)
             notElem (fromJust coin) objs `shouldBe` True
+
+    checkNoInputHandling executeGet $ renderMessage NoItemSpecified
 
 
         -- it "handles attempting to get nonexistent objects" $ do

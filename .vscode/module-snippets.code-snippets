@@ -19,11 +19,12 @@
 	"Module Spec template": {
 		"prefix": "spectemplate",
 		"body": [
+			"module Command.$1 (spec) where\n",
 			"import           Test.Hspec\n",
 			"spec :: Spec",
-			"spec = describe \"$1\" $ do",
-			"\tcontext \"$2\" $ do",
-      "\t\tit \"$3\" $ do"
+			"spec = describe \"$2\" $ do",
+			"\tcontext \"$3\" $ do",
+      "\t\tit \"$4\" $ do"
 		]
 	}
 }
