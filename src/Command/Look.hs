@@ -7,6 +7,7 @@ module Command.Look (executeLook, LookMessage(..), renderMessage) where
 import           Control.Monad.State
 import           Core.State
 import           Data.Text           as T
+import           Helper
 
 data LookMessage
     = LookAround [Interactable]
@@ -15,7 +16,7 @@ data LookMessage
 
 renderMessage :: LookMessage -> Text
 renderMessage = \case
-    LookAround objs -> "You look around and see " <> intercalate ", " (Prelude.map (T.toLower .getName) objs) <> "."
+    LookAround objs -> "You look around and see " <> oxfordEntityNames objs <> "."
     YouAreIn loc ->  "You are in " <> T.toLower loc <> "."
     LookTowards dir -> "You look " <> T.toLower dir <> ", but see nothing special."
 
