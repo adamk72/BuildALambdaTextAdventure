@@ -26,14 +26,14 @@ instance CommandMessage GoMessage where
 executeGo :: CommandExecutor
 executeGo target = do
     gw <- get
-    let ac = gwActiveCharacter gw
+    let ac = getActiveActor gw
         validLocTags = destinationTags $ getLocation ac
     case target of
         Just moveTo | moveTo `elem` validLocTags ->
             case find (\loc -> locTag loc == moveTo) (gwLocations gw) of
                 Just newLoc -> do
-                    let newAc = setCharLoc newLoc ac
-                    put gw { gwActiveCharacter = newAc }
+                    let newAc = setActorLoc newLoc ac
+                    put gw { getActiveActor = newAc }
                     return $ renderMessage $ MovingToLocation moveTo
                 Nothing -> error $ unpack $ renderMessage $ DoesNotExist moveTo
         Just already | already == locTag (getLocation ac) ->

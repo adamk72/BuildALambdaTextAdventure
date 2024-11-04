@@ -25,8 +25,8 @@ instance CommandMessage GetMessage where
 executeGet :: CommandExecutor
 executeGet target = do
     gw <- get
-    let acLoc = getActiveCharLoc gw
-        ac = gwActiveCharacter gw
+    let acLoc = getActiveActorLoc gw
+        ac = getActiveActor gw
         validObjTags = map getTag $ getItemsAtLocation gw acLoc
     case target of
         Just pickFrom | pickFrom `elem` validObjTags ->

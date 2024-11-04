@@ -8,8 +8,8 @@ import Data.Maybe (fromJust)
 executeDrop :: CommandExecutor
 executeDrop target = do
   gw <- get
-  let ac = gwActiveCharacter gw
-      acLoc = getActiveCharLoc gw
+  let ac = getActiveActor gw
+      acLoc = getActiveActorLoc gw
       validLocItems = getItemsAtLoc acLoc gw
-      -- validActorItems = getActiveCharLoc
+      -- validActorItems = getActiveActorLoc
   return $ "Items at location: " <> fromJust target <> " with " <> oxfordEntityNames validLocItems

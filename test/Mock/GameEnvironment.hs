@@ -27,7 +27,7 @@ testForest = Location
 
 -- Common test characters
 testAlice :: Location -> Actor
-testAlice loc = mkCharacter TaggedEntity
+testAlice loc = mkActor TaggedEntity
     { tag = "alice"
     , name = "Alice the Adventurer"
     , location = loc
@@ -35,7 +35,7 @@ testAlice loc = mkCharacter TaggedEntity
     }
 
 testBob :: Location -> Actor
-testBob loc = mkCharacter TaggedEntity
+testBob loc = mkActor TaggedEntity
     { tag = "bob"
     , name = "Bob the Brave"
     , location = loc
@@ -62,8 +62,8 @@ testItems =
 -- World builders
 makeTestWorld :: Actor -> [Actor] -> [Location] -> [Item] -> GameWorld
 makeTestWorld active playable locs inters = GameWorld
-    { gwActiveCharacter = active
-    , gwPlayableCharacters = playable
+    { getActiveActor = active
+    , gwPlayableActors = playable
     , gwLocations = locs
     , gwItems = inters
     }
@@ -77,12 +77,12 @@ defaultGW = makeTestWorld
     testItems
 
 -- Helper functions for common test operations
-withCharacterAt :: GameWorld -> Location -> GameWorld
-withCharacterAt w newLoc = w
-    { gwActiveCharacter = setCharLoc newLoc (gwActiveCharacter w) }
+withActorAt :: GameWorld -> Location -> GameWorld
+withActorAt w newLoc = w
+    { getActiveActor = setActorLoc newLoc (getActiveActor w) }
 
 withLocations :: GameWorld -> [Location] -> GameWorld
 withLocations w locs = w { gwLocations = locs }
 
--- withPlayableCharacters :: GameWorld -> [Actor] -> GameWorld
--- withPlayableCharacters world chars = world { gwPlayableCharacters = chars }
+-- withPlayableActors :: GameWorld -> [Actor] -> GameWorld
+-- withPlayableActors world actors = world { gwPlayableActors = actors }

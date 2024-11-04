@@ -22,7 +22,7 @@ spec = describe "executeGo" $ do
 
     context "check testing assumptions" $ do
         it "should start the active character in the meadow" $ do
-            let acLoc = locTag $ getActiveCharLoc defaultGW
+            let acLoc = locTag $ getActiveActorLoc defaultGW
             acLoc `shouldBe` startLocTag
 
         it "should have all location tags in list of gwLocations" $ do
@@ -40,7 +40,7 @@ spec = describe "executeGo" $ do
         it "allows moving to a new, connected location" $ do
             let (result, newState) = runGoCommand (Just allowFromStartTag) defaultGW
             result `shouldBe` renderMessage (MovingToLocation allowFromStartTag)
-            getLocation (gwActiveCharacter newState) `shouldBe` testCave
+            getLocation (getActiveActor newState) `shouldBe` testCave
 
         it "prevents moving to current location" $ do
             let (result, newState) = runGoCommand (Just startLocTag) defaultGW
@@ -56,13 +56,13 @@ spec = describe "executeGo" $ do
         it "errors out on bad starting location" $ do
             -- Actor tries moving to 'cave' which is not in the gwLocations list, but there is a locTag to
             -- from the character's current location; there's a JSON mismatch that breaks the game.
-            let badSetupWorld = withLocations (withCharacterAt defaultGW testForest) [testMeadow]
+            let badSetupWorld = withLocations (withActorAt defaultGW testForest) [testMeadow]
                 caveResult = evaluate (runGoCommand (Just "cave") badSetupWorld)
             caveResult `shouldThrow` (\(ErrorCall msg) -> msg == unpack (renderMessage $ DoesNotExist "cave"))
 
             -- alternate versions of badSetupWorld:
-            -- let badSetupWorld = (flip withLocations [testMeadow] . flip withCharacterAt testForest) defaultGW
-            -- let badSetupWorld = defaultGW & flip withCharacterAt testForest & flip withLocations [testMeadow]
+            -- let badSetupWorld = (flip withLocations [testMeadow] . flip withActorAt testForest) defaultGW
+            -- let badSetupWorld = defaultGW & flip withActorAt testForest & flip withLocations [testMeadow]
 
     context "when given no location" $ it "handles Nothing input" $ do
         let (result, newState) = runGoCommand Nothing defaultGW

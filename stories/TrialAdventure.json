@@ -7,7 +7,7 @@
     "author": "Adam Kecskes"
   },
   "world": {
-    "startingCharacter": "alice",
+    "startingActor": "alice",
     "characters": [
       {
         "tag": "alice",

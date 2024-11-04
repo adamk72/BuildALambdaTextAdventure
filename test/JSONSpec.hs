@@ -24,7 +24,7 @@ validJson = [r|
     "author": "Adam Kecskes"
   },
   "world": {
-    "startingCharacter": "alice",
+    "startingActor": "alice",
     "characters": [
       {
         "tag": "alice",
@@ -83,7 +83,7 @@ invalidJson = [r|
     "author": "Adam Kecskes"
   },
   "world": {
-    "startingCharacter": "frank",
+    "startingActor": "frank",
     "characters": [
       {
         "tag": "alice",
@@ -142,18 +142,18 @@ spec = describe "GameWorld JSON Parsing" $ do
             let Right gameEnvJSON = eitherDecode validJson
             case world (unGameEnvironment gameEnvJSON) of
                 Just gameWorld -> do
-                    let startingChar = gwActiveCharacter gameWorld
-                    startingChar `shouldSatisfy` isCharacter
+                    let startingActor = getActiveActor gameWorld
+                    startingActor `shouldSatisfy` isActor
                 Nothing -> expectationFailure "Expected GameWorld to be present"
 
         it "succeeds when starting character exists in playable characters list" $ do
             let Right gameEnvJSON = eitherDecode validJson
             case world (unGameEnvironment gameEnvJSON) of
                 Just gameWorld -> do
-                    let startingCharTag = getTag (gwActiveCharacter gameWorld)
-                    let playableChars = gwPlayableCharacters gameWorld
-                    let foundChar = any (\actor -> getTag actor == startingCharTag) playableChars
-                    foundChar `shouldBe` True
+                    let startingActorTag = getTag (getActiveActor gameWorld)
+                    let playableActors = gwPlayableActors gameWorld
+                    let foundActor = any (\actor -> getTag actor == startingActorTag) playableActors
+                    foundActor `shouldBe` True
                 Nothing -> expectationFailure "Expected GameWorld to be present"
 
     context "Invalid JSON parsing" $ do

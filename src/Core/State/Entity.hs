@@ -11,29 +11,29 @@ data Entity = Entity {
     entityType :: EntityType
 } deriving (Show, Eq, Generic)
 
-data EntityType = CharacterType | ItemType
+data EntityType = ActorType | ItemType
     deriving (Show, Eq, Generic)
 
 type Actor = Entity
 type Item = Entity
 
 pattern Actor :: TaggedEntity -> Entity
-pattern Actor t <- Entity t CharacterType
-    where Actor t = Entity t CharacterType
+pattern Actor t <- Entity t ActorType
+    where Actor t = Entity t ActorType
 
 pattern Item :: TaggedEntity -> Entity
 pattern Item t <- Entity t ItemType
     where Item t = Entity t ItemType
 
-mkCharacter :: TaggedEntity -> Entity
-mkCharacter t = Entity t CharacterType
+mkActor :: TaggedEntity -> Entity
+mkActor t = Entity t ActorType
 
 mkItem :: TaggedEntity -> Entity
 mkItem t = Entity t ItemType
 
-isCharacter :: Entity -> Bool
-isCharacter (Entity _ CharacterType) = True
-isCharacter _                        = False
+isActor :: Entity -> Bool
+isActor (Entity _ ActorType) = True
+isActor _                        = False
 
 isItem :: Entity -> Bool
 isItem (Entity _ ItemType) = True

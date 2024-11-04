@@ -11,14 +11,14 @@ setEntityLoc :: Location -> Entity -> Entity
 setEntityLoc newLoc entity =
     entity { entityTag = (entityTag entity) { location = newLoc } }
 
-setCharLoc :: Location -> Actor -> Actor
-setCharLoc = setEntityLoc
+setActorLoc :: Location -> Actor -> Actor
+setActorLoc = setEntityLoc
 
 getActiveEntityLocFromGW :: (GameWorld -> Entity) -> GameWorld -> Location
 getActiveEntityLocFromGW ae gw = location $ entityTag $ ae gw
 
-getActiveCharLoc :: GameWorld -> Location
-getActiveCharLoc = getActiveEntityLocFromGW  gwActiveCharacter
+getActiveActorLoc :: GameWorld -> Location
+getActiveActorLoc = getActiveEntityLocFromGW  getActiveActor
 
 -- Helper to get objects at a location
 getItemsAtLoc :: Location -> GameWorld -> [Item]

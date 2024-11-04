@@ -15,8 +15,8 @@ import           GHC.Generics        (Generic)
 
 -- Todo: Refactor to to use Control.Lens
 data GameWorld = GameWorld {
-    gwActiveCharacter    :: Actor,
-    gwPlayableCharacters :: [Actor],
+    getActiveActor    :: Actor,
+    gwPlayableActors :: [Actor],
     gwLocations          :: [Location],
     gwItems              :: [Item]
 } deriving (Show, Eq, Generic)

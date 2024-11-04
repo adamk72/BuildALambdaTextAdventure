@@ -24,12 +24,12 @@ instance CommandMessage LookMessage where
 executeLook :: CommandExecutor
 executeLook (Just "around") = do
     gw <- get
-    let acLoc = getActiveCharLoc gw
+    let acLoc = getActiveActorLoc gw
         objs = getItemsAtLocation gw acLoc
     return $ renderMessage (YouAreIn $ locName acLoc) <> " " <> renderMessage (LookAround objs)
 executeLook Nothing = do
     gw <- get
-    let loc = locName $ getActiveCharLoc gw
+    let loc = locName $ getActiveActorLoc gw
     return $ renderMessage $ YouAreIn loc
 executeLook (Just direction) =
     return $ renderMessage $ LookTowards direction

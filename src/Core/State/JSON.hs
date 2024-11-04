@@ -32,8 +32,8 @@ instance FromJSON EntityJSON where
             <*> v .: "locationTag"
 
 data GameWorldJSON = GameWorldJSON {
-    jStartingCharacterTag :: Text,
-    jPlayableCharacters   :: [EntityJSON],
+    jStartingActorTag :: Text,
+    jPlayableActors   :: [EntityJSON],
     jLocations            :: [Location],
     jItems                :: [EntityJSON]
 } deriving (Show, Eq, Generic)
@@ -41,7 +41,7 @@ data GameWorldJSON = GameWorldJSON {
 instance FromJSON GameWorldJSON where
     parseJSON = withObject "GameWorldJSON" $ \v ->
         GameWorldJSON
-            <$> v .: "startingCharacter"
+            <$> v .: "startingActor"
             <*> v .: "characters"
             <*> v .: "locations"
             <*> v .: "items"
@@ -55,27 +55,27 @@ instance FromJSON GameEnvironmentJSON where
             Nothing -> return $ GameEnvironmentJSON $ GameEnvironment metadata Nothing
             Just worldData -> do
                 let locs = jLocations worldData
-                playableChars <- mapM (convertCharacter locs) (jPlayableCharacters worldData)
+                playableActors <- mapM (convertActor locs) (jPlayableActors worldData)
                 gwItems <- mapM (convertItem locs) (jItems worldData)
-                startingChar <- case findStartingCharacter (jStartingCharacterTag worldData) playableChars of
+                startingActor <- case findStartingActor (jStartingActorTag worldData) playableActors of
                     Right actor -> return actor
                     Left err    -> fail err
                 let world = GameWorld
-                        { gwActiveCharacter = startingChar
-                        , gwPlayableCharacters = playableChars
+                        { getActiveActor = startingActor
+                        , gwPlayableActors = playableActors
                         , gwLocations = locs
                         , gwItems = gwItems
                         }
                 return $ GameEnvironmentJSON $ GameEnvironment metadata (Just world)
 
-findStartingCharacter :: Text -> [Actor] -> Either String Actor
-findStartingCharacter startingTag chars =
-    case List.find (\c -> getTag c == startingTag) chars of
+findStartingActor :: Text -> [Actor] -> Either String Actor
+findStartingActor startingTag actors =
+    case List.find (\c -> getTag c == startingTag) actors of
         Just actor -> Right actor
         Nothing -> Left $ "Starting character with tag " ++ show startingTag ++ " not found"
 
-convertCharacter :: [Location] -> EntityJSON -> Parser Actor
-convertCharacter = convertEntityWithType CharacterType
+convertActor :: [Location] -> EntityJSON -> Parser Actor
+convertActor = convertEntityWithType ActorType
 
 convertItem :: [Location] -> EntityJSON -> Parser Item
 convertItem = convertEntityWithType ItemType
@@ -90,7 +90,7 @@ convertEntityWithType entityType locs EntityJSON{..} = do
                         { tag = jTag
                         , name = jName
                         , location = loc
-                        , inventory = if entityType == CharacterType then Just [Location { locTag = jTag, locName = "your pockets", destinationTags = [] }] else Nothing
+                        , inventory = if entityType == ActorType then Just [Location { locTag = jTag, locName = "your pockets", destinationTags = [] }] else Nothing
                         }
                     , entityType = entityType
                     }
