@@ -42,9 +42,15 @@ testBob loc = mkCharacter TaggedEntity
 
 testInteractables :: [Interactable]
 testInteractables =
-    [ mkInteractable TaggedEntity
+    [
+    mkInteractable TaggedEntity
         { tag = "silver coin"
         , name = "a sliver coin"
+        , location = testMeadow
+        },
+    mkInteractable TaggedEntity
+        { tag = "eight ball"
+        , name = "a magic eight ball"
         , location = testForest
         }
     ]

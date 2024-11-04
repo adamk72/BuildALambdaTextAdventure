@@ -22,9 +22,9 @@ renderMessage = \case
 executeLook :: Maybe Text -> State GameWorld Text
 executeLook (Just "around") = do
     gw <- get
-    let loc = locName $ getActiveEntityLocFromGW activeCharacter gw
-        objs = interactables gw
-    return $ renderMessage (YouAreIn loc) <> " " <> renderMessage (LookAround objs)
+    let acLoc = getActiveEntityLocFromGW activeCharacter gw
+        objs = Prelude.filter (\inter -> getLocation inter == acLoc) $ interactables gw
+    return $ renderMessage (YouAreIn $ locName acLoc) <> " " <> renderMessage (LookAround objs)
 executeLook Nothing = do
     gw <- get
     let loc = locName $ getActiveEntityLocFromGW activeCharacter gw
