@@ -25,7 +25,7 @@ validJson = [r|
   },
   "world": {
     "startingCharacter": "alice",
-    "playableCharacters": [
+    "gwPlayableCharacters": [
       {
         "tag": "alice",
         "name": "Alice the Adventurer",
@@ -37,14 +37,14 @@ validJson = [r|
         "locationTag": "cave"
       }
     ],
-    "interactables": [
+    "gwInteractables": [
       {
         "tag": "silver coin",
         "name": "a sliver coin",
         "locationTag": "cave"
       }
     ],
-    "locations": [
+    "gwLocations": [
       {
         "tag": "meadow",
         "name": "A flowery meadow",
@@ -84,7 +84,7 @@ invalidJson = [r|
   },
   "world": {
     "startingCharacter": "frank",
-    "playableCharacters": [
+    "gwPlayableCharacters": [
       {
         "tag": "alice",
         "name": "Alice the Adventurer",
@@ -96,14 +96,14 @@ invalidJson = [r|
         "locationTag": "cave"
       }
     ],
-    "interactables": [
+    "gwInteractables": [
       {
         "tag": "silver coin",
         "name": "a sliver coin",
         "locationTag": "cave"
       }
     ],
-    "locations": [
+    "gwLocations": [
       {
         "tag": "meadow",
         "name": "A flowery meadow",
@@ -143,7 +143,7 @@ spec = describe "GameWorld JSON Parsing" $ do
             let Right gameEnvJSON = eitherDecode validJson
             case world (unGameEnvironment gameEnvJSON) of
                 Just gameWorld -> do
-                    let startingChar = activeCharacter gameWorld
+                    let startingChar = gwActiveCharacter gameWorld
                     startingChar `shouldSatisfy` isCharacter
                 Nothing -> expectationFailure "Expected GameWorld to be present"
 
@@ -151,8 +151,8 @@ spec = describe "GameWorld JSON Parsing" $ do
             let Right gameEnvJSON = eitherDecode validJson
             case world (unGameEnvironment gameEnvJSON) of
                 Just gameWorld -> do
-                    let startingCharTag = getTag (activeCharacter gameWorld)
-                    let playableChars = playableCharacters gameWorld
+                    let startingCharTag = getTag (gwActiveCharacter gameWorld)
+                    let playableChars = gwPlayableCharacters gameWorld
                     let foundChar = any (\char -> getTag char == startingCharTag) playableChars
                     foundChar `shouldBe` True
                 Nothing -> expectationFailure "Expected GameWorld to be present"

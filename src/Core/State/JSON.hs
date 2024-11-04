@@ -42,9 +42,9 @@ instance FromJSON GameWorldJSON where
     parseJSON = withObject "GameWorldJSON" $ \v ->
         GameWorldJSON
             <$> v .: "startingCharacter"
-            <*> v .: "playableCharacters"
-            <*> v .: "locations"
-            <*> v .: "interactables"
+            <*> v .: "gwPlayableCharacters"
+            <*> v .: "gwLocations"
+            <*> v .: "gwInteractables"
 
 
 
@@ -58,15 +58,15 @@ instance FromJSON GameEnvironmentJSON where
             Just worldData -> do
                 let locs = jLocations worldData
                 playableChars <- mapM (convertCharacter locs) (jPlayableCharacters worldData)
-                interactables <- mapM (convertInteractable locs) (jInteractables worldData)
+                gwInteractables <- mapM (convertInteractable locs) (jInteractables worldData)
                 startingChar <- case findStartingCharacter (jStartingCharacterTag worldData) playableChars of
                     Right char -> return char
                     Left err -> fail err
                 let world = GameWorld
-                        { activeCharacter = startingChar
-                        , playableCharacters = playableChars
-                        , locations = locs
-                        , interactables = interactables
+                        { gwActiveCharacter = startingChar
+                        , gwPlayableCharacters = playableChars
+                        , gwLocations = locs
+                        , gwInteractables = gwInteractables
                         }
                 return $ GameEnvironmentJSON $ GameEnvironment metadata (Just world)
 

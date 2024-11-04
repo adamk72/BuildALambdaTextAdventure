@@ -13,11 +13,12 @@ import           Data.Aeson           (FromJSON)
 import           Core.State.Location  (Location)
 import           Core.State.Entity    (Character, Interactable)
 
+-- Todo: Refactor to to use Control.Lens
 data GameWorld = GameWorld {
-    activeCharacter    :: Character,
-    playableCharacters :: [Character],
-    locations          :: [Location],
-    interactables     :: [Interactable]
+    gwActiveCharacter    :: Character,
+    gwPlayableCharacters :: [Character],
+    gwLocations          :: [Location],
+    gwInteractables     :: [Interactable]
 } deriving (Show, Eq, Generic)
 
 -- Note: FromJSON instance will be defined in JSON.hs

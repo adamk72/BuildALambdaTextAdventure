@@ -40,7 +40,7 @@ spec = do
 
     describe "executeLook" $ do
         let startLocTag = "meadow"
-            acLoc = getActiveEntityLocFromGW activeCharacter defaultGW
+            acLoc = getActiveCharLoc defaultGW
             acLocTag = locTag acLoc
             acLotName = locName acLoc
         context "check testing assumptions" $ do
@@ -55,7 +55,7 @@ spec = do
         context "when looking 'around'" $ do
             it "returns detailed location description" $ do
                 let (result, _) = runLookCommand (Just "around") defaultGW
-                    objs = Prelude.filter (\inter -> getLocation inter == acLoc) (interactables defaultGW)
+                    objs = Prelude.filter (\inter -> getLocation inter == acLoc) (gwInteractables defaultGW)
                 result `shouldBe` renderMessage (YouAreIn acLotName) <> " " <> renderMessage (LookAround objs)
 
         context "when looking in invalid directions" $ do

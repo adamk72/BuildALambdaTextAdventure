@@ -79,7 +79,7 @@ spec = do
                     response <- hGetLine stdout
                     response `shouldBe` "λ> Don't know how to hello."
 
-            it "should handle unknown locations" $ do
+            it "should handle unknown gwLocations" $ do
                 actionWrapper $ \(stdin, stdout, _ph) -> do
                     hPutStrLn stdin "go foo"
                     hFlush stdin

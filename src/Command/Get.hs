@@ -9,14 +9,14 @@ import Data.Maybe
 executeGet :: Maybe Text -> State GameWorld Text
 executeGet target = do
   gw <- get
-  let acLoc = getActiveEntityLocFromGW activeCharacter gw
-      ac = activeCharacter gw
-      validObjTags = map getTag (Prelude.filter (\inter -> getLocation inter == acLoc) $ interactables gw)
+  let acLoc = getActiveCharLoc gw
+      ac = gwActiveCharacter gw
+      validObjTags = map getTag (Prelude.filter (\inter -> getLocation inter == acLoc) $ gwInteractables gw)
   case target of
     Just pickFrom | pickFrom `elem` validObjTags ->
-      case find (\inter -> getTag inter == pickFrom) (interactables gw) of
+      case find (\inter -> getTag inter == pickFrom) (gwInteractables gw) of
         Just foundObj -> do
-          let pocketSlot = findLocationInInventory (getTag ac) (activeCharacter gw)
+          let pocketSlot = findLocationInInventory (getTag ac) (gwActiveCharacter gw)
               ps = fromJust pocketSlot
               updatedGW = updateInteractable
                 (\obj -> obj { entityTag = (entityTag obj) { location = ps } })

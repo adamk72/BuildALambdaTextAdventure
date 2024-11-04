@@ -3,7 +3,7 @@ module Mock.GameEnvironment  (module Mock.GameEnvironment) where
 import           Core.State
 import           Test.Hspec              ()
 
--- Common test locations
+-- Common test gwLocations
 testCave :: Location
 testCave = Location
     { locTag = "cave"
@@ -62,10 +62,10 @@ testInteractables =
 -- World builders
 makeTestWorld :: Character -> [Character] -> [Location] -> [Interactable] -> GameWorld
 makeTestWorld active playable locs inters = GameWorld
-    { activeCharacter = active
-    , playableCharacters = playable
-    , locations = locs
-    , interactables = inters
+    { gwActiveCharacter = active
+    , gwPlayableCharacters = playable
+    , gwLocations = locs
+    , gwInteractables = inters
     }
 
 -- Common world configurations
@@ -79,10 +79,10 @@ defaultGW = makeTestWorld
 -- Helper functions for common test operations
 withCharacterAt :: GameWorld -> Location -> GameWorld
 withCharacterAt w newLoc = w
-    { activeCharacter = setCharLoc newLoc (activeCharacter w) }
+    { gwActiveCharacter = setCharLoc newLoc (gwActiveCharacter w) }
 
 withLocations :: GameWorld -> [Location] -> GameWorld
-withLocations w locs = w { locations = locs }
+withLocations w locs = w { gwLocations = locs }
 
 -- withPlayableCharacters :: GameWorld -> [Character] -> GameWorld
--- withPlayableCharacters world chars = world { playableCharacters = chars }
+-- withPlayableCharacters world chars = world { gwPlayableCharacters = chars }

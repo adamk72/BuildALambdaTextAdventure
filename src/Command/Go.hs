@@ -27,14 +27,14 @@ renderMessage = \case
 executeGo :: Maybe Text -> State Core.State.GameWorld Text
 executeGo target = do
   gw <- get
-  let ac = activeCharacter gw
+  let ac = gwActiveCharacter gw
       validLocTags = destinationTags $ Core.State.getLocation ac
   case target of
     Just moveTo | moveTo `elem` validLocTags  ->
-      case find (\loc -> locTag loc == moveTo) (locations gw) of -- check it's legit and get the full Location.
+      case find (\loc -> locTag loc == moveTo) (gwLocations gw) of -- check it's legit and get the full Location.
         Just newLoc -> do
           let newAc = Core.State.setCharLoc newLoc ac
-          put gw { activeCharacter = newAc  }
+          put gw { gwActiveCharacter = newAc  }
           return $ renderMessage $ MovingToLocation moveTo
         Nothing -> error $ unpack $ renderMessage $ DoesNotExist moveTo -- this means the JSON file was malformed.
     Just already | already == locTag (Core.State.getLocation ac) ->

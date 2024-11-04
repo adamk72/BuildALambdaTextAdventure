@@ -15,11 +15,14 @@ setCharLoc = setEntityLoc
 getActiveEntityLocFromGW :: (GameWorld -> Entity) -> GameWorld -> Location
 getActiveEntityLocFromGW ae gw = location $ entityTag $ ae gw
 
+getActiveCharLoc :: GameWorld -> Location
+getActiveCharLoc = getActiveEntityLocFromGW  gwActiveCharacter
+
 updateInteractable :: (Interactable -> Interactable) -> Interactable -> GameWorld -> GameWorld
 updateInteractable updateFn targetItem gameWorld =
-    gameWorld { interactables = updatedInteractables }
+    gameWorld { gwInteractables = updatedInteractables }
   where
-    updatedInteractables = Prelude.map updateIfMatch (interactables gameWorld)
+    updatedInteractables = Prelude.map updateIfMatch (gwInteractables gameWorld)
     updateIfMatch item
       | item == targetItem = updateFn item
       | otherwise = item

@@ -21,11 +21,11 @@ spec = describe "executeGo" $ do
 
     context "check testing assumptions" $ do
         it "should start the active character in the meadow" $ do
-            let acLoc = locTag $ getActiveEntityLocFromGW activeCharacter defaultGW
+            let acLoc = locTag $ getActiveCharLoc defaultGW
             acLoc `shouldBe` startLocTag
 
-        it "should have all location tags in list of locations" $ do
-            let locs = locations defaultGW
+        it "should have all location tags in list of gwLocations" $ do
+            let locs = gwLocations defaultGW
             find (\x -> locTag x == startLocTag) locs `shouldBe` Just testMeadow
             find (\x -> locTag x == allowFromStartTag) locs `shouldBe` Just testCave
             find (\x -> locTag x == noAllowFromStartTag) locs `shouldBe` Just testForest
@@ -39,7 +39,7 @@ spec = describe "executeGo" $ do
         it "allows moving to a new, connected location" $ do
             let (result, newState) = runGoCommand (Just allowFromStartTag) defaultGW
             result `shouldBe` renderMessage (MovingToLocation allowFromStartTag)
-            getLocation (activeCharacter newState) `shouldBe` testCave
+            getLocation (gwActiveCharacter newState) `shouldBe` testCave
 
         it "prevents moving to current location" $ do
             let (result, newState) = runGoCommand (Just startLocTag) defaultGW
@@ -47,13 +47,13 @@ spec = describe "executeGo" $ do
             newState `shouldBe` defaultGW
 
     context "when given an invalid location" $ do
-        it "handles unknown locations" $ do
+        it "handles unknown gwLocations" $ do
             let (result, newState) = runGoCommand (Just "nonexistent") defaultGW
             result `shouldBe` renderMessage (NoPath "nonexistent")
             newState `shouldBe` defaultGW
 
         it "errors out on bad starting location" $ do
-            -- Character tries moving to 'cave' which is not in the locations list, but there is a locTag to
+            -- Character tries moving to 'cave' which is not in the gwLocations list, but there is a locTag to
             -- from the character's current location; there's a JSON mismatch that breaks the game.
             let badSetupWorld = withLocations (withCharacterAt defaultGW testForest) [testMeadow]
                 caveResult = evaluate (runGoCommand (Just "cave") badSetupWorld)
