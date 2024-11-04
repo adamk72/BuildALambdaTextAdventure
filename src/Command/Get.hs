@@ -1,29 +1,45 @@
+{-# LANGUAGE LambdaCase #-}
 module Command.Get (module Command.Get) where
 
-import Data.Text (Text)
-import Data.List (find)
-import Control.Monad.State
-import Core.State
-import Data.Maybe
+import           Command.Common
+import           Control.Monad.State
+import           Core.State
+import           Data.List           (find)
+import           Data.Maybe          (fromJust)
+import           Data.Text           (Text, unpack)
 
-executeGet :: Maybe Text -> State GameWorld Text
+data GetMessage
+    = PickedUp Text Text  -- (item, character)
+    | InvalidItem Text
+    | DoesNotExist Text
+    | NoItemSpecified
+    deriving (Eq, Show)
+
+instance CommandMessage GetMessage where
+    renderMessage = \case
+        PickedUp item char -> "Moved " <> item <> " to " <> char
+        InvalidItem item -> "Cannot pick up " <> item
+        NoItemSpecified -> "What do you want to get?"
+        DoesNotExist item -> "Item does not exist in this game world: " <> item <> "."
+
+executeGet :: CommandExecutor
 executeGet target = do
-  gw <- get
-  let acLoc = getActiveCharLoc gw
-      ac = gwActiveCharacter gw
-      validObjTags = map getTag (Prelude.filter (\inter -> getLocation inter == acLoc) $ gwInteractables gw)
-  case target of
-    Just pickFrom | pickFrom `elem` validObjTags ->
-      case find (\inter -> getTag inter == pickFrom) (gwInteractables gw) of
-        Just foundObj -> do
-          let pocketSlot = findLocationInInventory (getTag ac) (gwActiveCharacter gw)
-              ps = fromJust pocketSlot
-              updatedGW = updateInteractable
-                (\obj -> obj { entityTag = (entityTag obj) { location = ps } })
-                foundObj
-                gw
-          put updatedGW
-          return $ "Moved " <> pickFrom <> " to " <> getName ac
-        Nothing -> error "Error in finding something"
-    Just noWay -> return $ "ouch" <> noWay
-    Nothing -> return "doubleOuch"
+    gw <- get
+    let acLoc = getActiveCharLoc gw
+        ac = gwActiveCharacter gw
+        validObjTags = map getTag $ getInteractablesAtLocation gw acLoc
+    case target of
+        Just pickFrom | pickFrom `elem` validObjTags ->
+            case find (\inter -> getTag inter == pickFrom) (gwInteractables gw) of
+                Just foundObj -> do
+                    let pocketSlot = findLocationInInventory (getTag ac) ac
+                        ps = fromJust pocketSlot
+                        updatedGW = updateInteractable
+                            (\obj -> obj { entityTag = (entityTag obj) { location = ps } })
+                            foundObj
+                            gw
+                    put updatedGW
+                    return $ renderMessage $ PickedUp pickFrom (getName ac)
+                Nothing -> error $ unpack $ renderMessage $ DoesNotExist pickFrom
+        Just noWay -> return $ renderMessage $ InvalidItem noWay
+        Nothing -> return $ renderMessage NoItemSpecified

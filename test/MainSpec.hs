@@ -1,8 +1,9 @@
 module MainSpec (spec) where
 
 import           Command.Go
+import           Command.Common
 import           Control.Exception.Base (finally)
-import Data.Text (unpack)
+import           Data.Text              (unpack)
 import           Prelude                hiding (sin)
 import           System.Exit
 import           System.IO              hiding (stdin, stdout)

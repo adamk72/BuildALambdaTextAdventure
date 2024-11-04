@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      Command.Common
       Command.Get
       Command.Go
       Command.Look

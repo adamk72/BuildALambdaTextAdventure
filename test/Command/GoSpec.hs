@@ -1,6 +1,7 @@
 module Command.GoSpec (spec) where
 
 import           Command.Go
+import           Command.Common
 import           Control.Exception    (ErrorCall (..), evaluate)
 import           Control.Monad.State
 import           Core.State
