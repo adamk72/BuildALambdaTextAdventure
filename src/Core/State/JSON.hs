@@ -42,9 +42,9 @@ instance FromJSON GameWorldJSON where
     parseJSON = withObject "GameWorldJSON" $ \v ->
         GameWorldJSON
             <$> v .: "startingCharacter"
-            <*> v .: "gwPlayableCharacters"
-            <*> v .: "gwLocations"
-            <*> v .: "gwItems"
+            <*> v .: "playableCharacters"
+            <*> v .: "locations"
+            <*> v .: "items"
 
 
 

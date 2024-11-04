@@ -8,7 +8,7 @@
   },
   "world": {
     "startingCharacter": "alice",
-    "gwPlayableCharacters": [
+    "playableCharacters": [
       {
         "tag": "alice",
         "name": "Alice the Adventurer",
@@ -20,7 +20,7 @@
         "locationTag": "cave"
       }
     ],
-    "gwItems": [
+    "items": [
       {
         "tag": "silver coin",
         "name": "a sliver coin",
@@ -42,7 +42,7 @@
         "locationTag": "meadow"
       }
     ],
-    "gwLocations": [
+    "locations": [
       {
         "tag": "meadow",
         "name": "A flowery meadow",

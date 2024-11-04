@@ -25,7 +25,7 @@ validJson = [r|
   },
   "world": {
     "startingCharacter": "alice",
-    "gwPlayableCharacters": [
+    "playableCharacters": [
       {
         "tag": "alice",
         "name": "Alice the Adventurer",
@@ -37,14 +37,14 @@ validJson = [r|
         "locationTag": "cave"
       }
     ],
-    "gwItems": [
+    "items": [
       {
         "tag": "silver coin",
         "name": "a sliver coin",
         "locationTag": "cave"
       }
     ],
-    "gwLocations": [
+    "locations": [
       {
         "tag": "meadow",
         "name": "A flowery meadow",
@@ -84,7 +84,7 @@ invalidJson = [r|
   },
   "world": {
     "startingCharacter": "frank",
-    "gwPlayableCharacters": [
+    "playableCharacters": [
       {
         "tag": "alice",
         "name": "Alice the Adventurer",
@@ -96,14 +96,14 @@ invalidJson = [r|
         "locationTag": "cave"
       }
     ],
-    "gwItems": [
+    "items": [
       {
         "tag": "silver coin",
         "name": "a sliver coin",
         "locationTag": "cave"
       }
     ],
-    "gwLocations": [
+    "locations": [
       {
         "tag": "meadow",
         "name": "A flowery meadow",

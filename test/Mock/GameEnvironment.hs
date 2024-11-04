@@ -1,7 +1,7 @@
 module Mock.GameEnvironment  (module Mock.GameEnvironment) where
 
 import           Core.State
-import           Test.Hspec              ()
+import           Test.Hspec ()
 
 -- Common test gwLocations
 testCave :: Location
