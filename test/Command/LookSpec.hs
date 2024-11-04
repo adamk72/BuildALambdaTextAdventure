@@ -55,7 +55,7 @@ spec = do
         context "when looking 'around'" $ do
             it "returns detailed location description" $ do
                 let (result, _) = runLookCommand (Just "around") defaultGW
-                    objs = Prelude.filter (\inter -> getLocation inter == acLoc) (gwInteractables defaultGW)
+                    objs = Prelude.filter (\item -> getLocation item == acLoc) (gwItems defaultGW)
                 result `shouldBe` renderMessage (YouAreIn acLotName) <> " " <> renderMessage (LookAround objs)
 
         context "when looking in invalid directions" $ do

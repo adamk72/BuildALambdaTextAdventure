@@ -35,7 +35,7 @@ data GameWorldJSON = GameWorldJSON {
     jStartingCharacterTag :: Text,
     jPlayableCharacters   :: [EntityJSON],
     jLocations            :: [Location],
-    jInteractables        :: [EntityJSON]
+    jItems        :: [EntityJSON]
 } deriving (Show, Eq, Generic)
 
 instance FromJSON GameWorldJSON where
@@ -44,7 +44,7 @@ instance FromJSON GameWorldJSON where
             <$> v .: "startingCharacter"
             <*> v .: "gwPlayableCharacters"
             <*> v .: "gwLocations"
-            <*> v .: "gwInteractables"
+            <*> v .: "gwItems"
 
 
 
@@ -58,7 +58,7 @@ instance FromJSON GameEnvironmentJSON where
             Just worldData -> do
                 let locs = jLocations worldData
                 playableChars <- mapM (convertCharacter locs) (jPlayableCharacters worldData)
-                gwInteractables <- mapM (convertInteractable locs) (jInteractables worldData)
+                gwItems <- mapM (convertItem locs) (jItems worldData)
                 startingChar <- case findStartingCharacter (jStartingCharacterTag worldData) playableChars of
                     Right char -> return char
                     Left err -> fail err
@@ -66,7 +66,7 @@ instance FromJSON GameEnvironmentJSON where
                         { gwActiveCharacter = startingChar
                         , gwPlayableCharacters = playableChars
                         , gwLocations = locs
-                        , gwInteractables = gwInteractables
+                        , gwItems = gwItems
                         }
                 return $ GameEnvironmentJSON $ GameEnvironment metadata (Just world)
 
@@ -79,8 +79,8 @@ findStartingCharacter startingTag chars =
 convertCharacter :: [Location] -> EntityJSON -> Parser Character
 convertCharacter = convertEntityWithType CharacterType
 
-convertInteractable :: [Location] -> EntityJSON -> Parser Interactable
-convertInteractable = convertEntityWithType InteractableType
+convertItem :: [Location] -> EntityJSON -> Parser Item
+convertItem = convertEntityWithType ItemType
 
 convertEntityWithType :: EntityType -> [Location] -> EntityJSON -> Parser Entity
 convertEntityWithType entityType locs EntityJSON{..} = do

@@ -10,6 +10,6 @@ class CommandMessage a where
 type CommandExecutor = Maybe Text -> State GameWorld Text
 
 -- Common utilities used across commands
-getInteractablesAtLocation :: GameWorld -> Location -> [Interactable]
-getInteractablesAtLocation gw loc =
-    filter (\inter -> getLocation inter == loc) $ gwInteractables gw
+getItemsAtLocation :: GameWorld -> Location -> [Item]
+getItemsAtLocation gw loc =
+    filter (\item -> getLocation item == loc) $ gwItems gw

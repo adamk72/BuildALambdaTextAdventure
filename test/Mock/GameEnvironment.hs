@@ -42,16 +42,16 @@ testBob loc = mkCharacter TaggedEntity
     , inventory = Just [Location { locTag = "bob", locName = "your pockets", destinationTags = [] }]
     }
 
-testInteractables :: [Interactable]
-testInteractables =
+testItems :: [Item]
+testItems =
     [
-    mkInteractable TaggedEntity
+    mkItem TaggedEntity
         { tag = "silver coin"
         , name = "a sliver coin"
         , location = testMeadow
         , inventory = Nothing
         },
-    mkInteractable TaggedEntity
+    mkItem TaggedEntity
         { tag = "eight ball"
         , name = "a magic eight ball"
         , location = testForest
@@ -60,12 +60,12 @@ testInteractables =
     ]
 
 -- World builders
-makeTestWorld :: Character -> [Character] -> [Location] -> [Interactable] -> GameWorld
+makeTestWorld :: Character -> [Character] -> [Location] -> [Item] -> GameWorld
 makeTestWorld active playable locs inters = GameWorld
     { gwActiveCharacter = active
     , gwPlayableCharacters = playable
     , gwLocations = locs
-    , gwInteractables = inters
+    , gwItems = inters
     }
 
 -- Common world configurations
@@ -74,7 +74,7 @@ defaultGW = makeTestWorld
     (testAlice testMeadow)
     [testBob testMeadow]
     [testCave, testMeadow, testForest]
-    testInteractables
+    testItems
 
 -- Helper functions for common test operations
 withCharacterAt :: GameWorld -> Location -> GameWorld

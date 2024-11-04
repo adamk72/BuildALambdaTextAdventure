@@ -20,7 +20,7 @@
         "locationTag": "cave"
       }
     ],
-    "gwInteractables": [
+    "gwItems": [
       {
         "tag": "silver coin",
         "name": "a sliver coin",

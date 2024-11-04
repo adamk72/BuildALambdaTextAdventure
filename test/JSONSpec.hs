@@ -37,7 +37,7 @@ validJson = [r|
         "locationTag": "cave"
       }
     ],
-    "gwInteractables": [
+    "gwItems": [
       {
         "tag": "silver coin",
         "name": "a sliver coin",
@@ -96,7 +96,7 @@ invalidJson = [r|
         "locationTag": "cave"
       }
     ],
-    "gwInteractables": [
+    "gwItems": [
       {
         "tag": "silver coin",
         "name": "a sliver coin",

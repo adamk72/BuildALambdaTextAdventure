@@ -27,14 +27,14 @@ executeGet target = do
     gw <- get
     let acLoc = getActiveCharLoc gw
         ac = gwActiveCharacter gw
-        validObjTags = map getTag $ getInteractablesAtLocation gw acLoc
+        validObjTags = map getTag $ getItemsAtLocation gw acLoc
     case target of
         Just pickFrom | pickFrom `elem` validObjTags ->
-            case find (\inter -> getTag inter == pickFrom) (gwInteractables gw) of
+            case find (\item -> getTag item == pickFrom) (gwItems gw) of
                 Just foundObj -> do
                     let pocketSlot = findLocationInInventory (getTag ac) ac
                         ps = fromJust pocketSlot
-                        updatedGW = updateInteractable
+                        updatedGW = updateItem
                             (\obj -> obj { entityTag = (entityTag obj) { location = ps } })
                             foundObj
                             gw

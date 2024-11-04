@@ -18,11 +18,11 @@ getActiveEntityLocFromGW ae gw = location $ entityTag $ ae gw
 getActiveCharLoc :: GameWorld -> Location
 getActiveCharLoc = getActiveEntityLocFromGW  gwActiveCharacter
 
-updateInteractable :: (Interactable -> Interactable) -> Interactable -> GameWorld -> GameWorld
-updateInteractable updateFn targetItem gameWorld =
-    gameWorld { gwInteractables = updatedInteractables }
+updateItem :: (Item -> Item) -> Item -> GameWorld -> GameWorld
+updateItem updateFn targetItem gameWorld =
+    gameWorld { gwItems = updatedItems }
   where
-    updatedInteractables = Prelude.map updateIfMatch (gwInteractables gameWorld)
+    updatedItems = Prelude.map updateIfMatch (gwItems gameWorld)
     updateIfMatch item
       | item == targetItem = updateFn item
       | otherwise = item

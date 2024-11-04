@@ -11,7 +11,7 @@ import Data.Text as T
 import Helper
 
 data LookMessage
-    = LookAround [Interactable]
+    = LookAround [Item]
     | YouAreIn Text
     | LookTowards Text
 
@@ -25,7 +25,7 @@ executeLook :: CommandExecutor
 executeLook (Just "around") = do
     gw <- get
     let acLoc = getActiveCharLoc gw
-        objs = getInteractablesAtLocation gw acLoc
+        objs = getItemsAtLocation gw acLoc
     return $ renderMessage (YouAreIn $ locName acLoc) <> " " <> renderMessage (LookAround objs)
 executeLook Nothing = do
     gw <- get

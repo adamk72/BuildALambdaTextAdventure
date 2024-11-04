@@ -12,33 +12,33 @@ data Entity = Entity {
     entityType :: EntityType
 } deriving (Show, Eq, Generic)
 
-data EntityType = CharacterType | InteractableType
+data EntityType = CharacterType | ItemType
     deriving (Show, Eq, Generic)
 
 type Character = Entity
-type Interactable = Entity
+type Item = Entity
 
 pattern Character :: TaggedEntity -> Entity
 pattern Character t <- Entity t CharacterType
     where Character t = Entity t CharacterType
 
-pattern Interactable :: TaggedEntity -> Entity
-pattern Interactable t <- Entity t InteractableType
-    where Interactable t = Entity t InteractableType
+pattern Item :: TaggedEntity -> Entity
+pattern Item t <- Entity t ItemType
+    where Item t = Entity t ItemType
 
 mkCharacter :: TaggedEntity -> Entity
 mkCharacter t = Entity t CharacterType
 
-mkInteractable :: TaggedEntity -> Entity
-mkInteractable t = Entity t InteractableType
+mkItem :: TaggedEntity -> Entity
+mkItem t = Entity t ItemType
 
 isCharacter :: Entity -> Bool
 isCharacter (Entity _ CharacterType) = True
 isCharacter _ = False
 
-isInteractable :: Entity -> Bool
-isInteractable (Entity _ InteractableType) = True
-isInteractable _ = False
+isItem :: Entity -> Bool
+isItem (Entity _ ItemType) = True
+isItem _ = False
 
 instance Tagged Entity where
     getTag = tag . entityTag

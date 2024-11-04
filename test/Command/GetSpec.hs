@@ -19,16 +19,16 @@ spec = describe "executeGet" $ do
         startLoc = getActiveCharLoc defaultGW
     context "check testing assumptions" $ do
         it "should have the silver coin in the starting location" $ do
-            let coin = List.find (\inter -> getTag inter == "silver coin") (gwInteractables defaultGW)
+            let coin = List.find (\item -> getTag item == "silver coin") (gwItems defaultGW)
             fmap getLocation coin `shouldBe` Just startLoc
         it "should have the active character in the correct starting location" $ do
             getLocation ac `shouldBe` startLoc
 
     context "when picking up objects" $ do
         let (_, newState) = runGetCommand (Just "silver coin") defaultGW
-            coin = List.find (\inter -> getTag inter == "silver coin") (gwInteractables newState)
+            coin = List.find (\item -> getTag item == "silver coin") (gwItems newState)
             expectedLoc = fromJust $ findLocationInInventory "alice" ac
-            objs = Prelude.filter (\inter -> getLocation inter == getLocation ac) (gwInteractables newState)
+            objs = Prelude.filter (\item -> getLocation item == getLocation ac) (gwItems newState)
         it "can transfer sliver coin from location to person" $ do
             fmap getLocation coin `shouldBe` Just expectedLoc
         it "is no longer an element in the environment" $ do
