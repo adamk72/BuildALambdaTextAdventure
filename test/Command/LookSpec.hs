@@ -54,8 +54,8 @@ spec = do
         context "when looking 'around'" $ do
             it "returns detailed location description" $ do
                 let (result, _) = runLookCommand (Just "around") defaultGW
-                result `shouldBe` renderMessage (YouAreIn acLotName) <> " " <> renderMessage LookAround
-
+                    objs = interactables defaultGW
+                result `shouldBe` renderMessage (YouAreIn acLotName) <> " " <> renderMessage (LookAround objs)
 
         context "when looking in invalid directions" $ do
             it "handles invalid direction gracefully" $ do
