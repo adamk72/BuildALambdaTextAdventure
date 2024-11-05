@@ -12,5 +12,5 @@ executeDrop target = do
     Just item -> do
       let updatedGW = moveItemLoc item acLoc gw
       put updatedGW
-      return $ target <> " dropped. " <> "Your inventory is now: " <> oxfordEntityNames (getActorInventory updatedGW)
+      return $ target <> " dropped. " <> "Your inventory is now: " <> oxfordEntityNames (getActorInventoryItems updatedGW)
     Nothing -> return $ "You don't have a " <> target <> " to drop."

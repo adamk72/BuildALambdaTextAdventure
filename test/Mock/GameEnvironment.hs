@@ -31,7 +31,7 @@ testAlice loc = mkActor TaggedEntity
     { tag = "alice"
     , name = "Alice the Adventurer"
     , location = loc
-    , inventory = Just [Location { locTag = "alice", locName = "your pockets", destinationTags = [] }]
+    , inventory = Just Location { locTag = "alice", locName = "your pockets", destinationTags = [] }
     }
 
 testBob :: Location -> Actor
@@ -39,7 +39,7 @@ testBob loc = mkActor TaggedEntity
     { tag = "bob"
     , name = "Bob the Brave"
     , location = loc
-    , inventory = Just [Location { locTag = "bob", locName = "your pockets", destinationTags = [] }]
+    , inventory = Just Location { locTag = "bob", locName = "your pockets", destinationTags = [] }
     }
 
 testBagOfHolding :: Item
@@ -47,7 +47,7 @@ testBagOfHolding = mkItem TaggedEntity
     { tag = "bag of holding"
     , name = "bag of holding"
     , location = testMeadow
-    , inventory = Just [Location { locTag = "bag of holding", locName = "inside bag", destinationTags = [] }]
+    , inventory = Just Location { locTag = "bag of holding", locName = "inside bag", destinationTags = [] }
     }
 
 testBaubleInBagOfHolding :: Item

@@ -19,5 +19,5 @@ getDistance :: Entity -> Entity -> Distance
 getDistance e1 e2
   | e1 == e2 = DistanceSelf
   | getLocation e1 == getLocation e2 = DistanceHere
-  | fromJust getInventory e1 == getLocation e2 = DistanceHeld
+  | fromJust (getInventory e1) == getLocation e2 = DistanceHeld
   | isNothing (getInventory e1) = DistanceNotHere

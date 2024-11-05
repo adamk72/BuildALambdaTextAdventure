@@ -5,7 +5,6 @@ module Core.State.TaggedEntity (module Core.State.TaggedEntity) where
 
 import           Core.State.Location
 import           Data.Aeson          (FromJSON)
-import           Data.List           as List (find)
 import           Data.Text           (Text)
 import           GHC.Generics        (Generic)
 
@@ -21,6 +20,3 @@ class Tagged a where
     getName :: a -> Text
     getLocation :: a -> Location
     getInventory :: a -> Maybe Location
-    findLocInInventoryByTag :: Text -> a -> Maybe Location
-    findLocInInventoryByTag searchTag entity =
-        getInventory entity >>= find (\loc -> locTag loc == searchTag)

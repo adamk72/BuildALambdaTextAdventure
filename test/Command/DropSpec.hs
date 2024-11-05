@@ -25,7 +25,6 @@ spec = describe "Execute drop" $ do
     context "Post inventory check" $ do
       it "no longer possess a silver coin" $ do
         let (_, dropGW) = runCommand executeDrop silver getGW
-            acAfter = gwActiveActor dropGW
             itemLoc = fromJust (findItemByTag silver dropGW)
-        checkItemTagInPocket silver acAfter `shouldBe` False
+        checkItemTagInPocket silver dropGW `shouldBe` False
         getLocation itemLoc `shouldBe` testMeadow

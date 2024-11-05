@@ -2,12 +2,12 @@ module Core.State.Operations (module Core.State.Operations) where
 
 import           Core.State.Entity
 import           Core.State.EntityContainer
-import           Core.State.GameState    (GameWorld (..))
-import           Core.State.Location     (Location)
+import           Core.State.GameState       (GameWorld (..))
+import           Core.State.Location        (Location)
 import           Core.State.TaggedEntity
-import qualified Data.List               as List
-import           Data.Maybe              (fromJust, isJust)
-import           Data.Text               (Text)
+import qualified Data.List                  as List
+import           Data.Maybe
+import           Data.Text                  (Text)
 
 setEntityLoc :: Location -> Entity -> Entity
 setEntityLoc newLoc entity =
@@ -22,15 +22,18 @@ getActiveActorLoc gw = location $ entityTag $ gwActiveActor gw
 getActorInventory :: GameWorld -> Location
 getActorInventory gw = do
   let ac = gwActiveActor gw
-  fromJust (getInventory ac)-- guaranteed to be Just because it's a character
+  fromJust (getInventory ac) -- guaranteed to be Just because it's a character
 
-getActorInventory :: GameWorld -> [Item]
-getActorInventory gw = do
-  let ps = getActorInventory gw
-  getItemsAtLoc ps gw
+getActorInventoryItems :: GameWorld -> [Item]
+getActorInventoryItems gw = do
+  let pocketSlot = getActorInventory gw
+  getItemsAtLoc pocketSlot gw
 
-checkItemTagInPocket :: Text -> Actor -> Bool
-checkItemTagInPocket itemTag actor = isJust (findLocInInventoryByTag itemTag actor)
+checkItemTagInPocket :: Text -> GameWorld -> Bool
+checkItemTagInPocket itemTag gw = do
+  case findItemByTag itemTag gw of
+    Just item -> getLocation item == getActorInventory gw
+    Nothing   -> False
 
 -- Helper to get objects at a location
 getEntitiesAtLoc :: Location -> GameWorld -> [Entity]

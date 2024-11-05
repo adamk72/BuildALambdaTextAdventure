@@ -7,4 +7,4 @@ import           Utils
 executeInventory :: CommandExecutor
 executeInventory _ = do
   gw <- get
-  return $ "Your inventory is: " <> oxfordEntityNames (getActorInventory gw)
+  return $ "Your inventory is: " <> oxfordEntityNames (getActorInventoryItems gw)

@@ -1,17 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module GameConfigConverter where
+module GameConfigConverter (module GameConfigConverter) where
 
-import Core.State.Entity
 import Core.State.GameState
 import Core.State.JSON
-import Core.State.Location
-import Core.State.TaggedEntity
-import Data.Aeson (encode)
-import qualified Data.ByteString.Lazy as B
-import Data.Text (Text)
-import qualified Data.Text.IO as T
 import System.Directory (createDirectoryIfMissing)
 import System.FilePath ((</>), takeBaseName, splitDirectories)
 import Data.List (intercalate)

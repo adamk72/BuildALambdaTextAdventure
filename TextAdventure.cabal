@@ -31,6 +31,7 @@ library
       Command.Get
       Command.Go
       Command.Look
+      Command.Put
       Core.Config
       Core.Distance
       Core.Launch
@@ -98,6 +99,7 @@ test-suite TextAdventure-test
       Command.GetSpec
       Command.GoSpec
       Command.LookSpec
+      Command.PutSpec
       Command.TestUtils
       DistanceSpec
       JSONSpec
