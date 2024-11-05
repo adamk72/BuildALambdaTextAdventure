@@ -26,7 +26,7 @@ spec = describe "executeGet" $ do
     context "when picking up objects" $ do
         let (_, getGW) = runCommand executeGet "silver coin" defaultGW
             coin = findItemByTag "silver coin" getGW
-            expectedLoc = getPocketSlot getGW
+            expectedLoc = getPocketSlotGW getGW
 
         it "can transfer silver coin from location to person" $ do
             fmap getLocation coin `shouldBe` Just expectedLoc

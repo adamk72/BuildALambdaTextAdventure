@@ -42,25 +42,41 @@ testBob loc = mkActor TaggedEntity
     , inventory = Just [Location { locTag = "bob", locName = "your pockets", destinationTags = [] }]
     }
 
-testItems :: [Item]
-testItems =
-    [ testCoin, testEightBall, testBat ]
+testBagOfHolding :: Item
+testBagOfHolding = mkItem TaggedEntity
+    { tag = "bag of holding"
+    , name = "bag of holding"
+    , location = testMeadow
+    , inventory = Just [Location { locTag = "bag of holding", locName = "inside bag", destinationTags = [] }]
+    }
+
+testBaubleInBagOfHolding :: Item
+testBaubleInBagOfHolding = mkItem TaggedEntity
+    { tag = "bag of holding"
+    , name = "bag of holding"
+    , location = testMeadow
+    , inventory = Nothing
+    }
+
+testItemsForDefaultGw :: [Item]
+testItemsForDefaultGw =
+    [ testCoin, testEightBall, testBat, testBagOfHolding ]
 
 testCoin :: Item
 testCoin = mkItem TaggedEntity
-        { tag = "silver coin"
-        , name = "a sliver coin"
-        , location = testMeadow
-        , inventory = Nothing
-        }
+    { tag = "silver coin"
+    , name = "a sliver coin"
+    , location = testMeadow
+    , inventory = Nothing
+    }
 
 testEightBall :: Item
 testEightBall = mkItem TaggedEntity
-        { tag = "eight ball"
-        , name = "a magic eight ball"
-        , location = testForest
-        , inventory = Nothing
-        }
+    { tag = "eight ball"
+    , name = "a magic eight ball"
+    , location = testForest
+    , inventory = Nothing
+    }
 
 testBat :: Item
 testBat = mkItem TaggedEntity
@@ -85,7 +101,7 @@ defaultGW = makeTestWorld
     (testAlice testMeadow)
     [testBob testMeadow]
     [testCave, testMeadow, testForest]
-    testItems
+    testItemsForDefaultGw
 
 -- Helper functions for common test operations
 withActorAt :: GameWorld -> Location -> GameWorld

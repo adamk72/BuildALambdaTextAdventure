@@ -32,9 +32,9 @@ library
       Command.Go
       Command.Look
       Core.Config
+      Core.Distance
       Core.Launch
       Core.State
-      Core.State.Distance
       Core.State.Entity
       Core.State.GameState
       Core.State.JSON

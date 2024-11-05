@@ -5,7 +5,7 @@ import           Core.State.GameState    (GameWorld (..))
 import           Core.State.Location     (Location)
 import           Core.State.TaggedEntity
 import qualified Data.List               as List
-import           Data.Maybe              (fromJust)
+import           Data.Maybe              (fromJust, isJust)
 import           Data.Text               (Text)
 
 setEntityLoc :: Location -> Entity -> Entity
@@ -18,19 +18,22 @@ setActorLoc = setEntityLoc
 getActiveActorLoc :: GameWorld -> Location
 getActiveActorLoc gw = location $ entityTag $ gwActiveActor gw
 
-getPocketSlot :: GameWorld -> Location
-getPocketSlot gw = do
+getPocketSlotGW :: GameWorld -> Location
+getPocketSlotGW gw = do
   let ac = gwActiveActor gw
       pocketSlot = findLocInInventoryByTag (getTag ac) ac
   fromJust pocketSlot -- guaranteed to be Just because it's a character
 
+getPocketSlotEntity :: Entity -> Maybe Location
+getPocketSlotEntity ac = findLocInInventoryByTag (getTag ac) ac
+
 getActorInventory :: GameWorld -> [Item]
 getActorInventory gw = do
-  let ps = getPocketSlot gw
+  let ps = getPocketSlotGW gw
   getItemsAtLoc ps gw
 
 checkItemTagInPocket :: Text -> Actor -> Bool
-checkItemTagInPocket itemTag actor = if findLocInInventoryByTag itemTag actor == Nothing then False else True
+checkItemTagInPocket itemTag actor = isJust (findLocInInventoryByTag itemTag actor)
 
 -- Helper to get objects at a location
 getItemsAtLoc :: Location -> GameWorld -> [Item]
