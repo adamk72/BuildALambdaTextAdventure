@@ -25,7 +25,7 @@ executeLook :: CommandExecutor
 executeLook (Just "around") = do
     gw <- get
     let acLoc = getActiveActorLoc gw
-        objs = getItemsAtLocation gw acLoc
+        objs = getItemsAtLoc acLoc gw
     return $ renderMessage (YouAreIn $ locName acLoc) <> " " <> renderMessage (LookAround objs)
 executeLook Nothing = do
     gw <- get

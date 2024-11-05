@@ -3,6 +3,7 @@
 
 module Repl.Parse (parse) where
 
+import           Command.Drop
 import           Command.Get
 import           Command.Go
 import           Command.Look
@@ -23,6 +24,7 @@ commands =
   [ Command "look" executeLook
   , Command "go" executeGo
   , Command "get" executeGet
+  , Command "drop" executeDrop
   ]
 
 tryCommand :: Text -> Text -> Command -> Maybe (State GameWorld Text)

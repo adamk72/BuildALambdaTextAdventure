@@ -1,9 +1,10 @@
 module Command.Drop (module Command.Drop) where
 import           Command.Common
+import           Core.State.Operations
 import           Control.Monad.State
-import Core.State
-import Utils
-import Data.Maybe (fromJust)
+import           Core.State
+import           Data.Maybe          (fromJust)
+import           Utils
 
 executeDrop :: CommandExecutor
 executeDrop target = do
@@ -11,5 +12,5 @@ executeDrop target = do
   let ac = gwActiveActor gw
       acLoc = getActiveActorLoc gw
       validLocItems = getItemsAtLoc acLoc gw
-      -- validActorItems = getActiveActorLoc
-  return $ "Items at location: " <> fromJust target <> " with " <> oxfordEntityNames validLocItems
+      pocketItems = getActorInventory gw
+  return $ "Items at location: " <> fromJust target <> " with " <> oxfordEntityNames pocketItems

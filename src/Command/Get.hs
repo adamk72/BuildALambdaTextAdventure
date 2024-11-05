@@ -26,7 +26,7 @@ executeGet target = do
     gw <- get
     let acLoc = getActiveActorLoc gw
         ac = gwActiveActor gw
-        validObjTags = map getTag $ getItemsAtLocation gw acLoc
+        validObjTags = map getTag $ getItemsAtLoc acLoc gw
     case target of
         Just pickFrom | pickFrom `elem` validObjTags ->
             case find (\item -> getTag item == pickFrom) (gwItems gw) of

@@ -8,8 +8,3 @@ class CommandMessage a where
     renderMessage :: a -> Text
 
 type CommandExecutor = Maybe Text -> State GameWorld Text
-
--- Common utilities used across commands
-getItemsAtLocation :: GameWorld -> Location -> [Item]
-getItemsAtLocation gw loc =
-    filter (\item -> getLocation item == loc) $ gwItems gw

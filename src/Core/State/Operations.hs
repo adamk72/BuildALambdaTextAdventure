@@ -24,6 +24,11 @@ getPocketSlot gw = do
       pocketSlot = findLocInInventoryByTag (getTag ac) ac
   fromJust pocketSlot -- guaranteed to be Just because it's a character
 
+getActorInventory :: GameWorld -> [Item]
+getActorInventory gw = do
+  let ps = getPocketSlot gw
+  getItemsAtLoc ps gw
+
 checkItemTagInPocket :: Text -> Actor -> Bool
 checkItemTagInPocket itemTag actor = if findLocInInventoryByTag itemTag actor == Nothing then False else True
 
