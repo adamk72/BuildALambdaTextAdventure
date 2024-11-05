@@ -15,11 +15,8 @@ setEntityLoc newLoc entity =
 setActorLoc :: Location -> Actor -> Actor
 setActorLoc = setEntityLoc
 
-getActiveActorLoc :: (GameWorld -> Actor) -> GameWorld -> Location
-getActiveActorLoc ae gw = location $ entityTag $ ae gw
-
-gwActiveActorLoc :: GameWorld -> Location
-gwActiveActorLoc = getActiveActorLoc gwActiveActor
+getActiveActorLoc :: GameWorld -> Location
+getActiveActorLoc gw = location $ entityTag $ gwActiveActor gw
 
 getPocketSlot :: GameWorld -> Location
 getPocketSlot gw = do

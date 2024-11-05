@@ -13,7 +13,7 @@ import           Test.Hspec
 spec :: Spec
 spec = describe "executeGet" $ do
     let ac = gwActiveActor defaultGW
-        startLoc = gwActiveActorLoc defaultGW
+        startLoc = getActiveActorLoc defaultGW
 
     context "check testing assumptions" $ do
         it "should have the silver coin in the starting location" $ do

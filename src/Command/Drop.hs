@@ -9,7 +9,7 @@ executeDrop :: CommandExecutor
 executeDrop target = do
   gw <- get
   let ac = gwActiveActor gw
-      acLoc = gwActiveActorLoc gw
+      acLoc = getActiveActorLoc gw
       validLocItems = getItemsAtLoc acLoc gw
-      -- validActorItems = gwActiveActorLoc
+      -- validActorItems = getActiveActorLoc
   return $ "Items at location: " <> fromJust target <> " with " <> oxfordEntityNames validLocItems
