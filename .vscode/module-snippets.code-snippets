@@ -19,8 +19,7 @@
 	"Module Spec template": {
 		"prefix": "spectemplate",
 		"body": [
-			"module Command.$1 (spec) where\n",
-			"import           Command.Utils\n",
+			"module $1 (spec) where\n",
 			"import           Test.Hspec\n",
 			"spec :: Spec",
 			"spec = describe \"$2\" $ do",

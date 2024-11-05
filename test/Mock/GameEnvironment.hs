@@ -44,20 +44,31 @@ testBob loc = mkActor TaggedEntity
 
 testItems :: [Item]
 testItems =
-    [
-    mkItem TaggedEntity
+    [ testCoin, testEightBall, testBat ]
+
+testCoin :: Item
+testCoin = mkItem TaggedEntity
         { tag = "silver coin"
         , name = "a sliver coin"
         , location = testMeadow
         , inventory = Nothing
-        },
-    mkItem TaggedEntity
+        }
+
+testEightBall :: Item
+testEightBall = mkItem TaggedEntity
         { tag = "eight ball"
         , name = "a magic eight ball"
         , location = testForest
         , inventory = Nothing
         }
-    ]
+
+testBat :: Item
+testBat = mkItem TaggedEntity
+        { tag = "bat"
+        , name = "a cute bat"
+        , location = testCave
+        , inventory = Nothing
+        }
 
 -- World builders
 makeTestWorld :: Actor -> [Actor] -> [Location] -> [Item] -> GameWorld

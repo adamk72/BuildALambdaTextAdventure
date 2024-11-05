@@ -34,6 +34,7 @@ library
       Core.Config
       Core.Launch
       Core.State
+      Core.State.Distance
       Core.State.Entity
       Core.State.GameState
       Core.State.JSON
@@ -96,6 +97,7 @@ test-suite TextAdventure-test
       Command.GoSpec
       Command.LookSpec
       Command.TestUtils
+      DistanceSpec
       JSONSpec
       MainSpec
       Mock.GameEnvironment
