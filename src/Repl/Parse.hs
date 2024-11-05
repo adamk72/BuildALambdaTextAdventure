@@ -3,6 +3,7 @@
 
 module Repl.Parse (parse) where
 
+import           Command.Actor
 import           Command.Drop
 import           Command.Get
 import           Command.Go
@@ -26,6 +27,7 @@ commands =
   , Command "go" executeGo
   , Command "get" executeGet
   , Command "drop" executeDrop
+  , Command "inventory" executeInventory
   ]
 
 -- Refactored version
