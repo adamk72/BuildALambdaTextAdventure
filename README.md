@@ -56,6 +56,10 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 - [] Validate the JSON file
   - [] Validate that the destinationTags lists contain only tags that have "full" membership in the `locations` field.
 
+## Coding Checks
+
+- [] I think I don't need the commands to return a Maybe.
+
 ### Super Advanced Coding Todos
 
 - [] Use [Parsec](https://hackage.haskell.org/package/parsec) for the REPL, per [this](https://blogg.bekk.no/creating-a-repl-in-haskell-efcdef1deec2) article's suggestion. It's an older article, so follow up on other options later.

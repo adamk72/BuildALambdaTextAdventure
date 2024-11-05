@@ -32,10 +32,7 @@ executeGet target = do
             case find (\item -> getTag item == pickFrom) (gwItems gw) of
                 Just foundObj -> do
                     let ps = getPocketSlot gw
-                        updatedGW = updateItem
-                            (\obj -> obj { entityTag = (entityTag obj) { location = ps } })
-                            foundObj
-                            gw
+                        updatedGW = moveItemLoc foundObj ps gw
                     put updatedGW
                     return $ renderMessage $ PickedUp pickFrom (getName ac)
                 Nothing -> error $ unpack $ renderMessage $ DoesNotExist pickFrom

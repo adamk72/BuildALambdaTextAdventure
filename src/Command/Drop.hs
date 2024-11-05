@@ -2,15 +2,16 @@ module Command.Drop (module Command.Drop) where
 import           Command.Common
 import           Core.State.Operations
 import           Control.Monad.State
-import           Core.State
-import           Data.Maybe          (fromJust)
 import           Utils
 
 executeDrop :: CommandExecutor
-executeDrop target = do
+executeDrop (Just target) = do
   gw <- get
-  let ac = gwActiveActor gw
-      acLoc = getActiveActorLoc gw
-      validLocItems = getItemsAtLoc acLoc gw
-      pocketItems = getActorInventory gw
-  return $ "Items at location: " <> fromJust target <> " with " <> oxfordEntityNames pocketItems
+  let acLoc = getActiveActorLoc gw
+  case findItemByTag target gw of
+    Just item -> do
+      let updatedGW = moveItemLoc item acLoc gw
+      put updatedGW
+      return $ target <> " dropped. " <> "Your inventory is now: " <> oxfordEntityNames (getActorInventory updatedGW)
+    Nothing -> return $ "You don't have a " <> target <> " to drop."
+executeDrop Nothing = return $ "You don't have anything to drop."

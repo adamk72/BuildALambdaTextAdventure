@@ -40,6 +40,9 @@ getItemsAtLoc loc gw =
 findItemByTag :: Text -> GameWorld -> Maybe Item
 findItemByTag itemTag gw = List.find (\item -> getTag item == itemTag) (gwItems gw)
 
+moveItemLoc :: Item -> Location -> GameWorld -> GameWorld
+moveItemLoc itemToMove loc = updateItem (\item -> item { entityTag = (entityTag item) { location = loc } }) itemToMove
+
 updateItem :: (Item -> Item) -> Item -> GameWorld -> GameWorld
 updateItem updateFn targetItem gameWorld =
     gameWorld { gwItems = updatedItems }
