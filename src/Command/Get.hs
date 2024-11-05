@@ -25,14 +25,14 @@ instance CommandMessage GetMessage where
 executeGet :: CommandExecutor
 executeGet target = do
     gw <- get
-    let acLoc = getActiveActorLoc gw
-        ac = getActiveActor gw
+    let acLoc = gwActiveActorLoc gw
+        ac = gwActiveActor gw
         validObjTags = map getTag $ getItemsAtLocation gw acLoc
     case target of
         Just pickFrom | pickFrom `elem` validObjTags ->
             case find (\item -> getTag item == pickFrom) (gwItems gw) of
                 Just foundObj -> do
-                    let pocketSlot = findLocationInInventory (getTag ac) ac
+                    let pocketSlot = findLocInInventoryByTag (getTag ac) ac
                         ps = fromJust pocketSlot
                         updatedGW = updateItem
                             (\obj -> obj { entityTag = (entityTag obj) { location = ps } })

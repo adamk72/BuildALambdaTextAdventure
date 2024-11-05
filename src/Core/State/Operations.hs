@@ -14,19 +14,19 @@ setEntityLoc newLoc entity =
 setActorLoc :: Location -> Actor -> Actor
 setActorLoc = setEntityLoc
 
-getActiveEntityLocFromGW :: (GameWorld -> Entity) -> GameWorld -> Location
-getActiveEntityLocFromGW ae gw = location $ entityTag $ ae gw
+getActiveActorLoc :: (GameWorld -> Actor) -> GameWorld -> Location
+getActiveActorLoc ae gw = location $ entityTag $ ae gw
 
-getActiveActorLoc :: GameWorld -> Location
-getActiveActorLoc = getActiveEntityLocFromGW  getActiveActor
+gwActiveActorLoc :: GameWorld -> Location
+gwActiveActorLoc = getActiveActorLoc gwActiveActor
 
 -- Helper to get objects at a location
 getItemsAtLoc :: Location -> GameWorld -> [Item]
 getItemsAtLoc loc gw =
     filter (\item -> getLocation item == loc) (gwItems gw)
 
-findItemByLocTag :: Text -> GameWorld -> Maybe Item
-findItemByLocTag itemTag gw = List.find (\item -> getTag item == itemTag) (gwItems gw)
+findItemByTag :: Text -> GameWorld -> Maybe Item
+findItemByTag itemTag gw = List.find (\item -> getTag item == itemTag) (gwItems gw)
 
 updateItem :: (Item -> Item) -> Item -> GameWorld -> GameWorld
 updateItem updateFn targetItem gameWorld =

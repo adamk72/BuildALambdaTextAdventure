@@ -21,6 +21,6 @@ class Tagged a where
     getName :: a -> Text
     getLocation :: a -> Location
     getInventory :: a -> Maybe [Location]
-    findLocationInInventory :: Text -> a -> Maybe Location
-    findLocationInInventory searchTag entity =
+    findLocInInventoryByTag :: Text -> a -> Maybe Location
+    findLocInInventoryByTag searchTag entity =
         getInventory entity >>= find (\loc -> locTag loc == searchTag)

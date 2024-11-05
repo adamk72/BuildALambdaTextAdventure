@@ -12,8 +12,8 @@ import           Test.Hspec
 
 spec :: Spec
 spec = describe "executeGet" $ do
-    let ac = getActiveActor defaultGW
-        startLoc = getActiveActorLoc defaultGW
+    let ac = gwActiveActor defaultGW
+        startLoc = gwActiveActorLoc defaultGW
 
     context "check testing assumptions" $ do
         it "should have the silver coin in the starting location" $ do
@@ -25,8 +25,8 @@ spec = describe "executeGet" $ do
 
     context "when picking up objects" $ do
         let cmdResult = runCommand executeGet (Just "silver coin") defaultGW
-            coin = findItemByLocTag "silver coin" (snd cmdResult)
-            expectedLoc = fromJust $ findLocationInInventory "alice" ac
+            coin = findItemByTag "silver coin" (snd cmdResult)
+            expectedLoc = fromJust $ findLocInInventoryByTag "alice" ac
 
         it "can transfer silver coin from location to person" $ do
             fmap getLocation coin `shouldBe` Just expectedLoc

@@ -40,7 +40,7 @@ spec = do
 
     describe "executeLook" $ do
         let startLocTag = "meadow"
-            acLoc = getActiveActorLoc defaultGW
+            acLoc = gwActiveActorLoc defaultGW
             acLocTag = locTag acLoc
             acLotName = locName acLoc
         context "check testing assumptions" $ do

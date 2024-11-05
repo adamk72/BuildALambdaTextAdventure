@@ -22,7 +22,7 @@ spec = describe "executeGo" $ do
 
     context "check testing assumptions" $ do
         it "should start the active character in the meadow" $ do
-            let acLoc = locTag $ getActiveActorLoc defaultGW
+            let acLoc = locTag $ gwActiveActorLoc defaultGW
             acLoc `shouldBe` startLocTag
 
         it "should have all location tags in list of gwLocations" $ do
@@ -40,7 +40,7 @@ spec = describe "executeGo" $ do
         it "allows moving to a new, connected location" $ do
             let (result, newState) = runGoCommand (Just allowFromStartTag) defaultGW
             result `shouldBe` renderMessage (MovingToLocation allowFromStartTag)
-            getLocation (getActiveActor newState) `shouldBe` testCave
+            getLocation (gwActiveActor newState) `shouldBe` testCave
 
         it "prevents moving to current location" $ do
             let (result, newState) = runGoCommand (Just startLocTag) defaultGW

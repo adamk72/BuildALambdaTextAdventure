@@ -15,10 +15,10 @@ import           GHC.Generics        (Generic)
 
 -- Todo: Refactor to to use Control.Lens
 data GameWorld = GameWorld {
-    getActiveActor    :: Actor,
+    gwActiveActor    :: Actor,
     gwPlayableActors :: [Actor],
-    gwLocations          :: [Location],
-    gwItems              :: [Item]
+    gwLocations      :: [Location],
+    gwItems          :: [Item]
 } deriving (Show, Eq, Generic)
 
 -- Note: FromJSON instance will be defined in JSON.hs

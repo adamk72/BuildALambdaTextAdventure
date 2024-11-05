@@ -142,7 +142,7 @@ spec = describe "GameWorld JSON Parsing" $ do
             let Right gameEnvJSON = eitherDecode validJson
             case world (unGameEnvironment gameEnvJSON) of
                 Just gameWorld -> do
-                    let startingActor = getActiveActor gameWorld
+                    let startingActor = gwActiveActor gameWorld
                     startingActor `shouldSatisfy` isActor
                 Nothing -> expectationFailure "Expected GameWorld to be present"
 
@@ -150,7 +150,7 @@ spec = describe "GameWorld JSON Parsing" $ do
             let Right gameEnvJSON = eitherDecode validJson
             case world (unGameEnvironment gameEnvJSON) of
                 Just gameWorld -> do
-                    let startingActorTag = getTag (getActiveActor gameWorld)
+                    let startingActorTag = getTag (gwActiveActor gameWorld)
                     let playableActors = gwPlayableActors gameWorld
                     let foundActor = any (\actor -> getTag actor == startingActorTag) playableActors
                     foundActor `shouldBe` True

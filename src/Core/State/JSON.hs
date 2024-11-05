@@ -61,7 +61,7 @@ instance FromJSON GameEnvironmentJSON where
                     Right actor -> return actor
                     Left err    -> fail err
                 let world = GameWorld
-                        { getActiveActor = startingActor
+                        { gwActiveActor = startingActor
                         , gwPlayableActors = playableActors
                         , gwLocations = locs
                         , gwItems = gwItems

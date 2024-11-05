@@ -16,7 +16,7 @@ runCommand executor cmd = runState (executor cmd)
 -- Common test context helpers
 verifyStartLocation :: GameWorld -> Text -> Expectation
 verifyStartLocation gw expectedLoc = do
-    let acLoc = locTag $ getActiveActorLoc gw
+    let acLoc = locTag $ gwActiveActorLoc gw
     acLoc `shouldBe` expectedLoc
 
 verifyStateUnchanged :: (Text, GameWorld) -> GameWorld -> Expectation

@@ -62,7 +62,7 @@ testItems =
 -- World builders
 makeTestWorld :: Actor -> [Actor] -> [Location] -> [Item] -> GameWorld
 makeTestWorld active playable locs inters = GameWorld
-    { getActiveActor = active
+    { gwActiveActor = active
     , gwPlayableActors = playable
     , gwLocations = locs
     , gwItems = inters
@@ -79,7 +79,7 @@ defaultGW = makeTestWorld
 -- Helper functions for common test operations
 withActorAt :: GameWorld -> Location -> GameWorld
 withActorAt w newLoc = w
-    { getActiveActor = setActorLoc newLoc (getActiveActor w) }
+    { gwActiveActor = setActorLoc newLoc (gwActiveActor w) }
 
 withLocations :: GameWorld -> [Location] -> GameWorld
 withLocations w locs = w { gwLocations = locs }
