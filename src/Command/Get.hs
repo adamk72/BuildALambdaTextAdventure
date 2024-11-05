@@ -29,7 +29,7 @@ executeGet target = do
         pickFrom | pickFrom `elem` validObjTags ->
             case find (\item -> getTag item == pickFrom) (gwItems gw) of
                 Just foundObj -> do
-                    let ps = getPocketSlotGW gw
+                    let ps = getActorInventory gw
                         updatedGW = moveItemLoc foundObj ps gw
                     put updatedGW
                     return $ renderMessage $ PickedUp pickFrom (getName ac)

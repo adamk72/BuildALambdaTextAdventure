@@ -20,7 +20,7 @@ spec = describe "Execute drop" $ do
     context "Pre inventory check" $ do
       it "currently has the silver coin before dropping" $ do
         let itemLoc = fromJust (findItemByTag silver getGW)
-        getLocation itemLoc `shouldBe` getPocketSlotGW getGW
+        getLocation itemLoc `shouldBe` getActorInventory getGW
 
     context "Post inventory check" $ do
       it "no longer possess a silver coin" $ do

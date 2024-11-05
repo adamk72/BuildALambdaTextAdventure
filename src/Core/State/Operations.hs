@@ -19,18 +19,14 @@ setActorLoc = setEntityLoc
 getActiveActorLoc :: GameWorld -> Location
 getActiveActorLoc gw = location $ entityTag $ gwActiveActor gw
 
-getPocketSlotGW :: GameWorld -> Location
-getPocketSlotGW gw = do
+getActorInventory :: GameWorld -> Location
+getActorInventory gw = do
   let ac = gwActiveActor gw
-      pocketSlot = findLocInInventoryByTag (getTag ac) ac
-  fromJust pocketSlot -- guaranteed to be Just because it's a character
-
-getPocketSlotEntity :: Entity -> Maybe Location
-getPocketSlotEntity ac = findLocInInventoryByTag (getTag ac) ac
+  fromJust (getInventory ac)-- guaranteed to be Just because it's a character
 
 getActorInventory :: GameWorld -> [Item]
 getActorInventory gw = do
-  let ps = getPocketSlotGW gw
+  let ps = getActorInventory gw
   getItemsAtLoc ps gw
 
 checkItemTagInPocket :: Text -> Actor -> Bool
