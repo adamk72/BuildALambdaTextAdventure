@@ -2,6 +2,7 @@
 module Command.GetSpec (spec) where
 
 import           Command.Get
+import           Command.Common
 import           Command.TestUtils
 import           Core.State
 import           Data.List            as List (find)
@@ -26,6 +27,7 @@ spec = describe "executeGet" $ do
         let (_, getGW) = runCommand executeGet "silver coin" defaultGW
             coin = findItemByTag "silver coin" getGW
             expectedLoc = getPocketSlot getGW
+
         it "can transfer silver coin from location to person" $ do
             fmap getLocation coin `shouldBe` Just expectedLoc
 
@@ -33,15 +35,7 @@ spec = describe "executeGet" $ do
             let objs = getItemsAtLoc (getLocation ac) getGW
             notElem (fromJust coin) objs `shouldBe` True
 
-
-
-        -- it "handles attempting to get nonexistent objects" $ do
-        --     let (result, newState) = runCommand (Just "nonexistent") defaultGW
-        --     result `shouldBe` renderMessage (ObjectNotFound "nonexistent")
-        --     newState `shouldBe` defaultGW
-
-    -- context "when given no object" $
-    --     it "handles Nothing input" $ do
-    --         let (result, newState) = runCommand Nothing defaultGW
-    --         result `shouldBe` renderMessage NoObjectSpecified
-    --         newState `shouldBe` defaultGW
+        it "handles attempting to get nonexistent objects" $ do
+            let (result, newState) = runCommand executeGet "nonexistent" defaultGW
+            result `shouldBe` renderMessage (InvalidItem "nonexistent")
+            newState `shouldBe` defaultGW

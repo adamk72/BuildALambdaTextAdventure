@@ -11,14 +11,12 @@ data GetMessage
     = PickedUp Text Text
     | InvalidItem Text
     | DoesNotExist Text
-    | NoItemSpecified
     deriving (Eq, Show)
 
 instance CommandMessage GetMessage where
     renderMessage = \case
         PickedUp item actor -> "Moved " <> item <> " to " <> actor
-        InvalidItem item -> "Cannot pick up " <> item
-        NoItemSpecified -> "What do you want to get?"
+        InvalidItem item -> "Cannot pick up \"" <> item <> "\"."
         DoesNotExist item -> "Item does not exist in this game world: " <> item <> "."
 
 executeGet :: CommandExecutor
