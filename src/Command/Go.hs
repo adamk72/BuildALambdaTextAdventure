@@ -29,14 +29,13 @@ executeGo target = do
     let ac = gwActiveActor gw
         validLocTags = destinationTags $ getLocation ac
     case target of
-        Just moveTo | moveTo `elem` validLocTags ->
+        moveTo | moveTo `elem` validLocTags ->
             case find (\loc -> locTag loc == moveTo) (gwLocations gw) of
                 Just newLoc -> do
                     let newAc = setActorLoc newLoc ac
                     put gw { gwActiveActor = newAc }
                     return $ renderMessage $ MovingToLocation moveTo
                 Nothing -> error $ unpack $ renderMessage $ DoesNotExist moveTo
-        Just already | already == locTag (getLocation ac) ->
+        already | already == locTag (getLocation ac) ->
             return $ renderMessage $ AlreadyAtLocation already
-        Just noWay -> return $ renderMessage $ NoPath noWay
-        Nothing -> return $ renderMessage NoLocationSpecified
+        noWay -> return $ renderMessage $ NoPath noWay

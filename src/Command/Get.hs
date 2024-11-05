@@ -28,7 +28,7 @@ executeGet target = do
         ac = gwActiveActor gw
         validObjTags = map getTag $ getItemsAtLoc acLoc gw
     case target of
-        Just pickFrom | pickFrom `elem` validObjTags ->
+        pickFrom | pickFrom `elem` validObjTags ->
             case find (\item -> getTag item == pickFrom) (gwItems gw) of
                 Just foundObj -> do
                     let ps = getPocketSlot gw
@@ -36,5 +36,4 @@ executeGet target = do
                     put updatedGW
                     return $ renderMessage $ PickedUp pickFrom (getName ac)
                 Nothing -> error $ unpack $ renderMessage $ DoesNotExist pickFrom
-        Just noWay -> return $ renderMessage $ InvalidItem noWay
-        Nothing -> return $ renderMessage NoItemSpecified
+        noWay -> return $ renderMessage $ InvalidItem noWay

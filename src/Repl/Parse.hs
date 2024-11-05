@@ -8,6 +8,7 @@ import           Command.Get
 import           Command.Go
 import           Command.Look
 import           Control.Applicative
+import           Control.Monad
 import           Control.Monad.State
 import           Core.Config         (quitCommands)
 import           Core.State          (GameWorld)
@@ -16,7 +17,7 @@ import           Data.Text           (Text, isPrefixOf, strip, stripPrefix,
 
 data Command = Command
   { cmdName    :: Text
-  , cmdExecute :: Maybe Text -> State GameWorld Text
+  , cmdExecute :: Text -> State GameWorld Text
   }
 
 commands :: [Command]
@@ -27,17 +28,31 @@ commands =
   , Command "drop" executeDrop
   ]
 
-tryCommand :: Text -> Text -> Command -> Maybe (State GameWorld Text)
-tryCommand raw lower cmd = -- Todo: ask Claude about using Command{..} to replace this (which needs RecordWildCards)
-  if cmdName cmd `isPrefixOf` lower
-    then Just $ cmdExecute cmd (strip <$> stripPrefix (cmdName cmd) raw)
+-- Refactored version
+tryCommand :: Text -> Command -> Maybe (State GameWorld Text)
+tryCommand input cmd = do
+  -- Todo: blog post on guard: guard :: Alternative f => Bool -> f ()
+  -- Only proceed if cmd name is a prefix of input
+  guard $ cmdName cmd `isPrefixOf` input
+  args <- strip <$> stripPrefix (cmdName cmd) input
+  Just $ cmdExecute cmd args
+
+{- Old version
+tryCommand :: Text -> Command -> Maybe (State GameWorld Text)
+tryCommand input cmd =
+  if cmdName cmd `isPrefixOf` input
+    then do
+      case (strip <$> stripPrefix (cmdName cmd) input) of
+         Just thing -> Just $ cmdExecute cmd $ thing
+         Nothing -> Nothing
     else Nothing
+-}
 
 parse :: Text -> State GameWorld (Maybe Text)
 parse input = do
   let lower = toLower input
       -- Todo: Explain the foldr and <|> operator later in the blog; see below
-      match = foldr (<|>) Nothing $ map (tryCommand input lower) commands
+      match = foldr (<|>) Nothing $ map (tryCommand lower) commands
   case match of
     Just action -> do
         Just <$> action

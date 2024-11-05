@@ -94,7 +94,7 @@ test-suite TextAdventure-test
       Command.GetSpec
       Command.GoSpec
       Command.LookSpec
-      Command.Utils
+      Command.TestUtils
       JSONSpec
       MainSpec
       Mock.GameEnvironment

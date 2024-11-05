@@ -11,8 +11,8 @@ import           Mock.GameEnvironment
 import           Test.Hspec
 
 -- Helper function to execute state and get both result and final state
-runGoCommand :: Maybe Text -> GameWorld -> (Text, GameWorld)
-runGoCommand cmd = runState (executeGo cmd)
+runCommand :: Text -> GameWorld -> (Text, GameWorld)
+runCommand cmd = runState (executeGo cmd)
 
 spec :: Spec
 spec = describe "executeGo" $ do
@@ -33,23 +33,23 @@ spec = describe "executeGo" $ do
 
     context "when given a valid location" $ do
         it "prevents going to an unconnected location" $ do
-            let (result, newState) = runGoCommand (Just noAllowFromStartTag) defaultGW
+            let (result, newState) = runCommand noAllowFromStartTag defaultGW
             result `shouldBe` renderMessage (NoPath noAllowFromStartTag)
             newState `shouldBe` defaultGW
 
         it "allows moving to a new, connected location" $ do
-            let (result, newState) = runGoCommand (Just allowFromStartTag) defaultGW
+            let (result, newState) = runCommand allowFromStartTag defaultGW
             result `shouldBe` renderMessage (MovingToLocation allowFromStartTag)
             getLocation (gwActiveActor newState) `shouldBe` testCave
 
         it "prevents moving to current location" $ do
-            let (result, newState) = runGoCommand (Just startLocTag) defaultGW
+            let (result, newState) = runCommand startLocTag defaultGW
             result `shouldBe` renderMessage (AlreadyAtLocation startLocTag)
             newState `shouldBe` defaultGW
 
     context "when given an invalid location" $ do
         it "handles unknown gwLocations" $ do
-            let (result, newState) = runGoCommand (Just "nonexistent") defaultGW
+            let (result, newState) = runCommand "nonexistent" defaultGW
             result `shouldBe` renderMessage (NoPath "nonexistent")
             newState `shouldBe` defaultGW
 
@@ -57,14 +57,10 @@ spec = describe "executeGo" $ do
             -- Actor tries moving to 'cave' which is not in the gwLocations list, but there is a locTag to
             -- from the character's current location; there's a JSON mismatch that breaks the game.
             let badSetupWorld = withLocations (withActorAt defaultGW testForest) [testMeadow]
-                caveResult = evaluate (runGoCommand (Just "cave") badSetupWorld)
+                caveResult = evaluate (runCommand "cave" badSetupWorld)
             caveResult `shouldThrow` (\(ErrorCall msg) -> msg == unpack (renderMessage $ DoesNotExist "cave"))
 
             -- alternate versions of badSetupWorld:
             -- let badSetupWorld = (flip withLocations [testMeadow] . flip withActorAt testForest) defaultGW
             -- let badSetupWorld = defaultGW & flip withActorAt testForest & flip withLocations [testMeadow]
 
-    context "when given no location" $ it "handles Nothing input" $ do
-        let (result, newState) = runGoCommand Nothing defaultGW
-        result `shouldBe` renderMessage NoLocationSpecified
-        newState `shouldBe` defaultGW

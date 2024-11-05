@@ -7,4 +7,4 @@ import           Data.Text           (Text)
 class CommandMessage a where
     renderMessage :: a -> Text
 
-type CommandExecutor = Maybe Text -> State GameWorld Text
+type CommandExecutor = Text -> State GameWorld Text

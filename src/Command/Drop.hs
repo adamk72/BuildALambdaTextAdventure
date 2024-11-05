@@ -5,7 +5,7 @@ import           Control.Monad.State
 import           Utils
 
 executeDrop :: CommandExecutor
-executeDrop (Just target) = do
+executeDrop target = do
   gw <- get
   let acLoc = getActiveActorLoc gw
   case findItemByTag target gw of
@@ -14,4 +14,3 @@ executeDrop (Just target) = do
       put updatedGW
       return $ target <> " dropped. " <> "Your inventory is now: " <> oxfordEntityNames (getActorInventory updatedGW)
     Nothing -> return $ "You don't have a " <> target <> " to drop."
-executeDrop Nothing = return $ "You don't have anything to drop."

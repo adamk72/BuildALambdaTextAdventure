@@ -22,14 +22,12 @@ instance CommandMessage LookMessage where
         LookTowards dir -> "You look " <> T.toLower dir <> ", but see nothing special."
 
 executeLook :: CommandExecutor
-executeLook (Just "around") = do
+executeLook "around" = do
     gw <- get
     let acLoc = getActiveActorLoc gw
         objs = getItemsAtLoc acLoc gw
     return $ renderMessage (YouAreIn $ locName acLoc) <> " " <> renderMessage (LookAround objs)
-executeLook Nothing = do
+executeLook _ = do
     gw <- get
     let loc = locName $ getActiveActorLoc gw
     return $ renderMessage $ YouAreIn loc
-executeLook (Just direction) =
-    return $ renderMessage $ LookTowards direction
