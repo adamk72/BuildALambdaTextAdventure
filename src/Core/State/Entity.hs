@@ -33,11 +33,18 @@ mkItem t = Entity t ItemType
 
 isActor :: Entity -> Bool
 isActor (Entity _ ActorType) = True
-isActor _                        = False
+isActor _                    = False
 
 isItem :: Entity -> Bool
 isItem (Entity _ ItemType) = True
 isItem _                   = False
+
+-- Helper functions to filter by type
+filterActors :: [Entity] -> [Actor]
+filterActors = filter isActor
+
+filterItems :: [Entity] -> [Item]
+filterItems = filter isItem
 
 instance Tagged Entity where
     getTag = tag . entityTag

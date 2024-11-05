@@ -1,6 +1,7 @@
 module Core.State.Operations (module Core.State.Operations) where
 
 import           Core.State.Entity
+import           Core.State.EntityContainer
 import           Core.State.GameState    (GameWorld (..))
 import           Core.State.Location     (Location)
 import           Core.State.TaggedEntity
@@ -36,9 +37,12 @@ checkItemTagInPocket :: Text -> Actor -> Bool
 checkItemTagInPocket itemTag actor = isJust (findLocInInventoryByTag itemTag actor)
 
 -- Helper to get objects at a location
+getEntitiesAtLoc :: Location -> GameWorld -> [Entity]
+getEntitiesAtLoc loc gw =
+    filter (\entity -> getLocation entity == loc) (getEntities gw)
+
 getItemsAtLoc :: Location -> GameWorld -> [Item]
-getItemsAtLoc loc gw =
-    filter (\item -> getLocation item == loc) (gwItems gw)
+getItemsAtLoc loc gw = filterItems (getEntitiesAtLoc loc gw)
 
 findItemByTag :: Text -> GameWorld -> Maybe Item
 findItemByTag itemTag gw = List.find (\item -> getTag item == itemTag) (gwItems gw)

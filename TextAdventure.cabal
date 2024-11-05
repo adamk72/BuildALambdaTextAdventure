@@ -36,6 +36,7 @@ library
       Core.Launch
       Core.State
       Core.State.Entity
+      Core.State.EntityContainer
       Core.State.GameState
       Core.State.JSON
       Core.State.Location
