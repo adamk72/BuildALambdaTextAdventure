@@ -16,17 +16,16 @@ silver = "silver coin"
 
 spec :: Spec
 spec = describe "Execute drop" $ do
-    let getResult = runCommand executeGet (Just silver) defaultGW
-        acBefore = gwActiveActor (snd getResult)
+    let (_, getGW)= runCommand executeGet (Just silver) defaultGW
     context "Pre inventory check" $ do
       it "currently has the silver coin before dropping" $ do
-        let itemLoc = fromJust (findItemByTag silver (snd getResult))
-        getLocation itemLoc `shouldBe` fromJust (findLocInInventoryByTag (getTag acBefore) acBefore)
+        let itemLoc = fromJust (findItemByTag silver getGW)
+        getLocation itemLoc `shouldBe` getPocketSlot getGW
 
     context "Post inventory check" $ do
       it "no longer possess a silver coin" $ do
-        let dropResult = runCommand executeDrop (Just silver) (snd getResult)
-            acAfter = gwActiveActor (snd dropResult)
-            itemLoc = fromJust (findItemByTag silver (snd dropResult))
-        (findLocInInventoryByTag silver acAfter) `shouldBe` Nothing
+        let (_, dropGW) = runCommand executeDrop (Just silver) getGW
+            acAfter = gwActiveActor dropGW
+            itemLoc = fromJust (findItemByTag silver dropGW)
+        checkItemTagInPocket silver acAfter `shouldBe` False
         getLocation itemLoc `shouldBe` testMeadow

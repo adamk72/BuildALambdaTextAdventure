@@ -5,7 +5,6 @@ import           Command.Common
 import           Control.Monad.State
 import           Core.State
 import           Data.List           (find)
-import           Data.Maybe          (fromJust)
 import           Data.Text           (Text, unpack)
 
 data GetMessage
@@ -32,8 +31,7 @@ executeGet target = do
         Just pickFrom | pickFrom `elem` validObjTags ->
             case find (\item -> getTag item == pickFrom) (gwItems gw) of
                 Just foundObj -> do
-                    let pocketSlot = findLocInInventoryByTag (getTag ac) ac
-                        ps = fromJust pocketSlot
+                    let ps = getPocketSlot gw
                         updatedGW = updateItem
                             (\obj -> obj { entityTag = (entityTag obj) { location = ps } })
                             foundObj

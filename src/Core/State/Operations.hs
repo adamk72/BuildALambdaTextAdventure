@@ -4,8 +4,9 @@ import           Core.State.Entity
 import           Core.State.GameState    (GameWorld (..))
 import           Core.State.Location     (Location)
 import           Core.State.TaggedEntity
-import Data.Text (Text)
-import qualified Data.List as List
+import qualified Data.List               as List
+import           Data.Maybe              (fromJust)
+import           Data.Text               (Text)
 
 setEntityLoc :: Location -> Entity -> Entity
 setEntityLoc newLoc entity =
@@ -19,6 +20,15 @@ getActiveActorLoc ae gw = location $ entityTag $ ae gw
 
 gwActiveActorLoc :: GameWorld -> Location
 gwActiveActorLoc = getActiveActorLoc gwActiveActor
+
+getPocketSlot :: GameWorld -> Location
+getPocketSlot gw = do
+  let ac = gwActiveActor gw
+      pocketSlot = findLocInInventoryByTag (getTag ac) ac
+  fromJust pocketSlot -- guaranteed to be Just because it's a character
+
+checkItemTagInPocket :: Text -> Actor -> Bool
+checkItemTagInPocket itemTag actor = if findLocInInventoryByTag itemTag actor == Nothing then False else True
 
 -- Helper to get objects at a location
 getItemsAtLoc :: Location -> GameWorld -> [Item]

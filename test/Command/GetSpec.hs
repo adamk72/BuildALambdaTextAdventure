@@ -24,15 +24,14 @@ spec = describe "executeGet" $ do
             verifyStartLocation defaultGW "meadow"
 
     context "when picking up objects" $ do
-        let cmdResult = runCommand executeGet (Just "silver coin") defaultGW
-            coin = findItemByTag "silver coin" (snd cmdResult)
-            expectedLoc = fromJust $ findLocInInventoryByTag "alice" ac
-
+        let (_, getGW) = runCommand executeGet (Just "silver coin") defaultGW
+            coin = findItemByTag "silver coin" getGW
+            expectedLoc = getPocketSlot getGW
         it "can transfer silver coin from location to person" $ do
             fmap getLocation coin `shouldBe` Just expectedLoc
 
         it "is no longer an element in the environment" $ do
-            let objs = getItemsAtLoc (getLocation ac) (snd cmdResult)
+            let objs = getItemsAtLoc (getLocation ac) getGW
             notElem (fromJust coin) objs `shouldBe` True
 
     checkNoInputHandling executeGet $ renderMessage NoItemSpecified
