@@ -10,6 +10,17 @@
 - `stack test`
 - `stack test --test-arguments "--match=Look"` to run an individual test (that matches the word "Look" in this case)
 
+## Using the converter
+
+This was AI generated; using it for the moment so I can quickly create variations of test worlds.
+
+- `stack repl`
+- `ghci> GameConfigConverter.main`
+  - input the source file path, e.g., "stories/TrialAdventure.json"
+  - input the output directory, e.g., "test/Mock"
+
+Use in code or have it run the tests, though at the moment, they are nominal.
+
 ## GameWorld
 
 ```

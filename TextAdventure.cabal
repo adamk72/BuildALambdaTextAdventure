@@ -67,6 +67,7 @@ executable TextAdventure-exe
   main-is: Main.hs
   other-modules:
       CmdOptions
+      GameConfigConverter
       JsonProcessing
       Paths_TextAdventure
   autogen-modules:
@@ -101,6 +102,7 @@ test-suite TextAdventure-test
       JSONSpec
       MainSpec
       Mock.GameEnvironment
+      Mock.TrialAdventureSpec
       Paths_TextAdventure
   autogen-modules:
       Paths_TextAdventure
