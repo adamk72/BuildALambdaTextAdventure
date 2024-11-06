@@ -4,34 +4,36 @@ module Command.Put (module Command.Put) where
 import           Command.Common
 import           Control.Monad.State
 import           Core.State
-import           Data.List           (find)
-import           Data.Text           (Text, unpack)
+import           Data.Text           as T (Text, unpack, words)
 
 data PutMessage
-    = PickedUp Text Text
-    | InvalidItem Text
+    = PutItemIn Text Text
+    | DontKnowWhere Text
+    | NotAContainer Text
     | DoesNotExist Text
     deriving (Eq, Show)
 
 instance CommandMessage PutMessage where
     renderMessage = \case
-        PickedUp item actor -> "Moved " <> item <> " to " <> actor
-        InvalidItem item -> "Cannot pick up \"" <> item <> "\"."
-        DoesNotExist item -> "Item does not exist in this game world: " <> item <> "."
+        PutItemIn item dst -> item <> "is now in the " <> dst <> "."
+        DontKnowWhere item -> "Don't know where to put " <> item <> "."
+        DoesNotExist item -> "Don't see a " <> item <> "."
+        NotAContainer item -> "The " <> item <> " is not a container."
 
 executePut :: CommandExecutor
 executePut target = do
     gw <- get
-    let acLoc = getActiveActorLoc gw
-        ac = gwActiveActor gw
-        validObjTags = map getTag $ getItemsAtLoc acLoc gw
-    case target of
-        pickFrom | pickFrom `elem` validObjTags ->
-            case find (\item -> getTag item == pickFrom) (gwItems gw) of
-                Just foundObj -> do
-                    let ps = getActorInventory gw
-                        updatedGW = moveItemLoc foundObj ps gw
-                    put updatedGW
-                    return $ renderMessage $ PickedUp pickFrom (getName ac)
-                Nothing -> error $ unpack $ renderMessage $ DoesNotExist pickFrom
-        noWay -> return $ renderMessage $ InvalidItem noWay
+    let sentence = T.words target
+    case sentence of
+        [itemTag, "in", containerTag] ->
+            case findItemByTag itemTag gw of
+                Nothing -> error $ unpack $ renderMessage $ DoesNotExist itemTag
+                Just item -> case findItemByTag containerTag gw of
+                        Nothing -> error $ unpack $ renderMessage $ DoesNotExist containerTag
+                        Just container -> case getInventory container of
+                            Nothing -> return $ renderMessage $ NotAContainer containerTag
+                            Just containerLoc -> do
+                                let updatedGW = moveItemLoc item containerLoc gw
+                                put updatedGW
+                                return $ renderMessage $ PutItemIn itemTag containerTag
+        _ -> return $ renderMessage $ DontKnowWhere target

@@ -8,6 +8,7 @@ import           Command.Drop
 import           Command.Get
 import           Command.Go
 import           Command.Look
+import           Command.Put
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.State
@@ -27,6 +28,7 @@ commands =
   , Command "go" executeGo
   , Command "get" executeGet
   , Command "drop" executeDrop
+  , Command "put" executePut
   , Command "inventory" executeInventory
   ]
 

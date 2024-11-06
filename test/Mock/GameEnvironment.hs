@@ -50,17 +50,25 @@ testBagOfHolding = mkItem TaggedEntity
     , inventory = Just Location { locTag = "bag of holding", locName = "inside bag", destinationTags = [] }
     }
 
-testBaubleInBagOfHolding :: Item
-testBaubleInBagOfHolding = mkItem TaggedEntity
-    { tag = "bag of holding"
-    , name = "bag of holding"
+testBag :: Item
+testBag = mkItem TaggedEntity
+    { tag = "bag"
+    , name = "a simple bag"
+    , location = testMeadow
+    , inventory = Just Location { locTag = "bag", locName = "inside bag", destinationTags = [] }
+    }
+
+testBauble :: Item
+testBauble = mkItem TaggedEntity
+    { tag = "bauble"
+    , name = "A shiny bauble"
     , location = testMeadow
     , inventory = Nothing
     }
 
 testItemsForDefaultGw :: [Item]
 testItemsForDefaultGw =
-    [ testCoin, testEightBall, testBat, testBagOfHolding ]
+    [ testCoin, testEightBall, testBat, testBagOfHolding, testBag, testBauble ]
 
 testCoin :: Item
 testCoin = mkItem TaggedEntity

@@ -27,6 +27,16 @@
         "locationTag": "cave"
       },
       {
+        "tag": "bag",
+        "name": "a simple bag",
+        "locationTag": "meadow"
+      },
+      {
+        "tag": "bauble",
+        "name": "a shiny bauble",
+        "locationTag": "meadow"
+      },
+      {
         "tag": "tardis",
         "name": "A large blue phone booth",
         "locationTag": "meadow"
