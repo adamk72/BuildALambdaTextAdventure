@@ -52,6 +52,11 @@
         "name": "A satchel that is inky black on the inside",
         "locationTag": "meadow",
         "hasInventorySlot": true
+      },
+      {
+        "tag": "pearl",
+        "name": "a pearl of unique luster",
+        "locationTag": "bag of holding"
       }
     ],
     "locations": [

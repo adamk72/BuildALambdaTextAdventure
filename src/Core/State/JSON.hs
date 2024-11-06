@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveGeneric   #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# OPTIONS_GHC -Wno-name-shadowing #-}
 
 module Core.State.JSON (module Core.State.JSON) where
 
@@ -13,6 +13,7 @@ import qualified Data.ByteString.Lazy    as B
 import qualified Data.List               as List
 import           Data.Text               (Text)
 import           GHC.Generics            (Generic)
+import Data.Maybe
 
 -- needed to create this in order to overcome a cycle problem that kept occurring while breaking the old State.hs file into separate files.
 newtype GameEnvironmentJSON = GameEnvironmentJSON { unGameEnvironment :: GameEnvironment }
@@ -57,8 +58,9 @@ instance FromJSON GameEnvironmentJSON where
             Nothing -> return $ GameEnvironmentJSON $ GameEnvironment metadata Nothing
             Just worldData -> do
                 let locs = jLocations worldData
-                playableActors <- mapM (convertActor locs) (jPlayableActors worldData)
-                gwItems <- mapM (convertItem locs) (jItems worldData)
+                    items = jItems worldData
+                playableActors <- mapM (convertActor locs items) (jPlayableActors worldData)
+                gwItems <- mapM (convertItem locs items) (jItems worldData)
                 startingActor <- case findStartingActor (jStartingActorTag worldData) playableActors of
                     Right actor -> return actor
                     Left err    -> fail err
@@ -76,36 +78,40 @@ findStartingActor startingTag actors =
         Just actor -> Right actor
         Nothing -> Left $ "Starting character with tag " ++ show startingTag ++ " not found"
 
-convertActor :: [Location] -> EntityJSON -> Parser Actor
+convertActor :: [Location] -> [EntityJSON] -> EntityJSON -> Parser Actor
 convertActor = convertEntityWithType ActorType
 
-convertItem :: [Location] -> EntityJSON -> Parser Item
+convertItem :: [Location] -> [EntityJSON] -> EntityJSON -> Parser Item
 convertItem = convertEntityWithType ItemType
 
-convertEntityWithType :: EntityType -> [Location] -> EntityJSON -> Parser Entity
-convertEntityWithType entityType locs EntityJSON{..} = do
-    case jLocTag of
+-- Todo: in blog, discuss why EntityJSON{..} with Wild Records didn't work here because of the naming conflict
+convertEntityWithType :: EntityType -> [Location] -> [EntityJSON] -> EntityJSON -> Parser Entity
+convertEntityWithType entityType locs items item = do
+    case jLocTag item of
         Just targetTag ->
             case List.find (\loc -> locTag loc == targetTag) locs of
-                Just loc -> return $ Entity
+                Just loc -> makeEntity item loc
+                Nothing -> case List.find (\itm -> jTag itm == targetTag &&
+                                           fromMaybe False (jHasInventorySlot itm)) items of
+                        Just itm -> makeEntity itm (Location { locTag = jTag itm, locName = jTag itm, destinationTags = [] })
+                        Nothing -> fail $ "Neither location nor container item found with tag " ++ show targetTag
+            where
+                makeEntity itm loc = return $ Entity
                     { entityTag = TaggedEntity
-                        { tag = jTag
-                        , name = jName
+                        { tag = jTag itm
+                        , name = jName itm
                         , location = loc
-                        , inventory = addInventorySlot
+                        , inventory = addInventorySlot itm
                         }
                     , entityType = entityType
                     }
-                    where
-                        addInventorySlot =
-                            case (entityType, jHasInventorySlot) of
-                                (ActorType, _) ->
-                                    Just Location { locTag = jTag, locName = "your pockets", destinationTags = [] }
-                                (_, Just True) ->
-                                    Just Location { locTag = jTag, locName = jTag, destinationTags = [] }
-                                _ -> Nothing
-
-                Nothing -> fail $ "Location with tag " ++ show targetTag ++ " not found"
+                addInventorySlot itm =
+                    case (entityType, jHasInventorySlot itm) of
+                        (ActorType, _) ->
+                            Just Location { locTag = jTag itm, locName = "your pockets", destinationTags = [] }
+                        (_, Just True) ->
+                            Just Location { locTag = jTag itm, locName = jTag itm, destinationTags = [] }
+                        _ -> Nothing
         Nothing -> fail "No location tag provided for entity"
 
 loadGameEnvironmentJSON :: FilePath -> IO (Either String GameEnvironment)
