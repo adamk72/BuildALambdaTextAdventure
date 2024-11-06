@@ -16,6 +16,7 @@ import           Core.Config         (quitCommands)
 import           Core.State          (GameWorld)
 import           Data.Text           (Text, isPrefixOf, strip, stripPrefix,
                                       toLower)
+import           Repl.Parser
 
 data Command = Command
   { cmdName    :: Text
@@ -38,7 +39,7 @@ tryCommand input cmd = do
   -- Todo: blog post on guard: guard :: Alternative f => Bool -> f ()
   -- Only proceed if cmd name is a prefix of input
   guard $ cmdName cmd `isPrefixOf` input
-  args <- strip <$> stripPrefix (cmdName cmd) input
+  args <- getVerb <$> parseActionPhrase input
   Just $ cmdExecute cmd args
 
 {- Old version
