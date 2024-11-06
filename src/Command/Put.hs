@@ -15,7 +15,7 @@ data PutMessage
 
 instance CommandMessage PutMessage where
     renderMessage = \case
-        PutItemIn item dst -> item <> "is now in the " <> dst <> "."
+        PutItemIn item dst -> item <> " is now in the " <> dst <> "."
         DontKnowWhere item -> "Don't know where to put " <> item <> "."
         DoesNotExist item -> "Don't see a " <> item <> "."
         NotAContainer item -> "The " <> item <> " is not a container."

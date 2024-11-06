@@ -29,7 +29,8 @@
       {
         "tag": "bag",
         "name": "a simple bag",
-        "locationTag": "meadow"
+        "locationTag": "meadow",
+        "hasInventorySlot": true
       },
       {
         "tag": "bauble",
@@ -49,7 +50,8 @@
       {
         "tag": "bag of holding",
         "name": "A satchel that is inky black on the inside",
-        "locationTag": "meadow"
+        "locationTag": "meadow",
+        "hasInventorySlot": true
       }
     ],
     "locations": [

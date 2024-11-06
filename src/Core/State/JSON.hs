@@ -19,9 +19,10 @@ newtype GameEnvironmentJSON = GameEnvironmentJSON { unGameEnvironment :: GameEnv
     deriving (Show, Eq, Generic)
 
 data EntityJSON = EntityJSON {
-    jTag    :: Text,
-    jName   :: Text,
-    jLocTag :: Maybe Text
+    jTag              :: Text,
+    jName             :: Text,
+    jLocTag           :: Maybe Text,
+    jHasInventorySlot :: Maybe Bool
 } deriving (Show, Eq, Generic)
 
 instance FromJSON EntityJSON where
@@ -30,12 +31,13 @@ instance FromJSON EntityJSON where
             <$> v .: "tag"
             <*> v .: "name"
             <*> v .: "locationTag"
+            <*> v .:? "hasInventorySlot"
 
 data GameWorldJSON = GameWorldJSON {
     jStartingActorTag :: Text,
     jPlayableActors   :: [EntityJSON],
-    jLocations            :: [Location],
-    jItems                :: [EntityJSON]
+    jLocations        :: [Location],
+    jItems            :: [EntityJSON]
 } deriving (Show, Eq, Generic)
 
 instance FromJSON GameWorldJSON where
@@ -90,10 +92,19 @@ convertEntityWithType entityType locs EntityJSON{..} = do
                         { tag = jTag
                         , name = jName
                         , location = loc
-                        , inventory = if entityType == ActorType then Just Location { locTag = jTag, locName = "your pockets", destinationTags = [] } else Nothing
+                        , inventory = addInventorySlot
                         }
                     , entityType = entityType
                     }
+                    where
+                        addInventorySlot =
+                            case (entityType, jHasInventorySlot) of
+                                (ActorType, _) ->
+                                    Just Location { locTag = jTag, locName = "your pockets", destinationTags = [] }
+                                (_, Just True) ->
+                                    Just Location { locTag = jTag, locName = jTag, destinationTags = [] }
+                                _ -> Nothing
+
                 Nothing -> fail $ "Location with tag " ++ show targetTag ++ " not found"
         Nothing -> fail "No location tag provided for entity"
 
