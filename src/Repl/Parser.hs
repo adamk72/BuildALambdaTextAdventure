@@ -2,9 +2,9 @@
 module Repl.Parser (module Repl.Parser) where
 
 import qualified Data.Text as T
-import Data.Text (Text)
+import Data.Text (Text, unwords)
 import Data.List (find)
-import Prelude hiding (pred)
+import Prelude hiding (pred, unwords)
 
 data ActionPhrase = ActionPhrase
     { verb :: Verb
@@ -71,6 +71,9 @@ parseActionPhrase input = do
     guard :: Bool -> Maybe ()
     guard True = Just ()
     guard False = Nothing
+
+getRest :: ActionPhrase -> Text
+getRest (ActionPhrase _ (Noun o) (Preposition p) (Noun pn) ) =  unwords [o, p, pn]
 
 getVerb :: ActionPhrase -> Text
 getVerb (ActionPhrase (Verb v) _ _ _) = v

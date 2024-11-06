@@ -4,6 +4,7 @@
 module Repl.Parse (parse) where
 
 import           Command.Actor
+import           Command.Common
 import           Command.Drop
 import           Command.Get
 import           Command.Go
@@ -20,7 +21,7 @@ import           Repl.Parser
 
 data Command = Command
   { cmdName    :: Text
-  , cmdExecute :: Text -> State GameWorld Text
+  , cmdExecute :: CommandExecutor
   }
 
 commands :: [Command]
@@ -39,8 +40,8 @@ tryCommand input cmd = do
   -- Todo: blog post on guard: guard :: Alternative f => Bool -> f ()
   -- Only proceed if cmd name is a prefix of input
   guard $ cmdName cmd `isPrefixOf` input
-  args <- getVerb <$> parseActionPhrase input
-  Just $ cmdExecute cmd args
+  rest <- getVerb <$> parseActionPhrase input
+  Just $ cmdExecute cmd rest
 
 {- Old version
 tryCommand :: Text -> Command -> Maybe (State GameWorld Text)
