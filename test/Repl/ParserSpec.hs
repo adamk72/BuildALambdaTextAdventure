@@ -19,7 +19,7 @@ testParseFail input =
         case parseActionPhrase input of
             Just phrase -> expectationFailure $
                 "Expected parse failure but got success: " ++ show phrase
-            Nothing -> True `shouldBe` True
+            Nothing -> pure ()
 
 -- Helper for testing parsed components
 testParseComponent :: Text -> (ActionPhrase -> Text) -> Text -> Spec
@@ -33,6 +33,7 @@ spec :: Spec
 spec = describe "Action Phrase Parser" $ do
     describe "Basic parsing patterns" $ do
         context "Simple cases with articles" $ do
+            testParseSuccess "put bauble in bag"
             testParseSuccess "put the bauble in the bag"
             testParseSuccess "put a bauble in the bag"
             testParseSuccess "put the bauble in a bag"
@@ -48,8 +49,10 @@ spec = describe "Action Phrase Parser" $ do
 
         context "Invalid commands" $ do
             testParseFail "the shiny bauble in the brown bag"  -- missing verb
+            testParseFail "put in the bag"                     -- missing object
             testParseFail "put in the brown bag"               -- missing object
             testParseFail "put bauble in"                      -- missing prep noun
+            testParseFail "put shiny bauble in"                -- missing prep noun
 
     describe "Component extraction" $ do
         context "Object extraction" $ do

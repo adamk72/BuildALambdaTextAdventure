@@ -57,10 +57,11 @@ parseActionPhrase input = do
     let objStartIdx = skipArticles words' (verbIdx + 1)
     guard $ objStartIdx < length words'
     let obj = words' !! objStartIdx
+    guard $ not $ isPreposition obj
 
     let prepNounStartIdx = skipArticles words' (prepIdx + 1)
     guard $ prepNounStartIdx < length words'
-    let prepNoun= words' !! prepNounStartIdx
+    let prepNoun = words' !! prepNounStartIdx
 
     return $ ActionPhrase
         (Verb verb)

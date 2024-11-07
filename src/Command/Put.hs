@@ -27,9 +27,9 @@ executePut target = do
     case sentence of
         [itemTag, "in", containerTag] ->
             case findItemByTag itemTag gw of
-                Nothing -> error $ unpack $ renderMessage $ DoesNotExist itemTag
+                Nothing -> return $ renderMessage $ DoesNotExist itemTag
                 Just item -> case findItemByTag containerTag gw of
-                        Nothing -> error $ unpack $ renderMessage $ DoesNotExist containerTag
+                        Nothing -> return $ renderMessage $ DoesNotExist containerTag
                         Just container -> case getInventory container of
                             Nothing -> return $ renderMessage $ NotAContainer containerTag
                             Just containerLoc -> do
