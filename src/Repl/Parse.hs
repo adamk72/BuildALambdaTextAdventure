@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Fuse foldr/map" #-}
 
-module Repl.Parse (parse) where
+module Repl.Parse (parse, tryCommand, Command(Command)) where
 
 import           Command.Actor
 import           Command.Common
@@ -40,7 +40,7 @@ tryCommand input cmd = do
   -- Todo: blog post on guard: guard :: Alternative f => Bool -> f ()
   -- Only proceed if cmd name is a prefix of input
   guard $ cmdName cmd `isPrefixOf` input
-  rest <- getVerb <$> parseActionPhrase input
+  rest <- getRest <$> parseActionPhrase input
   Just $ cmdExecute cmd rest
 
 {- Old version
