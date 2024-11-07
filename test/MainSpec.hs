@@ -3,16 +3,17 @@ module MainSpec (spec) where
 import           Command.Common
 import           Command.Go
 import           Control.Exception.Base (finally)
-import           Data.Text              (unpack)
-import           Prelude                hiding (sin)
+import           Data.Text             (Text, pack, unpack)
+import           Prelude               hiding (sin)
 import           System.Exit
-import           System.IO              hiding (stdin, stdout)
-import           System.Process         (CreateProcess (std_in, std_out),
-                                         ProcessHandle, StdStream (CreatePipe),
-                                         createProcess, proc, terminateProcess,
-                                         waitForProcess)
+import           System.IO             hiding (stdin, stdout)
+import           System.Process        (CreateProcess (std_in, std_out),
+                                      ProcessHandle, StdStream (CreatePipe),
+                                      createProcess, proc, terminateProcess,
+                                      waitForProcess)
 import           Test.Hspec
 
+-- Process Setup Helpers
 launchCmd :: CreateProcess
 launchCmd = proc "stack" ["run", "TextAdventure-exe", "--", "-a", "Trial"]
 
@@ -21,17 +22,17 @@ launchWithPipes = launchCmd { std_in = CreatePipe , std_out = CreatePipe }
 
 closeStdInOut :: Handle -> Handle -> ProcessHandle -> IO ()
 closeStdInOut sin sout ph = do
-                        hClose sin
-                        hClose sout
-                        terminateProcess ph
+    hClose sin
+    hClose sout
+    terminateProcess ph
 
 closeHandles :: Maybe Handle -> Maybe Handle -> ProcessHandle -> IO ()
 closeHandles sin sout ph = do
-                        mapM_ hClose sin
-                        mapM_ hClose sout
-                        terminateProcess ph
+    mapM_ hClose sin
+    mapM_ hClose sout
+    terminateProcess ph
 
-{- The `finally` version -}
+-- Test Action Wrapper
 actionWrapper :: ((Handle, Handle, ProcessHandle) -> IO a) -> IO a
 actionWrapper testAction = do
     result <- createProcess launchWithPipes
@@ -41,50 +42,96 @@ actionWrapper testAction = do
             testAction (stdin, stdout, ph) `finally` cleanup
         (stdin, stdout, _, ph) -> do
             let cleanup = closeHandles stdin stdout ph
-            cleanup  -- Clean up immediately if we didn't get valid handles
+            cleanup
             fail "Failed to get process handles"
 
-{- Using `bracket` instead.
--- this actually handles things slightly different with the tests;
--- when I went from this to the above version, I encountered a problem where it
--- got caught on an Error that the this `bracket` version ignored.
-actionWrapper :: ((Handle, Handle, ProcessHandle) -> IO a) -> IO a
-actionWrapper testAction =
-    bracket
-        (createProcess launchWithPipes)
-        (\case
-            (Just stdin, Just stdout, _, ph) -> closeStdInOut stdin stdout ph
-            (stdin, stdout, _, ph) -> closeHandles stdin stdout ph)
-        (\case
-            (Just stdin, Just stdout, _, ph) -> testAction (stdin, stdout, ph)
-            _ -> fail "Failed to get process handles")
--}
+-- Test Helper Functions
+type TestHandles = (Handle, Handle, ProcessHandle)
 
+sendCommand :: Handle -> String -> IO ()
+sendCommand stdin cmd = do
+    hPutStrLn stdin cmd
+    hFlush stdin
+
+getResponse :: Handle -> IO String
+getResponse = hGetLine
+
+testCommand :: TestHandles -> String -> String -> IO ()
+testCommand (stdin, stdout, _) cmd expectedResponse = do
+    sendCommand stdin cmd
+    response <- getResponse stdout
+    response `shouldBe` "λ> " ++ expectedResponse
+
+-- Specs
 spec :: Spec
 spec = do
-      describe "Wide spectrum checks" $ do
-        context "Basic inputs and outputs" $ do
+    describe "Text Adventure Game Tests" $ do
+        context "System Commands" $ do
             it "should exit successfully with :q command" $ do
                 actionWrapper $ \(stdin, stdout, ph) -> do
-                    hPutStrLn stdin ":q"
-                    hFlush stdin
-                    goodbye <- hGetLine stdout
-                    goodbye `shouldBe` "λ> Thanks for playing!"
+                    sendCommand stdin ":q"
+                    response <- getResponse stdout
+                    response `shouldBe` "λ> Thanks for playing!"
                     exitCode <- waitForProcess ph
                     exitCode `shouldBe` ExitSuccess
 
-            it "should handle unknown inputs" $ do
-                actionWrapper $ \(stdin, stdout, _ph) -> do
-                    hPutStrLn stdin "hello"
-                    hFlush stdin
-                    response <- hGetLine stdout
-                    response `shouldBe` "λ> Don't know how to hello."
+            it "should handle unknown commands gracefully" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "nonsense" "Don't know how to nonsense."
 
-            it "should handle unknown gwLocations" $ do
-                actionWrapper $ \(stdin, stdout, _ph) -> do
-                    hPutStrLn stdin "go foo"
-                    hFlush stdin
-                    response <- hGetLine stdout
-                    response `shouldBe` "λ> " <> unpack (renderMessage $ NoPath "foo")
+        context "Navigation Commands" $ do
+            it "should handle 'look' command" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "look" "You are in a flowery meadow."
 
+            it "should handle 'look around' command" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "look around"
+                        "You are in a flowery meadow. You look around and see a simple bag, a shiny bauble, a large blue phone booth and a satchel that is inky black on the inside."
 
+            it "should handle valid 'go' commands" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "go cave" "Moving to cave."
+                    testCommand handles "look" "You are in a dark cave."
+
+            it "should handle invalid 'go' commands" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "go narnia" (unpack $ renderMessage $ NoPath "narnia")
+
+        context "Inventory Commands" $ do
+            it "should show empty inventory" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "inventory" "Your inventory is: nothing"
+
+            it "should handle 'get' commands" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "get bauble" "Moved bauble to Alice the Adventurer"
+                    testCommand handles "inventory" "Your inventory is: a shiny bauble"
+
+            it "should handle 'drop' commands" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "get bauble" "Moved bauble to Alice the Adventurer"
+                    testCommand handles "drop bauble" "bauble dropped. Your inventory is now: nothing"
+
+            it "should handle invalid 'get' commands" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "get unicorn" "Cannot pick up \"unicorn\"."
+
+            it "should handle invalid 'drop' commands" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "drop unicorn" "You don't have a unicorn to drop."
+
+        context "Container Commands" $ do
+            it "should handle 'put' commands with valid containers" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "get bauble" "Moved bauble to Alice the Adventurer"
+                    testCommand handles "put bauble in bag" "bauble is now in the bag."
+
+            it "should handle 'put' commands with invalid containers" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "get bauble" "Moved bauble to Alice the Adventurer"
+                    testCommand handles "put bauble in tardis" "The tardis is not a container."
+
+            it "should handle malformed 'put' commands" $ do
+                actionWrapper $ \handles -> do
+                    testCommand handles "put bauble somewhere" "Don't know where to put bauble somewhere."
