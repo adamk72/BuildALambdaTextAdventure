@@ -4,6 +4,7 @@ module Repl.Parser (module Repl.Parser) where
 import qualified Data.Text as T
 import Data.Text (Text, unwords)
 import Data.List (find)
+import Command.Definitions
 import Prelude hiding (pred, unwords)
 
 data ActionPhrase = ActionPhrase
@@ -16,10 +17,6 @@ data ActionPhrase = ActionPhrase
 newtype Verb = Verb Text deriving (Show, Eq)
 newtype Noun = Noun Text deriving (Show, Eq)
 newtype Preposition = Preposition Text deriving (Show, Eq)
-
--- Known word sets
-knownVerbs :: [Text]
-knownVerbs = ["put", "place", "move", "set"]
 
 knownPrepositions :: [Text]
 knownPrepositions = ["in", "on", "under", "beside"]

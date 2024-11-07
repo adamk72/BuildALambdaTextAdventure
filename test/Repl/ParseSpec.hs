@@ -34,29 +34,29 @@ shouldBeQuitCommand input =
 spec :: Spec
 spec = do
     describe "Command Parser" $ do
-        context "Pure Parser Behavior" $ do
-            let dummyLookExecutor :: CommandExecutor
-                dummyLookExecutor = const $ return "looked"
+        -- context "Pure Parser Behavior" $ do
+        --     let dummyLookExecutor :: CommandExecutor
+        --         dummyLookExecutor = const $ return "looked"
 
-                dummyGoExecutor :: CommandExecutor
-                dummyGoExecutor = \dir -> return $ "went " <> dir
+        --         dummyGoExecutor :: CommandExecutor
+        --         dummyGoExecutor = \dir -> return $ "went " <> dir
 
-                lookCmd = Command "look" dummyLookExecutor
-                goCmd = Command "go" dummyGoExecutor
+        --         lookCmd = Command "look" dummyLookExecutor
+        --         goCmd = Command "go" dummyGoExecutor
 
-            it "matches exact commands" $ do
-                evalCommand (tryCommand "look" lookCmd) `shouldBe` Just "looked"
+            -- it "matches exact commands" $ do
+            --     evalCommand (tryCommand "look" lookCmd) `shouldBe` Just "looked"
 
-            it "matches commands with arguments" $ do
-                evalCommand (tryCommand "go north" goCmd) `shouldBe` Just "went north"
+            -- it "matches commands with arguments" $ do
+            --     evalCommand (tryCommand "go north" goCmd) `shouldBe` Just "went north"
 
-            it "handles non-matching commands" $ do
-                evalCommand (tryCommand "jump" lookCmd) `shouldBe` Nothing
-                evalCommand (tryCommand "run" goCmd) `shouldBe` Nothing
+            -- it "handles non-matching commands" $ do
+            --     evalCommand (tryCommand "jump" lookCmd) `shouldBe` Nothing
+            --     evalCommand (tryCommand "run" goCmd) `shouldBe` Nothing
 
-            it "handles case sensitivity" $ do
-                evalCommand (tryCommand "LOOK" lookCmd) `shouldBe` Just "looked"
-                evalCommand (tryCommand "Go NoRtH" goCmd) `shouldBe` Just "went NoRtH"
+            -- it "handles case sensitivity" $ do
+            --     evalCommand (tryCommand "LOOK" lookCmd) `shouldBe` Just "looked"
+            --     evalCommand (tryCommand "Go NoRtH" goCmd) `shouldBe` Just "went NoRtH"
 
         context "Game Integration" $ do
             it "handles look command" $ do

@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Fuse foldr/map" #-}
 
-module Repl.Parse (parse, tryCommand, Command(Command)) where
+module Repl.Parse_bak (parse, tryCommand, Command(Command)) where
 
 import           Command.Actor
 import           Command.Common
@@ -11,8 +11,6 @@ import           Command.Get
 import           Command.Go
 import           Command.Look
 import           Command.Put
-import           Control.Applicative
-import           Control.Monad
 import           Control.Monad.State
 import           Core.Config         (quitCommands)
 import           Core.State          (GameWorld)
@@ -35,20 +33,22 @@ toCommand info = Command (cmdText info) (cmdExec info)
 commands :: [Command]
 commands = map toCommand allCommands
 
-tryCommand :: Text -> Command -> Maybe (State GameWorld Text)
+
+tryCommand :: Text -> Command -> Either Text (State GameWorld Text)
 tryCommand input cmd = do
-  guard $ cmdName cmd `isPrefixOf` input
-  rest <- getRest <$> parseActionPhrase input
-  Just $ cmdExecute cmd rest
+    case getRest <$> parseActionPhrase input of
+      Nothing -> Left ("Could not parse command: " <> input)
+      Just r  -> Right $ cmdExecute cmd r
 
 parse :: Text -> State GameWorld (Maybe Text)
 parse input = do
   let lower = toLower input
-      match = foldr (<|>) Nothing $ map (tryCommand lower) commands
+      match = foldr firstRight (Left ("Unable to: \"" <> lower <> "\"")) $ map (tryCommand lower) commands
+
   case match of
-    Just action -> do
+    Right action -> do
         Just <$> action
-    Nothing     -> do
+    Left err   -> do
       if lower `elem` quitCommands
       then return Nothing
-      else return $ Just $ "Don't know how to " <> lower <> "."
+      else return $ Just err
