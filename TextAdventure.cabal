@@ -45,7 +45,6 @@ library
       Core.State.Operations
       Core.State.TaggedEntity
       Repl.Parse
-      Repl.Parse_bak
       Repl.Parser
       Repl.Repl
       Utils

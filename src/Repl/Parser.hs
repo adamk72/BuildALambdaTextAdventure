@@ -1,97 +1,115 @@
-{-# OPTIONS_GHC -Wno-name-shadowing #-}
-module Repl.Parser (module Repl.Parser) where
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE LambdaCase #-}
+module Repl.Parser
+    ( parseExpression
+    , Expression(..)
+    , Prep(..)
+    , Phrase(..)
+    , ParseError(..)
+    , renderExpression
+    ) where
 
+import Data.Text (Text)
 import qualified Data.Text as T
-import Data.Text (Text, unwords)
-import Data.List (find)
-import Command.Definitions
-import Prelude hiding (pred, unwords)
-import Utils
+import Data.Maybe (listToMaybe)
 
-data ActionPhrase = ActionPhrase
-    { verb :: Verb
-    , objectNoun :: Noun
-    , preposition :: Preposition
-    , prepositionalNoun :: Noun
-    } deriving (Show, Eq)
+newtype Phrase = Phrase { unPhrase :: Text }
+    deriving (Show, Eq)
 
-newtype Verb = Verb Text deriving (Show, Eq)
-newtype Noun = Noun Text deriving (Show, Eq)
-newtype Preposition = Preposition Text deriving (Show, Eq)
+newtype Prep = Prep { unPrep :: Text }
+    deriving (Show, Eq)
 
-knownPrepositions :: [Text]
-knownPrepositions = ["in", "on", "under", "beside", "to"]
+data Expression =
+      AtomicExpression Text
+    | UnaryExpression Text Phrase
+    | PrepExpression Text Prep Phrase
+    | ComplexExpression Text Phrase Prep Phrase
+    deriving (Show, Eq)
+
+data ParseError =
+      UnknownVerb Text
+    | MissingObject
+    | MissingTarget
+    | InvalidPrep
+    | MalformedExpression Text
+    deriving (Show, Eq)
+
+-- Todo: move this into Definitions and add check for those requiring objects.
+knownVerbs :: [Text]
+knownVerbs = ["look", "go", "get", "take", "put", "place", "move", "drop",
+              "give", "inventory", "quit"]
+
+verbsRequiringObjects :: [Text]
+verbsRequiringObjects = ["put", "place", "move"]
+
+knownPreps :: [(Text, [[Text]])]
+knownPreps =
+    [ ("in", [["in"], ["inside"], ["into"]])
+    , ("on", [["on"], ["onto"], ["upon"], ["on", "top", "of"]])
+    , ("under", [["under"], ["beneath"], ["underneath"]])
+    , ("at", [["at"]])
+    , ("from", [["from"]])
+    , ("to", [["to"], ["toward"], ["towards"]])
+    ]
 
 knownArticles :: [Text]
 knownArticles = ["the", "a", "an"]
 
-isVerb :: Text -> Bool
-isVerb = flip elem knownVerbs
+-- | Main parsing function
+parseExpression :: Text -> Either ParseError Expression
+parseExpression input = do
+    let words' = filter (not . isArticle) $ T.words $ T.toLower input
+    case words' of
+        [] -> Left $ MalformedExpression input
+        (w:ws) -> if w `elem` knownVerbs
+                  then parseExpressionType w ws
+                  else Left $ UnknownVerb w
 
-isPreposition :: Text -> Bool
-isPreposition = flip elem knownPrepositions
+parseExpressionType :: Text -> [Text] -> Either ParseError Expression
+parseExpressionType verb [] = Right $ AtomicExpression verb
+parseExpressionType verb words' =
+    case findLongestPrep words' of
+        Nothing -> Right $ UnaryExpression verb (makePhrase words')
+
+        Just (prep, beforePrep, afterPrep) ->
+            case (beforePrep, afterPrep) of
+                ([], []) -> Left MissingTarget
+                ([], target) ->
+                    if verb `elem` verbsRequiringObjects -- verbs that require objects
+                    then Left MissingObject
+                    else Right $ PrepExpression verb
+                                              (Prep prep)
+                                              (makePhrase target)
+                (obj, target) -> Right $ ComplexExpression verb
+                                                         (makePhrase obj)
+                                                         (Prep prep)
+                                                         (makePhrase target)
+
+renderExpression :: Expression -> Text
+renderExpression = \case
+    AtomicExpression verb ->
+        verb
+    UnaryExpression verb target ->
+        T.unwords [verb, unPhrase target]
+    PrepExpression verb prep target ->
+        T.unwords [verb, unPrep prep, unPhrase target]
+    ComplexExpression verb obj prep target ->
+        T.unwords [verb, unPhrase obj, unPrep prep, unPhrase target]
 
 isArticle :: Text -> Bool
-isArticle = flip elem knownArticles
+isArticle = (`elem` knownArticles)
 
-findWordAfter :: (Text -> Bool) -> [(Text, Int)] -> Int -> Maybe (Text, Int)
-findWordAfter pred zippedWords startIdx =
-    find (pred . fst) $ dropWhile ((< startIdx) . snd) zippedWords
+makePhrase :: [Text] -> Phrase
+makePhrase = Phrase . T.unwords
 
-skipArticles :: [Text] -> Int -> Int
-skipArticles words' idx
-    | idx < length words' && isArticle (words' !! idx) = idx + 1
-    | otherwise = idx
-
-type Index = Int
-
-peek :: [Text] -> Index -> Maybe Text
-peek wordList idx = atMay wordList (idx + 1)
-
-parseActionPhrase :: Text -> Maybe ActionPhrase
-parseActionPhrase input = do
-    let words' = zip (T.words $ T.toLower input) [0..]
-
-    (verb, verbIdx) <- findWordAfter isVerb words' 0
-
-
-    let obj = "object"
-        prep = intToText verbIdx
-        pn = "target"
-    -- (prep, prepIdx) <- findWordAfter isPreposition words' (verbIdx + 1)
-
-    -- let objStartIdx = skipArticles words' (verbIdx + 1)
-    -- guard $ objStartIdx < length words'
-    -- let obj = words' !! objStartIdx
-
-    -- let pnIdx = skipArticles words' (prepIdx + 1)
-    -- guard $ pnIdx < length words'
-    -- let pn = words' !! pnIdx
-
-    return $ ActionPhrase
-        (Verb verb)
-        (Noun obj)
-        (Preposition prep)
-        (Noun pn)
-  where
-    guard :: Bool -> Maybe ()
-    guard True = Just ()
-    guard False = Nothing
-
-getAll :: ActionPhrase -> Text
-getAll (ActionPhrase (Verb v) (Noun o) (Preposition p) (Noun pn) ) =  unwords [v, o, p, pn]
-
-getRest :: ActionPhrase -> Text
-getRest (ActionPhrase _ (Noun o) (Preposition p) (Noun pn) ) =  unwords [o, p, pn]
-
-getVerb :: ActionPhrase -> Text
-getVerb (ActionPhrase (Verb v) _ _ _) = v
-
-getObject :: ActionPhrase -> Text
-getObject (ActionPhrase _ (Noun obj) _ _) = obj
-
-getPreposition :: ActionPhrase -> Text
-getPreposition (ActionPhrase _ _ (Preposition p) _) = p
-
-getPrepNoun :: ActionPhrase -> Text
-getPrepNoun (ActionPhrase _ _ _ (Noun pn)) = pn
+findLongestPrep :: [Text] -> Maybe (Text, [Text], [Text])
+findLongestPrep words' = listToMaybe $ reverse
+    [ (basePrep, before, drop (length variant) after)
+    | i <- [0..length words' - 1]
+    , let (before, after) = splitAt i words'
+    , not (null after)
+    , (basePrep, variants) <- knownPreps
+    , variant <- variants
+    , length variant <= length after
+    , take (length variant) after == variant
+    ]

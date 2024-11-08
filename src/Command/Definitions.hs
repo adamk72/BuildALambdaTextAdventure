@@ -9,8 +9,6 @@ module Command.Definitions
     ) where
 
 import qualified Data.Text as T
-import Control.Monad.State
-import Core.State
 import Command.Common
 import Command.Actor
 import Command.Drop
@@ -20,7 +18,6 @@ import Command.Look
 import Data.List (find)
 import Command.Put
 
--- Command verb data type to centralize all command identifiers
 data CommandVerb
     = LookVerb
     | GoVerb
@@ -33,15 +30,13 @@ data CommandVerb
     | InventoryVerb
     deriving (Show, Eq)
 
--- Command information including verb variants and executor
 data CommandInfo = CommandInfo
-    { cmdVerb :: CommandVerb   -- Primary verb identifier
-    , cmdText :: T.Text        -- Primary text representation
-    , cmdAliases :: [T.Text]   -- Alternative text representations
-    , cmdExec :: CommandExecutor  -- Command execution function
+    { cmdVerb :: CommandVerb
+    , cmdText :: T.Text
+    , cmdAliases :: [T.Text]
+    , cmdExec :: CommandExecutor
     }
 
--- All supported commands with their variations and executors
 allCommands :: [CommandInfo]
 allCommands =
     [ CommandInfo LookVerb "look" [] executeLook

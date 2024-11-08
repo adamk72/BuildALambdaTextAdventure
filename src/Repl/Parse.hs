@@ -38,8 +38,8 @@ commands = map toCommand allCommands
 tryCommand :: Text -> Command -> Maybe (State GameWorld Text)
 tryCommand input cmd = do
   guard $ cmdName cmd `isPrefixOf` input
-  rest <- getRest <$> parseActionPhrase input
-  Just $ cmdExecute cmd rest
+  -- rest <- getRest <$> parseActionPhrase input
+  Just $ cmdExecute cmd input
 
 parse :: Text -> State GameWorld (Maybe Text)
 parse input = do
