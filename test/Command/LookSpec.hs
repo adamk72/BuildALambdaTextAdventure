@@ -1,32 +1,35 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Command.LookSpec (spec) where
 
-import           Command.Common
-import           Command.Look
-import           Control.Monad.State
+import           Command.Commands
+import           Command.TestUtils
 import           Core.State
-import           Data.Text
 import           Mock.GameEnvironment
 import           Test.Hspec
-
--- Helper function to execute state and get both result and final state
-runCommand :: Text -> GameWorld -> (Text, GameWorld)
-runCommand cmd = runState (executeLook cmd)
+import           Parser.Types
 
 spec :: Spec
 spec = do
-    describe "executeLook" $ do
-        let startLocTag = "meadow"
-            acLoc = getActiveActorLoc defaultGW
-            acLocTag = locTag acLoc
-            acLotName = locName acLoc
-        context "check testing assumptions" $ do
-            it "should start the active character in the meadow" $ do
-                acLocTag `shouldBe` startLocTag
+    describe "Look Command" $ do
+        describe "basic looking" $ do
+            it "shows current location when just looking" $ do
+                let gw = defaultGW
+                    expr = AtomicExpression "look"
+                    (output, _) = runCommand executeLook expr gw
 
-        context "when looking 'around'" $ do
-            it "returns detailed location description" $ do
-                let (result, _) = runCommand "around" defaultGW
-                    objs = Prelude.filter (\item -> getLocation item == acLoc) (gwItems defaultGW)
-                result `shouldBe` renderMessage (YouAreIn acLotName) <> " " <> renderMessage (LookAround objs)
+                output `shouldBe` "You are in a flowery meadow."
 
+        describe "looking around" $ do
+            it "shows location and visible items when looking around" $ do
+                let gw = defaultGW
+                    expr = UnaryExpression "look" (NounClause "around")
+                    (output, _) = runCommand executeLook expr gw
+
+                output `shouldBe` "You are in a flowery meadow. You look around and see a sliver coin, a bag of holding, a simple bag, and a shiny bauble."
+
+            it "shows appropriate message when no items are visible" $ do
+                let gw = defaultGW { gwItems = [] }
+                    expr = UnaryExpression "look" (NounClause "around")
+                    (output, _) = runCommand executeLook expr gw
+
+                output `shouldBe` "You are in a flowery meadow. You look around and see ."

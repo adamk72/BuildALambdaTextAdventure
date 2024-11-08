@@ -1,4 +1,4 @@
-module Parser.Types (module Parser.Types) where
+module Parser.Types (Expression(..), NounClause(..), PrepClause(..), ParseError(..)) where
 
 import Data.Text
 

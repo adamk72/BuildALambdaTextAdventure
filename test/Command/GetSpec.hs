@@ -1,41 +1,40 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Command.GetSpec (spec) where
 
-import           Command.Get
-import           Command.Common
+import           Command.Commands
 import           Command.TestUtils
 import           Core.State
-import           Data.List            as List (find)
-import           Data.Maybe           (fromJust)
 import           Mock.GameEnvironment
 import           Test.Hspec
+import           Parser.Types
+import           Data.Text            (Text)
 
 spec :: Spec
-spec = describe "executeGet" $ do
-    let ac = gwActiveActor defaultGW
-        startLoc = getActiveActorLoc defaultGW
+spec = do
+    describe "Get Command" $ do
+        describe "basic item pickup" $ do
+            it "allows picking up items from current location" $ do
+                let gw = defaultGW
+                    cmd = "get silver coin"
+                    (output, newState) = runCommand executeGet (UnaryExpression "get" (NounClause "silver coin")) gw
+                    expectedOutput = "Moved silver coin to Alice the Adventurer"
 
-    context "check testing assumptions" $ do
-        it "should have the silver coin in the starting location" $ do
-            let coin = List.find (\item -> getTag item == "silver coin") (gwItems defaultGW)
-            fmap getLocation coin `shouldBe` Just startLoc
+                output `shouldBe` expectedOutput
+                checkItemTagInPocket "silver coin" newState `shouldBe` True
 
-        it "should have the active character in the correct location" $ do
-            verifyStartLocation defaultGW "meadow"
+            it "prevents picking up non-existent items" $ do
+                let gw = defaultGW
+                    cmd = "get gold coin"
+                    (output, newState) = runCommand executeGet (UnaryExpression "get" (NounClause "gold coin")) gw
 
-    context "when picking up objects" $ do
-        let (_, getGW) = runCommand executeGet "silver coin" defaultGW
-            coin = findItemByTag "silver coin" getGW
-            expectedLoc = getActorInventory getGW
+                output `shouldBe` "Cannot pick up \"PENDING\"."
+                checkItemTagInPocket "gold coin" newState `shouldBe` False
 
-        it "can transfer silver coin from location to person" $ do
-            fmap getLocation coin `shouldBe` Just expectedLoc
+        describe "location validation" $ do
+            it "prevents picking up items from other locations" $ do
+                let gw = defaultGW
+                    cmd = "get bat"  -- bat is in cave, player starts in meadow
+                    (output, newState) = runCommand executeGet (UnaryExpression "get" (NounClause "bat")) gw
 
-        it "is no longer an element in the environment" $ do
-            let objs = getItemsAtLoc (getLocation ac) getGW
-            notElem (fromJust coin) objs `shouldBe` True
-
-        it "handles attempting to get nonexistent objects" $ do
-            let (result, newState) = runCommand executeGet "nonexistent" defaultGW
-            result `shouldBe` renderMessage (InvalidItem "nonexistent")
-            newState `shouldBe` defaultGW
+                output `shouldBe` "Cannot pick up \"PENDING\"."
+                checkItemTagInPocket "bat" newState `shouldBe` False

@@ -4,9 +4,10 @@ module Command.Common (module Command.Common) where
 import           Control.Monad.State
 import           Core.State
 import           Data.Text
-import Utils
+import           Parser.Types
+import           Utils
 
-type CommandExecutor = Text -> State GameWorld Text
+type CommandExecutor = Expression -> State GameWorld Text
 
 class CommandMessage a where
     renderMessage :: a -> Text

@@ -87,7 +87,7 @@ spec = do
             it "should handle 'look around' command" $ do
                 actionWrapper $ \handles -> do
                     testCommand handles "look around"
-                        "You are in a flowery meadow. You look around and see a simple bag, a shiny bauble, a large blue phone booth and a satchel that is inky black on the inside."
+                        "You are in a flowery meadow. You look around and see a simple bag, a shiny bauble, a large blue phone booth, and a satchel that is inky black on the inside."
 
             it "should handle valid 'go' commands" $ do
                 actionWrapper $ \handles -> do

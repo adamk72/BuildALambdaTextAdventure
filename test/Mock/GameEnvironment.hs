@@ -45,7 +45,7 @@ testBob loc = mkActor TaggedEntity
 testBagOfHolding :: Item
 testBagOfHolding = mkItem TaggedEntity
     { tag = "bag of holding"
-    , name = "bag of holding"
+    , name = "a bag of holding"
     , location = testMeadow
     , inventory = Just Location { locTag = "bag of holding", locName = "inside bag", destinationTags = [] }
     }

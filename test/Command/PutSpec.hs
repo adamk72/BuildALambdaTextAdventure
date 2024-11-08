@@ -1,47 +1,54 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Command.PutSpec (spec) where
 
-import           Command.Put
+import           Command.Commands
 import           Command.TestUtils
 import           Core.State
+import           Data.Text
 import           Mock.GameEnvironment
+import           Parser.Parser
+import           Parser.Types
 import           Test.Hspec
 
 spec :: Spec
-spec = describe "executePut" $ do
-    let startLoc = getActiveActorLoc defaultGW
-        coin = findItemByTag "silver coin" defaultGW
-        bagOfHolding = findItemByTag "bag of holding" defaultGW
-        bag = findItemByTag "bag" defaultGW
-        bauble = findItemByTag "bauble" defaultGW
+spec = do
+    describe "Put Command" $ do
+        describe "basic item placement" $ do
+            it "allows putting items in containers" $ do
+                let gw = defaultGW
+                    expr = ComplexExpression "put" (NounClause "bauble") (PrepClause "in") (NounClause "bag of holding")
+                    (output, newState) = runCommand executePut expr gw
 
-    context "check testing assumptions" $ do
-        it "should have the silver coin in the starting location" $ do
-            fmap getLocation coin `shouldBe` Just startLoc
-        it "should have a bag of holding at the starting location" $ do
-            fmap getLocation bagOfHolding `shouldBe` Just startLoc
-        it "should have a bag in the starting location" $ do
-            fmap getLocation bag `shouldBe` Just startLoc
-        it "should have a bag of holding at the starting location" $ do
-            fmap getLocation bauble `shouldBe` Just startLoc
+                output `shouldBe` "bauble is now in the bag of holding."
+                checkItemLocation "bauble" "bag of holding" newState `shouldBe` True
 
-    context "check for basics by putting a bauble in a bag" $ do
-        let (_, basicBagGW) = runCommand executePut "bauble in bag" defaultGW
-            baggedBauble= findItemByTag "bauble" basicBagGW
-        it "can put a bauble in a bag" $ do
-            fmap getLocation baggedBauble `shouldBe` getInventory testBag
+            it "prevents putting items in non-containers" $ do
+                let gw = defaultGW
+                    expr = ComplexExpression "put" (NounClause "bauble") (PrepClause "in") (NounClause "silver coin")
+                    (output, _) = runCommand executePut expr gw
 
-    context "check for spacing handling by putting a 'silver coin' in a 'bag of holding'" $ do
-        let (_, putGW) = runCommand executePut "silver coin in bag of holding" defaultGW
-            bagCoin = findItemByTag "silver coin" putGW
-        it "can transfer silver coin from location to bag of holding" $ do
-            fmap getLocation bagCoin `shouldBe` getInventory testBagOfHolding
+                output `shouldBe` "The silver coin is not a container."
 
-    --     it "is no longer an element in the environment" $ do
-    --         let objs = getItemsAtLoc (getLocation ac) putGW
-    --         notElem (fromJust coin) objs `shouldBe` True
+        describe "validation" $ do
+            it "handles non-existent items" $ do
+                let gw = defaultGW
+                    expr = ComplexExpression "put" (NounClause "nonexistent") (PrepClause "in") (NounClause "bag of holding")
+                    (output, _) = runCommand executePut expr gw
 
-    --     it "handles attempting to get nonexistent objects" $ do
-    --         let (result, newState) = runCommand executePut "nonexistent" defaultGW
-    --         result `shouldBe` renderMessage (InvalidItem "nonexistent")
-    --         newState `shouldBe` defaultGW
+                output `shouldBe` "Location does not exist in this game world: nonexistent."
+
+            it "handles non-existent containers" $ do
+                let gw = defaultGW
+                    expr = ComplexExpression "put" (NounClause "bauble") (PrepClause "in") (NounClause "nonexistent")
+                    (output, _) = runCommand executePut expr gw
+
+                output `shouldBe` "Location does not exist in this game world: nonexistent."
+
+-- Helper function for checking item location
+checkItemLocation :: Text -> Text -> GameWorld -> Bool
+checkItemLocation itemTag containerTag gw =
+    case findItemByTag itemTag gw of
+        Just item -> case findItemByTag containerTag gw >>= getInventory of
+            Just loc -> getLocation item == loc
+            Nothing  -> False
+        Nothing -> False

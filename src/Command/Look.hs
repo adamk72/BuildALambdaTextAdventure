@@ -6,9 +6,10 @@ module Command.Look (executeLook, renderMessage) where
 import           Command.Common
 import           Control.Monad.State
 import           Core.State
+import           Parser.Types
 
 executeLook :: CommandExecutor
-executeLook "around" = do
+executeLook (UnaryExpression _ (NounClause "around")) = do
     gw <- get
     let acLoc = getActiveActorLoc gw
         objs = getItemsAtLoc acLoc gw

@@ -1,29 +1,38 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Command.DropSpec (spec) where
 
-import           Command.Drop
-import           Command.Get
+import           Command.Commands
 import           Command.TestUtils
-import           Core.State.Operations
-import           Core.State.TaggedEntity
-import           Data.Maybe              (fromJust)
-import           Data.Text
+import           Core.State
 import           Mock.GameEnvironment
 import           Test.Hspec
-
-silver :: Text
-silver = "silver coin"
+import           Parser.Types
 
 spec :: Spec
-spec = describe "Execute drop" $ do
-    let (_, getGW)= runCommand executeGet silver defaultGW
-    context "Pre inventory check" $ do
-      it "currently has the silver coin before dropping" $ do
-        let itemLoc = fromJust (findItemByTag silver getGW)
-        getLocation itemLoc `shouldBe` getActorInventory getGW
+spec = do
+    describe "Drop Command" $ do
+        describe "basic dropping" $ do
+            it "allows dropping held items" $ do
+                let gw = defaultGW -- First need to get an item
+                    expr = UnaryExpression "drop" (NounClause "silver coin")
+                    (output, newState) = runCommand executeDrop expr gw
 
-    context "Post inventory check" $ do
-      it "no longer possess a silver coin" $ do
-        let (_, dropGW) = runCommand executeDrop silver getGW
-            itemLoc = fromJust (findItemByTag silver dropGW)
-        checkItemTagInPocket silver dropGW `shouldBe` False
-        getLocation itemLoc `shouldBe` testMeadow
+                output `shouldBe` "silver coin dropped. Your inventory is now: "
+                checkItemTagInPocket "silver coin" newState `shouldBe` False
+
+            it "prevents dropping items not in inventory" $ do
+                let gw = defaultGW
+                    expr = UnaryExpression "drop" (NounClause "nonexistent")
+                    (output, newState) = runCommand executeDrop expr gw
+
+                output `shouldBe` "You don't have a nonexistent to drop."
+                verifyStartLocation newState "meadow" -- Location shouldn't change
+
+        describe "inventory validation" $ do
+            it "updates inventory correctly after dropping" $ do
+                let gw = defaultGW -- First need to get an item
+                    expr = UnaryExpression "drop" (NounClause "silver coin")
+                    (_, newState) = runCommand executeDrop expr gw
+                    inventoryItems = getActorInventoryItems newState
+
+                length inventoryItems `shouldBe` 0

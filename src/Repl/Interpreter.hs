@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Fuse foldr/map" #-}
 
-module Repl.Interpreter (interpretCommand, tryCommand, Command(Command)) where
+module Repl.Interpreter (interpretCommand, tryCommand, Command(Command), firstRight) where
 
 import           Command.Commands
 import           Command.Definitions
@@ -31,7 +31,7 @@ tryCommand :: Text -> Command -> Either Text (State GameWorld Text)
 tryCommand input cmd =
     case parsePhrase input of
         Left err   -> Left $ renderExpressionError err
-        Right expr -> Right $ cmdExecute cmd $ renderExpression expr
+        Right expr -> Right $ cmdExecute cmd expr
 
 interpretCommand :: Text -> State GameWorld (Maybe Text)
 interpretCommand input = do

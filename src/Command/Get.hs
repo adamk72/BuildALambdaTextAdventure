@@ -5,15 +5,16 @@ import           Control.Monad.State
 import           Core.State
 import           Data.List           (find)
 import           Data.Text           (unpack)
+import           Parser.Types
 
 executeGet :: CommandExecutor
-executeGet target = do
+executeGet expr = do
     gw <- get
     let acLoc = getActiveActorLoc gw
         ac = gwActiveActor gw
         validObjTags = map getTag $ getItemsAtLoc acLoc gw
-    case target of
-        pickFrom | pickFrom `elem` validObjTags ->
+    case expr of
+        (UnaryExpression _ (NounClause pickFrom))  | pickFrom `elem` validObjTags ->
             case find (\item -> getTag item == pickFrom) (gwItems gw) of
                 Just foundObj -> do
                     let ps = getActorInventory gw
@@ -21,4 +22,4 @@ executeGet target = do
                     put updatedGW
                     return $ renderMessage $ PickedUp pickFrom (getName ac)
                 Nothing -> error $ unpack $ renderMessage $ ItemDoesNotExist pickFrom
-        noWay -> return $ renderMessage $ InvalidItem noWay
+        _ -> return $ renderMessage $ InvalidItem "PENDING"

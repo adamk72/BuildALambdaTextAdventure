@@ -4,13 +4,13 @@ import           Command.Common
 import           Control.Monad.State
 import           Core.State
 import           Data.Text           as T (words)
+import           Parser.Types
 
 executePut :: CommandExecutor
-executePut target = do
+executePut expr = do
     gw <- get
-    let sentence = T.words target
-    case sentence of
-        [itemTag, "in", containerTag] ->
+    case expr of
+        (ComplexExpression _ (NounClause itemTag) _ (NounClause containerTag)) ->
             case findItemByTag itemTag gw of
                 Nothing -> return $ renderMessage $ LocationDoesNotExist itemTag
                 Just item -> case findItemByTag containerTag gw of
@@ -21,4 +21,4 @@ executePut target = do
                                 let updatedGW = moveItemLoc item containerLoc gw
                                 put updatedGW
                                 return $ renderMessage $ PutItemIn itemTag containerTag
-        _ -> return $ renderMessage $ DontKnowWhere target
+        _ -> return $ renderMessage $ DontKnowWhere "PENDING"

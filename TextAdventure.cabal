@@ -110,8 +110,8 @@ test-suite TextAdventure-test
       MainSpec
       Mock.GameEnvironment
       Mock.TrialAdventureSpec
-      Repl.ParserSpec
-      Repl.ParseSpec
+      Parser.ParserSpec
+      Repl.InterpreterSpec
       Paths_TextAdventure
   autogen-modules:
       Paths_TextAdventure
