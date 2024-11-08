@@ -21,4 +21,4 @@ executePut expr = do
                                 let updatedGW = moveItemLoc item containerLoc gw
                                 put updatedGW
                                 return $ renderMessage $ PutItemIn itemTag containerTag
-        _ -> return $ renderMessage $ DontKnowWhere "PENDING"
+        _ -> return $ renderMessage $ DontKnowWhere "Pending"

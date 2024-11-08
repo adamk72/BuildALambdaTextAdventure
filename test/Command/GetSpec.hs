@@ -27,7 +27,7 @@ spec = do
                     cmd = "get gold coin"
                     (output, newState) = runCommand executeGet (UnaryExpression "get" (NounClause "gold coin")) gw
 
-                output `shouldBe` "Cannot pick up \"PENDING\"."
+                output `shouldBe` "Cannot pick up \"TO BE FIXED\"."
                 checkItemTagInPocket "gold coin" newState `shouldBe` False
 
         describe "location validation" $ do
@@ -36,5 +36,5 @@ spec = do
                     cmd = "get bat"  -- bat is in cave, player starts in meadow
                     (output, newState) = runCommand executeGet (UnaryExpression "get" (NounClause "bat")) gw
 
-                output `shouldBe` "Cannot pick up \"PENDING\"."
+                output `shouldBe` "Cannot pick up \"TO BE FIXED\"."
                 checkItemTagInPocket "bat" newState `shouldBe` False

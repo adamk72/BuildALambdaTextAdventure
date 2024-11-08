@@ -22,4 +22,4 @@ executeGet expr = do
                     put updatedGW
                     return $ renderMessage $ PickedUp pickFrom (getName ac)
                 Nothing -> error $ unpack $ renderMessage $ ItemDoesNotExist pickFrom
-        _ -> return $ renderMessage $ InvalidItem "PENDING"
+        _ -> return $ renderMessage $ InvalidItem "Pending"
