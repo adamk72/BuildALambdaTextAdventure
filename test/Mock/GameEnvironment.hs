@@ -15,7 +15,7 @@ testMeadow :: Location
 testMeadow = Location
     { locTag = "meadow"
     , locName = "A flowery meadow"
-    , destinationTags = ["cave"]
+    , destinationTags = ["cave", "narnia"]
     }
 
 testForest :: Location

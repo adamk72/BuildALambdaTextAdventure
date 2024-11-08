@@ -3,10 +3,12 @@ module Command.GoSpec (spec) where
 
 import           Command.Commands
 import           Command.TestUtils
+import           Control.Exception    (evaluate)
 import           Core.State
+import           Data.Text            (unpack)
 import           Mock.GameEnvironment
-import           Test.Hspec
 import           Parser.Types
+import           Test.Hspec
 
 spec :: Spec
 spec = do
@@ -17,7 +19,7 @@ spec = do
                     expr = AtomicExpression "go"
                     (output, newState) = runCommand executeGo expr gw
 
-                output `shouldBe` "TO BE FIXED"  -- Should be updated with proper error message
+                output `shouldBe` renderMessage GoWhere -- Should be updated with proper error message
                 verifyStartLocation newState "meadow"  -- Should not move
 
             it "handles unary expression (go <location>)" $ do
@@ -36,13 +38,13 @@ spec = do
                 output `shouldBe` "Moving to cave."
                 verifyStartLocation newState "cave"
 
-            it "handles complex expression (should treat same as binary)" $ do
+            it "handles complex expression as unknown" $ do
                 let gw = defaultGW
-                    expr = ComplexExpression "go" (NounClause "self") (PrepClause "to") (NounClause "cave")
+                    expr = ComplexExpression "go" (NounClause "something") (PrepClause "to") (NounClause "cave")
                     (output, newState) = runCommand executeGo expr gw
 
-                output `shouldBe` "TO BE FIXED"  -- Should be updated with proper error message
-                verifyStartLocation newState "meadow"  -- Should not move
+                output `shouldBe` renderMessage NotSure
+                verifyStartLocation newState "meadow"
 
         describe "destination validation" $ do
             it "allows movement to valid adjacent locations" $ do
@@ -54,28 +56,26 @@ spec = do
                 verifyStartLocation newState "cave"
 
             it "prevents movement to non-adjacent locations" $ do
-                let gw = defaultGW `withActorAt` testCave
-                    expr = UnaryExpression "go" (NounClause "nowhere")
+                let gw = defaultGW `withActorAt` testMeadow
+                    expr = UnaryExpression "go" (NounClause "forest")
                     (output, newState) = runCommand executeGo expr gw
 
-                output `shouldBe` "TO BE FIXED"  -- Should be updated when error handling is completed
-                verifyStartLocation newState "cave"  -- Should remain in original location
+                output `shouldBe` (renderMessage $ NoPath "forest") -- because forest is not next to meadow
+                verifyStartLocation newState "meadow"
 
             it "prevents movement to non-existent locations" $ do
                 let gw = defaultGW
                     expr = UnaryExpression "go" (NounClause "narnia")
-                    (output, newState) = runCommand executeGo expr gw
-
-                output `shouldBe` "TO BE FIXED"  -- Should be updated with proper error message
-                verifyStartLocation newState "meadow"  -- Should not move
+                evaluate (runCommand executeGo expr gw) `shouldThrow`
+                    (errorCall (unpack $ renderMessage $ LocationError "narnia"))
 
             it "validates destinations against location's destination tags" $ do
                 let gw = defaultGW `withActorAt` testForest
-                    expr = UnaryExpression "go" (NounClause "meadow")  -- Forest only connects to cave
+                    expr = UnaryExpression "go" (NounClause "cave")
                     (output, newState) = runCommand executeGo expr gw
 
-                output `shouldBe` "TO BE FIXED"  -- Should be updated when proper validation is added
-                verifyStartLocation newState "forest"  -- Should remain in forest
+                output `shouldBe` (renderMessage $ MovingToLocation "cave") -- b/c cave is next to forest
+                verifyStartLocation newState "cave"
 
         describe "state changes" $ do
             it "updates actor location after successful movement" $ do

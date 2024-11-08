@@ -7,24 +7,26 @@ import           Data.List           (find)
 import           Data.Text           (Text, unpack)
 import           Parser.Types
 
-moveTo :: Actor -> Text -> GameWorld -> State GameWorld Text
-moveTo actor destination gw =
-    case find (\loc -> locTag loc == destination) (gwLocations gw) of
-        Just newLoc -> do
-            let newAc = setActorLoc newLoc actor
-            put gw { gwActiveActor = newAc }
-            return $ renderMessage $ MovingToLocation destination
+moveTo :: Actor -> Text -> [Text] -> GameWorld -> State GameWorld Text
+moveTo actor dstTag validDstTags  gw
+    | dstTag == locTag (getLocation actor) = return $ renderMessage $ AlreadyAtLocation $ locTag (getLocation actor)
+    | dstTag `elem` validDstTags =
+        case find (\loc -> locTag loc == dstTag) (gwLocations gw) of
+            Just newLoc -> do
+                let newAc = setActorLoc newLoc actor
+                put gw { gwActiveActor = newAc }
+                return $ renderMessage $ MovingToLocation dstTag
+            Nothing -> error $ unpack $ renderMessage $ LocationError dstTag
+    | otherwise = return $ renderMessage $ NoPath dstTag
 
 executeGo :: CommandExecutor
 executeGo expr = do
     gw <- get
     let ac = gwActiveActor gw
-        validLocTags = destinationTags $ getLocation ac
+        validDstTags = destinationTags (getLocation ac)
     case expr of
-        (UnaryExpression _ (NounClause destination) )   | destination `elem` validLocTags -> moveTo ac destination gw
-        (BinaryExpression _ _ (NounClause destination) )   | destination `elem` validLocTags -> moveTo ac destination gw
-        _ -> return "Pending"
-        --         Nothing -> error $ unpack $ renderMessage $ LocationDoesNotExist moveTo
-        -- already | already == locTag (getLocation ac) ->
-        --     return $ renderMessage $ AlreadyAtLocation already
+        (AtomicExpression _) -> return $ renderMessage GoWhere
+        (UnaryExpression _ (NounClause dst) ) -> moveTo ac dst validDstTags gw
+        (BinaryExpression _ _ (NounClause dst) ) -> moveTo ac dst validDstTags gw
+        _ -> return $ renderMessage NotSure
         -- noWay -> return $ renderMessage $ NoPath noWay

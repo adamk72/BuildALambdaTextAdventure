@@ -12,9 +12,9 @@ executePut expr = do
     case expr of
         (ComplexExpression _ (NounClause itemTag) _ (NounClause containerTag)) ->
             case findItemByTag itemTag gw of
-                Nothing -> return $ renderMessage $ LocationDoesNotExist itemTag
+                Nothing -> return $ renderMessage $ NoPath itemTag
                 Just item -> case findItemByTag containerTag gw of
-                        Nothing -> return $ renderMessage $ LocationDoesNotExist containerTag
+                        Nothing -> return $ renderMessage $ NoPath containerTag
                         Just container -> case getInventory container of
                             Nothing -> return $ renderMessage $ NotAContainer containerTag
                             Just containerLoc -> do
