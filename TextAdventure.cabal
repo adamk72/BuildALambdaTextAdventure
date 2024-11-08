@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Command.Actor
+      Command.Commands
       Command.Common
       Command.Definitions
       Command.Drop

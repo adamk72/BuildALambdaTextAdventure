@@ -1,6 +1,5 @@
 module Core.Distance (module Core.Distance) where
 import           Core.State.Entity
-import           Core.State.Operations
 import           Core.State.TaggedEntity
 import           Data.Maybe
 

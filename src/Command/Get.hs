@@ -1,23 +1,10 @@
-{-# LANGUAGE LambdaCase #-}
 module Command.Get (module Command.Get) where
 
 import           Command.Common
 import           Control.Monad.State
 import           Core.State
 import           Data.List           (find)
-import           Data.Text           (Text, unpack)
-
-data GetMessage
-    = PickedUp Text Text
-    | InvalidItem Text
-    | DoesNotExist Text
-    deriving (Eq, Show)
-
-instance CommandMessage GetMessage where
-    renderMessage = \case
-        PickedUp item actor -> "Moved " <> item <> " to " <> actor
-        InvalidItem item -> "Cannot pick up \"" <> item <> "\"."
-        DoesNotExist item -> "Item does not exist in this game world: " <> item <> "."
+import           Data.Text           (unpack)
 
 executeGet :: CommandExecutor
 executeGet target = do
@@ -33,5 +20,5 @@ executeGet target = do
                         updatedGW = moveItemLoc foundObj ps gw
                     put updatedGW
                     return $ renderMessage $ PickedUp pickFrom (getName ac)
-                Nothing -> error $ unpack $ renderMessage $ DoesNotExist pickFrom
+                Nothing -> error $ unpack $ renderMessage $ ItemDoesNotExist pickFrom
         noWay -> return $ renderMessage $ InvalidItem noWay

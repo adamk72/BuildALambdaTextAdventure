@@ -3,7 +3,6 @@ module Command.DropSpec (spec) where
 import           Command.Drop
 import           Command.Get
 import           Command.TestUtils
-import           Core.State.GameState
 import           Core.State.Operations
 import           Core.State.TaggedEntity
 import           Data.Maybe              (fromJust)

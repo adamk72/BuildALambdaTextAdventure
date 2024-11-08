@@ -37,11 +37,6 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 
 ## Todos
 
-### Doc/Blog Todos
-
-- [] Go over `mapM` and `mapM_` in context of reading from a file directory and printing out the file names: `listDirectory storyDirectory >>= mapM_ putStrLn`. See Listing 22.3 in the GPWH book.
-- []  Todo: blog post on guard: guard :: Alternative f => Bool -> f ()
-- [] (<|>) is the alternative operator from the Alternative typeclass in Haskell. For Maybe values, it acts like an "or" operation - it returns the first Just value it finds, or Nothing if both options are Nothing.
 
 
 ### Coding Todos
@@ -77,3 +72,29 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 ### Super Advanced Coding Todos
 
 - [] Use [Parsec](https://hackage.haskell.org/package/parsec) for the REPL, per [this](https://blogg.bekk.no/creating-a-repl-in-haskell-efcdef1deec2) article's suggestion. It's an older article, so follow up on other options later.
+
+### Doc/Blog Todos
+
+- [] Go over `mapM` and `mapM_` in context of reading from a file directory and printing out the file names: `listDirectory storyDirectory >>= mapM_ putStrLn`. See Listing 22.3 in the GPWH book.
+- []  Todo: blog post on guard: guard :: Alternative f => Bool -> f ()
+- [] (<|>) is the alternative operator from the Alternative typeclass in Haskell. For Maybe values, it acts like an "or" operation - it returns the first Just value it finds, or Nothing if both options are Nothing.
+- [] Aeson things:
+  - [] sensitivity of this:
+```haskell
+instance FromJSON Location where
+    parseJSON = withObject "Location" $ \v -> do
+        locTag <- v .: "tag"
+        locName <- v .: "name"
+        destinationTags <- v .: "destinationTags"
+        return Location{..}
+
+-- Sensitive to field order:
+{-
+instance FromJSON Location where
+    parseJSON = withObject "Location" $ \v ->
+        Location
+            <$> v .: "tag"
+            <*> v .: "name"
+            <*> v .: "destinationTags"
+-}
+```

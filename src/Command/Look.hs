@@ -1,25 +1,11 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# LANGUAGE LambdaCase #-}
 {-# HLINT ignore "Use newtype instead of data" #-}
 
-module Command.Look (executeLook, LookMessage(..), renderMessage) where
+module Command.Look (executeLook, renderMessage) where
 
 import           Command.Common
 import           Control.Monad.State
 import           Core.State
-import           Data.Text           as T
-import           Utils
-
-data LookMessage
-    = LookAround [Item]
-    | YouAreIn Text
-    | LookTowards Text
-
-instance CommandMessage LookMessage where
-    renderMessage = \case
-        LookAround objs -> "You look around and see " <> oxfordEntityNames objs <> "."
-        YouAreIn loc ->  "You are in " <> T.toLower loc <> "."
-        LookTowards dir -> "You look " <> T.toLower dir <> ", but see nothing special."
 
 executeLook :: CommandExecutor
 executeLook "around" = do

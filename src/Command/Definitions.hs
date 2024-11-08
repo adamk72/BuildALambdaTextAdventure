@@ -9,12 +9,7 @@ module Command.Definitions
     ) where
 
 import qualified Data.Text as T
-import Command.Common
-import Command.Actor
-import Command.Drop
-import Command.Get
-import Command.Go
-import Command.Look
+import Command.Commands
 import Data.List (find)
 import Command.Put
 

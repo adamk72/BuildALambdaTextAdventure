@@ -21,13 +21,3 @@ instance FromJSON Location where
         locName <- v .: "name"
         destinationTags <- v .: "destinationTags"
         return Location{..}
-
--- Sensitive to field order:
-{-
-instance FromJSON Location where
-    parseJSON = withObject "Location" $ \v ->
-        Location
-            <$> v .: "tag"
-            <*> v .: "name"
-            <*> v .: "destinationTags"
--}
