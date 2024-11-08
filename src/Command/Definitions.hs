@@ -34,14 +34,11 @@ data CommandInfo = CommandInfo
 
 allCommands :: [CommandInfo]
 allCommands =
-    [ CommandInfo LookVerb "look" [] executeLook
+    [ CommandInfo LookVerb "look" ["search", "examine"] executeLook
     , CommandInfo GoVerb "go" [] executeGo
-    , CommandInfo GetVerb "get" [] executeGet
+    , CommandInfo GetVerb "get" ["take"] executeGet
     , CommandInfo DropVerb "drop" [] executeDrop
-    , CommandInfo PutVerb "put" [] executePut
-    , CommandInfo PlaceVerb "place" [] executePut
-    , CommandInfo MoveVerb "move" [] executePut
-    , CommandInfo SetVerb "set" [] executePut
+    , CommandInfo PutVerb "put" ["place", "move", "set"] executePut
     , CommandInfo InventoryVerb "inventory" ["inv", "i"] executeInventory
     ]
 

@@ -58,7 +58,7 @@ spec = describe "executeGo" $ do
             -- from the character's current location; there's a JSON mismatch that breaks the game.
             let badSetupWorld = withLocations (withActorAt defaultGW testForest) [testMeadow]
                 caveResult = evaluate (runCommand "cave" badSetupWorld)
-            caveResult `shouldThrow` (\(ErrorCall msg) -> msg == unpack (renderMessage $ DoesNotExist "cave"))
+            caveResult `shouldThrow` (\(ErrorCall msg) -> msg == unpack (renderMessage $ LocationDoesNotExist "cave"))
 
             -- alternate versions of badSetupWorld:
             -- let badSetupWorld = (flip withLocations [testMeadow] . flip withActorAt testForest) defaultGW

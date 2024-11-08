@@ -1,112 +1,130 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Repl.ParseSpec (spec) where
 
-import           Control.Monad.State
-import           Core.State          (GameWorld(..))
-import           Data.Text           (Text)
-import           Repl.Parse         (Command(Command), tryCommand, parse)
-import           Test.Hspec
-import           Command.Common     (CommandExecutor)
-import           Mock.GameEnvironment
-import qualified Data.Text          as T
-
--- Helper to evaluate State actions
-evalCommand :: Maybe (State GameWorld Text) -> Maybe Text
-evalCommand Nothing = Nothing
-evalCommand (Just stateAction) = Just $ evalState stateAction defaultGW
-
--- Helper function to run parse in State monad
-runParse :: Text -> Maybe Text
-runParse input = evalState (parse input) defaultGW
-
--- Testing for unrecognized commands
-shouldBeUnrecognizedCommand :: Text -> Expectation
-shouldBeUnrecognizedCommand input =
-    case runParse input of
-        Just result -> result `shouldBe` ("Don't know how to " <> input <> ".")
-        Nothing -> expectationFailure $
-            "Expected 'Don't know how to' message but got Nothing for input: " ++ show input
-
--- Testing for quit commands that should return Nothing
-shouldBeQuitCommand :: Text -> Expectation
-shouldBeQuitCommand input =
-    runParse input `shouldBe` Nothing
+import Test.Hspec
+import Data.Text (Text)
+import Repl.Parser
 
 spec :: Spec
 spec = do
-    describe "Command Parser" $ do
-        -- context "Pure Parser Behavior" $ do
-        --     let dummyLookExecutor :: CommandExecutor
-        --         dummyLookExecutor = const $ return "looked"
+    describe "parseExpression" $ do
+        context "with single verb commands (V)" $ do
+            it "parses simple commands" $ do
+                parseExpression "inventory" `shouldBe` Right (AtomicExpression "inventory")
+                parseExpression "look" `shouldBe` Right (AtomicExpression "look")
 
-        --         dummyGoExecutor :: CommandExecutor
-        --         dummyGoExecutor = \dir -> return $ "went " <> dir
+            it "ignores case in verbs" $ do
+                parseExpression "INVENTORY" `shouldBe` Right (AtomicExpression "inventory")
+                parseExpression "Look" `shouldBe` Right (AtomicExpression "look")
 
-        --         lookCmd = Command "look" dummyLookExecutor
-        --         goCmd = Command "go" dummyGoExecutor
+            it "rejects unknown verbs" $ do
+                parseExpression "dance" `shouldBe` Left (UnknownVerb "dance")
 
-            -- it "matches exact commands" $ do
-            --     evalCommand (tryCommand "look" lookCmd) `shouldBe` Just "looked"
+        context "with verb target commands (V T)" $ do
+            it "parses simple movement commands" $ do
+                parseExpression "go cave" `shouldBe` Right (UnaryExpression "go" (Phrase "cave"))
+                parseExpression "go north" `shouldBe` Right (UnaryExpression "go" (Phrase "north"))
 
-            -- it "matches commands with arguments" $ do
-            --     evalCommand (tryCommand "go north" goCmd) `shouldBe` Just "went north"
+            it "handles articles in target" $ do
+                parseExpression "go the cave" `shouldBe` Right (UnaryExpression "go" (Phrase "cave"))
+                parseExpression "look north cave" `shouldBe` Right (UnaryExpression "look" (Phrase "north cave"))
 
-            -- it "handles non-matching commands" $ do
-            --     evalCommand (tryCommand "jump" lookCmd) `shouldBe` Nothing
-            --     evalCommand (tryCommand "run" goCmd) `shouldBe` Nothing
+            it "handles complex noun phrases in target" $ do
+                parseExpression "look ancient stone altar" `shouldBe`
+                    Right (UnaryExpression "look" (Phrase "ancient stone altar"))
+                parseExpression "examine mysterious glowing runes" `shouldBe`
+                    Right (UnaryExpression "examine" (Phrase "mysterious glowing runes"))
 
-            -- it "handles case sensitivity" $ do
-            --     evalCommand (tryCommand "LOOK" lookCmd) `shouldBe` Just "looked"
-            --     evalCommand (tryCommand "Go NoRtH" goCmd) `shouldBe` Just "went NoRtH"
+        context "with preposition commands (V P T)" $ do
+            it "parses simple preposition commands" $ do
+                parseExpression "look at bag" `shouldBe` Right (PrepExpression "look" (Prep "at") (Phrase "bag"))
+                parseExpression "look in box" `shouldBe` Right (PrepExpression "look" (Prep "in") (Phrase "box"))
 
-        context "Game Integration" $ do
-            it "handles look command" $ do
-                runParse "look" `shouldBe` Just "You are in a flowery meadow."
-                runParse "look around" `shouldBe`
-                    Just "You are in a flowery meadow. You look around and see a simple bag, a shiny bauble, a magic eight ball and a bag of holding."
+            it "handles compound prepositions" $ do
+                parseExpression "look inside of box" `shouldBe` Right (PrepExpression "look" (Prep "in") (Phrase "box"))
+                parseExpression "put on top of table" `shouldBe` Right (PrepExpression "put" (Prep "on") (Phrase "table"))
 
-            it "handles go command with valid destination" $ do
-                runParse "go cave" `shouldBe` Just "Moving to cave."
+            it "handles complex noun phrases with prepositions" $ do
+                parseExpression "look at ancient stone altar" `shouldBe`
+                    Right (PrepExpression "look" (Prep "at") (Phrase "ancient stone altar"))
+                parseExpression "search under weathered marble statue" `shouldBe`
+                    Right (PrepExpression "search" (Prep "under") (Phrase "weathered marble statue"))
 
-            it "handles go command with invalid destination" $ do
-                runParse "go narnia" `shouldBe`
-                    Just "There is no indication there's a way to get to narnia."
+        context "with complex object commands (V O P T)" $ do
+            it "parses basic object placement" $ do
+                parseExpression "put bauble in bag" `shouldBe`
+                    Right (ComplexExpression "put" (Phrase "bauble") (Prep "in") (Phrase "bag"))
+                parseExpression "move key to box" `shouldBe`
+                    Right (ComplexExpression "move" (Phrase "key") (Prep "to") (Phrase "box"))
 
-            it "handles get command with available item" $ do
-                runParse "get bauble" `shouldBe`
-                    Just "Moved bauble to Alice the Adventurer"
+            it "handles compound prepositions with objects" $ do
+                parseExpression "put cup on top of table" `shouldBe`
+                    Right (ComplexExpression "put" (Phrase "cup") (Prep "on") (Phrase "table"))
+                parseExpression "move book onto shelf" `shouldBe`
+                    Right (ComplexExpression "move" (Phrase "book") (Prep "on") (Phrase "shelf"))
 
-            it "handles get command with unavailable item" $ do
-                runParse "get unicorn" `shouldBe`
-                    Just "Cannot pick up \"unicorn\"."
+            it "handles articles in both object and target" $ do
+                parseExpression "put the bauble in the bag" `shouldBe`
+                    Right (ComplexExpression "put" (Phrase "bauble") (Prep "in") (Phrase "bag"))
+                parseExpression "take the key from the guard" `shouldBe`
+                    Right (ComplexExpression "take" (Phrase "key") (Prep "from") (Phrase "guard"))
 
-            it "handles inventory command" $ do
-                runParse "inventory" `shouldBe` Just "Your inventory is: nothing"
+            it "handles complex noun phrases in both object and target" $ do
+                parseExpression "place golden orb on tall pedestal" `shouldBe`
+                    Right (ComplexExpression "place" (Phrase "golden orb") (Prep "on") (Phrase "tall pedestal"))
+                parseExpression "put the ancient brass key in rusty iron lock" `shouldBe`
+                    Right (ComplexExpression "put" (Phrase "ancient brass key") (Prep "in") (Phrase "rusty iron lock"))
 
-        context "Special Commands" $ do
-            it "handles empty or whitespace input" $ do
-                shouldBeUnrecognizedCommand ""
-                shouldBeUnrecognizedCommand "   "
+            it "handles very complex noun phrases with compound prepositions" $ do
+                parseExpression "place the golden orb on top of the tall marble pedestal" `shouldBe`
+                    Right (ComplexExpression "place" (Phrase "golden orb") (Prep "on") (Phrase "tall marble pedestal"))
+                parseExpression "put the small silver key inside of the ornate wooden box" `shouldBe`
+                    Right (ComplexExpression "put" (Phrase "small silver key") (Prep "in") (Phrase "ornate wooden box"))
 
-            it "recognizes quit commands" $ do
-                shouldBeQuitCommand ":q"
-                shouldBeQuitCommand "quit"
-                shouldBeQuitCommand "exit"
+            it "handles multi-word descriptors in both object and target" $ do
+                parseExpression "move the half empty bottle onto the well worn shelf" `shouldBe`
+                    Right (ComplexExpression "move" (Phrase "half empty bottle") (Prep "on") (Phrase "well worn shelf"))
+                parseExpression "place the brightly glowing crystal into the deep dark pit" `shouldBe`
+                    Right (ComplexExpression "place" (Phrase "brightly glowing crystal") (Prep "in") (Phrase "deep dark pit"))
 
-            it "handles quit commands case-insensitively" $ do
-                shouldBeQuitCommand ":Q"
-                shouldBeQuitCommand "QUIT"
-                shouldBeQuitCommand "Exit"
+        context "with invalid commands" $ do
+            it "fails on empty input" $ do
+                parseExpression "" `shouldBe` Left (MalformedExpression "")
 
-        context "Put Commands" $ do
-            it "handles valid put commands with containers" $ do
-                runParse "put bauble in bag" `shouldBe`
-                    Just "Don't see a bauble."  -- Since we haven't picked it up yet
+            it "fails on missing objects for verbs that require them" $ do
+                parseExpression "put in bag" `shouldBe` Left MissingObject
+                parseExpression "move to box" `shouldBe` Left MissingObject
 
-            it "handles put commands with non-containers" $ do
-                runParse "put bauble in bat" `shouldBe`
-                    Just "Don't see a bauble."
+            it "fails on missing targets with complex objects" $ do
+                parseExpression "put ancient brass key" `shouldBe` Left MissingTarget
+                parseExpression "place the golden orb" `shouldBe` Left MissingTarget
 
-            it "handles malformed put commands" $ do
-                runParse "put" `shouldBe` Just "Don't know where to put."
-                runParse "put ball" `shouldBe` Just "Don't know where to put ball."
-                runParse "put ball box" `shouldBe` Just "Don't know where to put ball box."
+            it "fails on missing targets" $ do
+                parseExpression "put bauble" `shouldBe` Left MissingTarget
+                parseExpression "look in" `shouldBe` Left MissingTarget
+
+            it "fails on invalid prepositions" $ do
+                parseExpression "put bauble beside bag" `shouldBe` Left InvalidPrep
+                parseExpression "place golden orb against pedestal" `shouldBe` Left InvalidPrep
+
+        context "expression rendering" $ do
+            it "renders atomic expressions" $ do
+                renderExpression (AtomicExpression "look") `shouldBe` "look"
+
+            it "renders unary expressions" $ do
+                renderExpression (UnaryExpression "go" (Phrase "cave")) `shouldBe` "go cave"
+
+            it "renders prep expressions" $ do
+                renderExpression (PrepExpression "look" (Prep "in") (Phrase "bag"))
+                    `shouldBe` "look in bag"
+
+            it "renders complex expressions" $ do
+                renderExpression (ComplexExpression "put" (Phrase "bauble") (Prep "in") (Phrase "bag"))
+                    `shouldBe` "put bauble in bag"
+
+            it "renders complex expressions with multi-word phrases" $ do
+                renderExpression (ComplexExpression "place"
+                                                 (Phrase "golden orb")
+                                                 (Prep "on")
+                                                 (Phrase "tall marble pedestal"))
+                    `shouldBe` "place golden orb on tall marble pedestal"

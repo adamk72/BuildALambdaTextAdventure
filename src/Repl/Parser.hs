@@ -12,6 +12,7 @@ module Repl.Parser
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Maybe (listToMaybe)
+import Command.Definitions (knownVerbs)
 
 newtype Phrase = Phrase { unPhrase :: Text }
     deriving (Show, Eq)
@@ -33,11 +34,6 @@ data ParseError =
     | InvalidPrep
     | MalformedExpression Text
     deriving (Show, Eq)
-
--- Todo: move this into Definitions and add check for those requiring objects.
-knownVerbs :: [Text]
-knownVerbs = ["look", "go", "get", "take", "put", "place", "move", "drop",
-              "give", "inventory", "quit"]
 
 verbsRequiringObjects :: [Text]
 verbsRequiringObjects = ["put", "place", "move"]

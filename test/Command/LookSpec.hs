@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Command.LookSpec (spec) where
 
+import           Command.Common
 import           Command.Look
 import           Control.Monad.State
 import           Core.State
