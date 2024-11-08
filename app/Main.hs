@@ -107,12 +107,3 @@ runGameWithOption option = do
         Right () -> do
             TIO.putStrLn "Thanks for playing!"
             exitSuccess
-
-{- For later comparison on how `case` is very flexible:
-RunAdventure name -> do
-    let matchingAdventure = filter (\adv -> advLaunchTag adv == unAdventureName name) adventures
-    case matchingAdventure of
-        [adv] -> do -- [adv] is used for pattern matching a list with one element only
-            runGameWithOption (pack $ filePath adv)  -- Pass the file path instead of the launch tag
-        _ -> TIO.putStrLn "Error: Adventure not found or multiple matches found"
--}

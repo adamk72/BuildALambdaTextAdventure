@@ -3,18 +3,14 @@
 
 module Repl.Parse (parse, tryCommand, Command(Command)) where
 
-import           Command.Actor
-import           Command.Common
-import           Command.Definitions
 import           Command.Commands
-import           Control.Applicative
-import           Control.Monad
+import           Command.Definitions
 import           Control.Monad.State
-import           Core.Config         (quitCommands)
-import           Core.State          (GameWorld)
-import           Data.Text           (Text, isPrefixOf, toLower, stripPrefix)
+import           Core.Config          (quitCommands)
+import           Core.State.GameState (GameWorld)
+import           Data.Text            (Text, toLower)
 import           Repl.Parser
-import Data.Maybe
+
 firstRight :: Either Text a -> Either Text a -> Either Text a
 firstRight (Right x) _        = Right x
 firstRight (Left _) (Right y) = Right y
@@ -31,21 +27,20 @@ toCommand info = Command (cmdText info) (cmdExec info)
 commands :: [Command]
 commands = map toCommand allCommands
 
-tryCommand :: Text -> Command -> Maybe (State GameWorld Text)
-tryCommand input cmd = do
-  guard $ cmdName cmd `isPrefixOf` input
-  case parseExpression input of
-    Right expr -> Just $ cmdExecute cmd $ fromJust (stripPrefix (cmdName cmd <> " ") (renderExpression expr))
-    Left _ ->  Nothing
+tryCommand :: Text -> Command -> Either Text (State GameWorld Text)
+tryCommand input cmd =
+    case parseExpression input of
+        Left err   -> Left $ renderExpressionError err
+        Right expr -> Right $ cmdExecute cmd $ renderExpression expr
 
 parse :: Text -> State GameWorld (Maybe Text)
 parse input = do
   let lower = toLower input
-      match = foldr (<|>) Nothing $ map (tryCommand lower) commands
+      match = foldr firstRight (Left "No matching command found") $ map (tryCommand lower) commands
   case match of
-    Just action -> do
+    Right action -> do
         Just <$> action
-    Nothing     -> do
+    Left err -> do
       if lower `elem` quitCommands
       then return Nothing
-      else return $ Just $ "Don't know how to " <> lower <> "."
+      else return $ Just $ "Don't know how to " <> lower <> ". Got error: " <> err <> "."

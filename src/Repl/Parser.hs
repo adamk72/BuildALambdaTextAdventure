@@ -1,12 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE LambdaCase #-}
 module Repl.Parser
-    ( parseExpression
+    ( parseExpression 
+    , renderExpressionError
+    , renderExpression
     , Expression(..)
     , Prep(..)
     , Phrase(..)
     , ParseError(..)
-    , renderExpression
     ) where
 
 import Data.Text (Text)
@@ -35,6 +36,7 @@ data ParseError =
     | MalformedExpression Text
     deriving (Show, Eq)
 
+-- | Support variables
 verbsRequiringObjects :: [Text]
 verbsRequiringObjects = ["put", "place", "move"]
 
@@ -51,6 +53,26 @@ knownPreps =
 knownArticles :: [Text]
 knownArticles = ["the", "a", "an"]
 
+-- | Helper functions
+isArticle :: Text -> Bool
+isArticle = (`elem` knownArticles)
+
+makePhrase :: [Text] -> Phrase
+makePhrase = Phrase . T.unwords
+
+findLongestPrep :: [Text] -> Maybe (Text, [Text], [Text])
+findLongestPrep words' = listToMaybe $ reverse
+    [ (basePrep, before, drop (length variant) after)
+    | i <- [0..length words' - 1]
+    , let (before, after) = splitAt i words'
+    , not (null after)
+    , (basePrep, variants) <- knownPreps
+    , variant <- variants
+    , length variant <= length after
+    , take (length variant) after == variant
+    ]
+
+-- | Main parsing functions
 parseExpression :: Text -> Either ParseError Expression
 parseExpression input = do
     let words' = filter (not . isArticle) $ T.words $ T.toLower input
@@ -79,7 +101,7 @@ parseExpressionType verb words' =
                                                          (makePhrase obj)
                                                          (Prep prep)
                                                          (makePhrase target)
-
+-- | Rendering convenience functions
 renderExpression :: Expression -> Text
 renderExpression = \case
     AtomicExpression verb ->
@@ -91,20 +113,16 @@ renderExpression = \case
     ComplexExpression verb obj prep target ->
         T.unwords [verb, unPhrase obj, unPrep prep, unPhrase target]
 
-isArticle :: Text -> Bool
-isArticle = (`elem` knownArticles)
-
-makePhrase :: [Text] -> Phrase
-makePhrase = Phrase . T.unwords
-
-findLongestPrep :: [Text] -> Maybe (Text, [Text], [Text])
-findLongestPrep words' = listToMaybe $ reverse
-    [ (basePrep, before, drop (length variant) after)
-    | i <- [0..length words' - 1]
-    , let (before, after) = splitAt i words'
-    , not (null after)
-    , (basePrep, variants) <- knownPreps
-    , variant <- variants
-    , length variant <= length after
-    , take (length variant) after == variant
-    ]
+renderExpressionError :: ParseError -> Text
+renderExpressionError = \case
+    UnknownVerb verb ->
+        "I don't understand the command '" <> verb <> "'. Valid commands start with: " <>
+        T.intercalate ", " knownVerbs <> "."
+    MissingObject ->
+        "This command needs an object to act on. For example: 'get key' or 'drop sword'."
+    MissingTarget ->
+        "This command needs a target. For example: 'go cave' or 'look at chest'."
+    InvalidPrep ->
+        "Invalid preposition. Try using: in, on, under, at, from, or to."
+    MalformedExpression expr ->
+        "I couldn't understand '" <> expr <> "'. Please try rephrasing your command."

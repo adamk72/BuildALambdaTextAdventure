@@ -78,6 +78,15 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 - [] Go over `mapM` and `mapM_` in context of reading from a file directory and printing out the file names: `listDirectory storyDirectory >>= mapM_ putStrLn`. See Listing 22.3 in the GPWH book.
 - []  Todo: blog post on guard: guard :: Alternative f => Bool -> f ()
 - [] (<|>) is the alternative operator from the Alternative typeclass in Haskell. For Maybe values, it acts like an "or" operation - it returns the first Just value it finds, or Nothing if both options are Nothing.
+- [] For later comparison on how `case` is very flexible:
+```haskell
+RunAdventure name -> do
+    let matchingAdventure = filter (\adv -> advLaunchTag adv == unAdventureName name) adventures
+    case matchingAdventure of
+        [adv] -> do -- [adv] is used for pattern matching a list with one element only
+            runGameWithOption (pack $ filePath adv)  -- Pass the file path instead of the launch tag
+        _ -> TIO.putStrLn "Error: Adventure not found or multiple matches found"
+```
 - [] Aeson things:
   - [] sensitivity of this:
 ```haskell
@@ -98,3 +107,4 @@ instance FromJSON Location where
             <*> v .: "destinationTags"
 -}
 ```
+
