@@ -51,7 +51,6 @@ knownPreps =
 knownArticles :: [Text]
 knownArticles = ["the", "a", "an"]
 
--- | Main parsing function
 parseExpression :: Text -> Either ParseError Expression
 parseExpression input = do
     let words' = filter (not . isArticle) $ T.words $ T.toLower input

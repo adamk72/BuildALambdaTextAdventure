@@ -6,19 +6,15 @@ module Repl.Parse (parse, tryCommand, Command(Command)) where
 import           Command.Actor
 import           Command.Common
 import           Command.Definitions
-import           Command.Drop
-import           Command.Get
-import           Command.Go
-import           Command.Look
-import           Command.Put
+import           Command.Commands
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.State
 import           Core.Config         (quitCommands)
 import           Core.State          (GameWorld)
-import           Data.Text           (Text, isPrefixOf, toLower)
+import           Data.Text           (Text, isPrefixOf, toLower, stripPrefix)
 import           Repl.Parser
-
+import Data.Maybe
 firstRight :: Either Text a -> Either Text a -> Either Text a
 firstRight (Right x) _        = Right x
 firstRight (Left _) (Right y) = Right y
@@ -38,8 +34,9 @@ commands = map toCommand allCommands
 tryCommand :: Text -> Command -> Maybe (State GameWorld Text)
 tryCommand input cmd = do
   guard $ cmdName cmd `isPrefixOf` input
-  -- rest <- getRest <$> parseActionPhrase input
-  Just $ cmdExecute cmd input
+  case parseExpression input of
+    Right expr -> Just $ cmdExecute cmd $ fromJust (stripPrefix (cmdName cmd <> " ") (renderExpression expr))
+    Left _ ->  Nothing
 
 parse :: Text -> State GameWorld (Maybe Text)
 parse input = do
