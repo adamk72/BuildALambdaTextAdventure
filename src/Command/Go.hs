@@ -20,7 +20,7 @@ instance CommandMessage GoMessage where
         AlreadyAtLocation loc -> "You're already in " <> loc <> "."
         MovingToLocation loc -> "Moving to " <> loc <> "."
         DoesNotExist loc -> "Location does not exist in this game world: " <> loc <> "."
-        NoPath loc -> "There is no indication there's a way to get to " <> loc <> "."
+        NoPath loc -> "There is no indication there's a way to get to \"" <> loc <> "\"."
         NoLocationSpecified -> "Unable to find a location at all."
 
 executeGo :: CommandExecutor

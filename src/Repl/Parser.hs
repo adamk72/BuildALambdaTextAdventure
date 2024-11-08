@@ -6,6 +6,7 @@ import Data.Text (Text, unwords)
 import Data.List (find)
 import Command.Definitions
 import Prelude hiding (pred, unwords)
+import Utils
 
 data ActionPhrase = ActionPhrase
     { verb :: Verb
@@ -19,7 +20,7 @@ newtype Noun = Noun Text deriving (Show, Eq)
 newtype Preposition = Preposition Text deriving (Show, Eq)
 
 knownPrepositions :: [Text]
-knownPrepositions = ["in", "on", "under", "beside"]
+knownPrepositions = ["in", "on", "under", "beside", "to"]
 
 knownArticles :: [Text]
 knownArticles = ["the", "a", "an"]
@@ -33,42 +34,52 @@ isPreposition = flip elem knownPrepositions
 isArticle :: Text -> Bool
 isArticle = flip elem knownArticles
 
--- Find the first word satisfying a predicate after a given index
-findWordAfter :: (Text -> Bool) -> [Text] -> Int -> Maybe (Text, Int)
-findWordAfter pred words' startIdx =
-    find (pred . fst) $ zip (drop startIdx words') [startIdx..]
+findWordAfter :: (Text -> Bool) -> [(Text, Int)] -> Int -> Maybe (Text, Int)
+findWordAfter pred zippedWords startIdx =
+    find (pred . fst) $ dropWhile ((< startIdx) . snd) zippedWords
 
 skipArticles :: [Text] -> Int -> Int
 skipArticles words' idx
     | idx < length words' && isArticle (words' !! idx) = idx + 1
     | otherwise = idx
 
+type Index = Int
+
+peek :: [Text] -> Index -> Maybe Text
+peek wordList idx = atMay wordList (idx + 1)
+
 parseActionPhrase :: Text -> Maybe ActionPhrase
 parseActionPhrase input = do
-    let words' = T.words $ T.toLower input
+    let words' = zip (T.words $ T.toLower input) [0..]
 
     (verb, verbIdx) <- findWordAfter isVerb words' 0
 
-    (prep, prepIdx) <- findWordAfter isPreposition words' (verbIdx + 1)
 
-    let objStartIdx = skipArticles words' (verbIdx + 1)
-    guard $ objStartIdx < length words'
-    let obj = words' !! objStartIdx
-    guard $ not $ isPreposition obj
+    let obj = "object"
+        prep = intToText verbIdx
+        pn = "target"
+    -- (prep, prepIdx) <- findWordAfter isPreposition words' (verbIdx + 1)
 
-    let prepNounStartIdx = skipArticles words' (prepIdx + 1)
-    guard $ prepNounStartIdx < length words'
-    let prepNoun = words' !! prepNounStartIdx
+    -- let objStartIdx = skipArticles words' (verbIdx + 1)
+    -- guard $ objStartIdx < length words'
+    -- let obj = words' !! objStartIdx
+
+    -- let pnIdx = skipArticles words' (prepIdx + 1)
+    -- guard $ pnIdx < length words'
+    -- let pn = words' !! pnIdx
 
     return $ ActionPhrase
         (Verb verb)
         (Noun obj)
         (Preposition prep)
-        (Noun prepNoun)
+        (Noun pn)
   where
     guard :: Bool -> Maybe ()
     guard True = Just ()
     guard False = Nothing
+
+getAll :: ActionPhrase -> Text
+getAll (ActionPhrase (Verb v) (Noun o) (Preposition p) (Noun pn) ) =  unwords [v, o, p, pn]
 
 getRest :: ActionPhrase -> Text
 getRest (ActionPhrase _ (Noun o) (Preposition p) (Noun pn) ) =  unwords [o, p, pn]
