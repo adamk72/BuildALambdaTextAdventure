@@ -9,7 +9,7 @@ import           Control.Monad.State
 import           Core.Config          (quitCommands)
 import           Core.State.GameState (GameWorld)
 import           Data.Text            (Text, toLower)
-import           Repl.Parser
+import           Parser.Parser
 
 firstRight :: Either Text a -> Either Text a -> Either Text a
 firstRight (Right x) _        = Right x

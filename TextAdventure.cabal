@@ -45,8 +45,9 @@ library
       Core.State.Location
       Core.State.Operations
       Core.State.TaggedEntity
+      Parser.Parser
+      Parser.Types
       Repl.Interpreter
-      Repl.Parser
       Repl.Repl
       Utils
   other-modules:
