@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Fuse foldr/map" #-}
 
-module Repl.Parse (parse, tryCommand, Command(Command)) where
+module Repl.Interpreter (interpretCommand, tryCommand, Command(Command)) where
 
 import           Command.Commands
 import           Command.Definitions
@@ -29,12 +29,12 @@ commands = map toCommand allCommands
 
 tryCommand :: Text -> Command -> Either Text (State GameWorld Text)
 tryCommand input cmd =
-    case parseExpression input of
+    case parsePhrase input of
         Left err   -> Left $ renderExpressionError err
         Right expr -> Right $ cmdExecute cmd $ renderExpression expr
 
-parse :: Text -> State GameWorld (Maybe Text)
-parse input = do
+interpretCommand :: Text -> State GameWorld (Maybe Text)
+interpretCommand input = do
   let lower = toLower input
       match = foldr firstRight (Left "No matching command found") $ map (tryCommand lower) commands
   case match of

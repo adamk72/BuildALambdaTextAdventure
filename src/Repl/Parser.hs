@@ -1,13 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE LambdaCase #-}
 module Repl.Parser
-    ( parseExpression 
+    ( parsePhrase
     , renderExpressionError
     , renderExpression
-    , Expression(..)
-    , Prep(..)
-    , Phrase(..)
-    , ParseError(..)
     ) where
 
 import Data.Text (Text)
@@ -15,31 +11,42 @@ import qualified Data.Text as T
 import Data.Maybe (listToMaybe)
 import Command.Definitions (knownVerbs)
 
-newtype Phrase = Phrase { unPhrase :: Text }
+{-
+- `phrase`              => any arbitrary sentence.
+- `expression` (`exp`)  => the result of parsing a phrase which is well structured.
+- `command` (`cmd`)     => phrase that starts with a known good verb (e.g., "go", "look").
+- `clause`              => the portion of a phrase after the verb. There are two types:
+  - 'noun clause'
+  - 'prepositional clause'
+-}
+
+newtype NounClause = NounClause { unNounClause :: Text }
     deriving (Show, Eq)
 
-newtype Prep = Prep { unPrep :: Text }
+newtype PrepClause = PrepClause { unPrepClause :: Text }
     deriving (Show, Eq)
+
+type Verb = Text
 
 data Expression =
-      AtomicExpression Text
-    | UnaryExpression Text Phrase
-    | PrepExpression Text Prep Phrase
-    | ComplexExpression Text Phrase Prep Phrase
+      AtomicExpression Verb
+    | UnaryExpression Verb NounClause
+    | BinaryExpression Verb PrepClause NounClause
+    | ComplexExpression Verb NounClause PrepClause NounClause
     deriving (Show, Eq)
 
 data ParseError =
       UnknownVerb Text
     | MissingObject
     | MissingTarget
-    | InvalidPrep
     | MalformedExpression Text
     deriving (Show, Eq)
 
 -- | Support variables
 verbsRequiringObjects :: [Text]
-verbsRequiringObjects = ["put", "place", "move"]
+verbsRequiringObjects = ["put", "place", "move", "set"]
 
+-- Base prepositions and their variants
 knownPreps :: [(Text, [[Text]])]
 knownPreps =
     [ ("in", [["in"], ["inside"], ["into"]])
@@ -57,11 +64,11 @@ knownArticles = ["the", "a", "an"]
 isArticle :: Text -> Bool
 isArticle = (`elem` knownArticles)
 
-makePhrase :: [Text] -> Phrase
-makePhrase = Phrase . T.unwords
+makeNounClause :: [Text] -> NounClause
+makeNounClause = NounClause . T.unwords
 
-findLongestPrep :: [Text] -> Maybe (Text, [Text], [Text])
-findLongestPrep words' = listToMaybe $ reverse
+findPrepClause :: [Text] -> Either ParseError (Maybe (Text, [Text], [Text]))
+findPrepClause words' = Right $ listToMaybe $ reverse
     [ (basePrep, before, drop (length variant) after)
     | i <- [0..length words' - 1]
     , let (before, after) = splitAt i words'
@@ -73,56 +80,56 @@ findLongestPrep words' = listToMaybe $ reverse
     ]
 
 -- | Main parsing functions
-parseExpression :: Text -> Either ParseError Expression
-parseExpression input = do
+parsePhrase :: Text -> Either ParseError Expression
+parsePhrase input = do
     let words' = filter (not . isArticle) $ T.words $ T.toLower input
     case words' of
         [] -> Left $ MalformedExpression input
         (w:ws) -> if w `elem` knownVerbs
-                  then parseExpressionType w ws
+                  then parsePhraseType w ws
                   else Left $ UnknownVerb w
 
-parseExpressionType :: Text -> [Text] -> Either ParseError Expression
-parseExpressionType verb [] = Right $ AtomicExpression verb
-parseExpressionType verb words' =
-    case findLongestPrep words' of
-        Nothing -> Right $ UnaryExpression verb (makePhrase words')
-
+parsePhraseType :: Text -> [Text] -> Either ParseError Expression
+parsePhraseType verb [] = Right $ AtomicExpression verb
+parsePhraseType verb words' = do
+    prepResult <- findPrepClause words'
+    case prepResult of
+        Nothing -> Right $ UnaryExpression verb (makeNounClause words')
         Just (prep, beforePrep, afterPrep) ->
             case (beforePrep, afterPrep) of
                 ([], []) -> Left MissingTarget
                 ([], target) ->
-                    if verb `elem` verbsRequiringObjects -- verbs that require objects
+                    if verb `elem` verbsRequiringObjects
                     then Left MissingObject
-                    else Right $ PrepExpression verb
-                                              (Prep prep)
-                                              (makePhrase target)
-                (obj, target) -> Right $ ComplexExpression verb
-                                                         (makePhrase obj)
-                                                         (Prep prep)
-                                                         (makePhrase target)
--- | Rendering convenience functions
+                    else Right $ BinaryExpression verb
+                                 (PrepClause prep)
+                                 (makeNounClause target)
+                (obj, target) ->
+                    Right $ ComplexExpression verb
+                            (makeNounClause obj)
+                            (PrepClause prep)
+                            (makeNounClause target)
+
+-- | Rendering functions
 renderExpression :: Expression -> Text
 renderExpression = \case
     AtomicExpression verb ->
         verb
     UnaryExpression verb target ->
-        T.unwords [verb, unPhrase target]
-    PrepExpression verb prep target ->
-        T.unwords [verb, unPrep prep, unPhrase target]
+        T.unwords [verb, unNounClause target]
+    BinaryExpression verb prep target ->
+        T.unwords [verb, unPrepClause prep, unNounClause target]
     ComplexExpression verb obj prep target ->
-        T.unwords [verb, unPhrase obj, unPrep prep, unPhrase target]
+        T.unwords [verb, unNounClause obj, unPrepClause prep, unNounClause target]
 
 renderExpressionError :: ParseError -> Text
 renderExpressionError = \case
     UnknownVerb verb ->
-        "I don't understand the command '" <> verb <> "'. Valid commands start with: " <>
+        "I don't understand the phrase '" <> verb <> "'. Valid phrases start with: " <>
         T.intercalate ", " knownVerbs <> "."
     MissingObject ->
-        "This command needs an object to act on. For example: 'get key' or 'drop sword'."
+        "This phrase needs an object to act on. For example: 'get key' or 'drop sword'."
     MissingTarget ->
-        "This command needs a target. For example: 'go cave' or 'look at chest'."
-    InvalidPrep ->
-        "Invalid preposition. Try using: in, on, under, at, from, or to."
+        "This phrase needs a target. For example: 'go cave' or 'look at chest'."
     MalformedExpression expr ->
         "I couldn't understand '" <> expr <> "'. Please try rephrasing your command."

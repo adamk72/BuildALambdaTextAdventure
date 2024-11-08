@@ -108,3 +108,20 @@ instance FromJSON Location where
 -}
 ```
 
+- [] Comparison of all Repl.hs code
+
+``` haskell
+{- This is WAY better
+  maybe :: b -> (a -> b) -> Maybe a -> b
+The maybe function takes a default value, a function, and a Maybe value. If the Maybe value is Nothing, the function returns the default value. Otherwise, it applies the function to the value inside the Just and returns the result.
+-}
+{- Previous code for comparison:
+  case outM of
+    Just out -> do
+        print_ out
+        return (Just st)
+    Nothing -> return Nothing
+-}
+-- Just st <$ mapM_ print_ outM -- why doesn't this work?
+```
+

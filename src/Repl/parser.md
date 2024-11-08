@@ -1,6 +1,15 @@
+# Definitions
+
+- `phrase`              => any arbitrary sentence.
+- `expression` (`exp`)  => the result of of parsing a phrase which is well structured. See forms below.
+- `command` (`cmd`)     => phrase that starts with a known good verb (e.g., "go", "look").
+- `clause`              => the portion of a command after the verb. There are two types:
+  - 'noun clause'
+  - 'prepositional clause'
+
 # Command patterns
 
-# Parse rules
+## Parse rules
 
 These assume that the first word, the verb, passes a check that they are valid for parsing; otherwise reject as "I don't know how to do "X".
 
