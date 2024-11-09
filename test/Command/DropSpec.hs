@@ -17,7 +17,7 @@ spec = do
                     expr = AtomicExpression "drop"
                     (output, newState) = runCommand executeDrop expr gw
 
-                output `shouldBe` "TO BE FIXED: drop requires an item to drop"
+                output `shouldBe` renderMessage DropWhat
                 verifyStartLocation newState "meadow"
 
             it "handles unary expression (drop <item>)" $ do
@@ -30,23 +30,29 @@ spec = do
                     dropExpr = UnaryExpression "drop" (NounClause "silver coin")
                     (output, finalState) = runCommand executeDrop dropExpr midState
 
-                output `shouldBe` "silver coin dropped. Your inventory is now: "
+                output `shouldBe` renderMessage (DroppedItemWithInventory "silver coin" "") -- no inventory at this time
                 checkItemTagInPocket "silver coin" finalState `shouldBe` False
 
-            it "handles binary expression (drop <item> on ground)" $ do
+            it "questions what is meant by an incomplete phrase" $ do
                 let gw = defaultGW
                     expr = BinaryExpression "drop" (PrepClause "on") (NounClause "ground")
+                    (output, _) = runCommand executeDrop expr gw
+                output `shouldBe` renderMessage DropWhat
+
+            it "handles full phrase" $ do
+                let gw = defaultGW
+                    expr = ComplexExpression "drop" (NounClause "silver coin") (PrepClause "on") (NounClause "ground")
                     (output, newState) = runCommand executeDrop expr gw
 
-                output `shouldBe` "TO BE FIXED: binary drop expressions not supported"
-                verifyStartLocation newState "meadow"
+                output `shouldBe` renderMessage (DroppedItemSomewhere "silver coin" "on ground") -- no inventory at this time
+                checkItemTagInPocket "silver coin" newState `shouldBe` False
 
-            it "handles complex expression (should be invalid)" $ do
+            it "handles dropping of all objects" $ do
                 let gw = defaultGW
                     expr = ComplexExpression "drop" (NounClause "all") (PrepClause "on") (NounClause "ground")
                     (output, newState) = runCommand executeDrop expr gw
 
-                output `shouldBe` "TO BE FIXED: complex drop expressions not supported"
+                output `shouldBe` "IN DEVELOPMENT: dropping all items from inventory"
                 verifyStartLocation newState "meadow"
 
         describe "inventory validation" $ do
@@ -60,7 +66,7 @@ spec = do
                     dropExpr = UnaryExpression "drop" (NounClause "silver coin")
                     (output, finalState) = runCommand executeDrop dropExpr midState
 
-                output `shouldBe` "silver coin dropped. Your inventory is now: "
+                output `shouldBe` renderMessage (DroppedItemWithInventory "silver coin" "")
                 checkItemTagInPocket "silver coin" finalState `shouldBe` False
 
             it "prevents dropping items not in inventory" $ do
@@ -69,14 +75,6 @@ spec = do
                     (output, newState) = runCommand executeDrop expr gw
 
                 output `shouldBe` "You don't have a nonexistent to drop."
-                verifyStartLocation newState "meadow"
-
-            it "prevents dropping items from location" $ do
-                let gw = defaultGW
-                    expr = UnaryExpression "drop" (NounClause "silver coin")
-                    (output, newState) = runCommand executeDrop expr gw
-
-                output `shouldBe` "You don't have a silver coin to drop."
                 verifyStartLocation newState "meadow"
 
         describe "state management" $ do

@@ -30,6 +30,11 @@ data CommandMessageType
     | DoNotSeeItem Text
     | NotSure
     | LocationError Text
+    | DropWhat
+    | DroppedItem Text
+    | DroppedItemWithInventory Text Text
+    | DroppedItemSomewhere Text Text
+    | YouDoNotHave Text
     | PENDING
     deriving (Eq, Show)
 
@@ -51,6 +56,12 @@ instance CommandMessage CommandMessageType where
         YouAreIn loc ->  "You are in " <> toLower loc <> "."
         PutItemIn item dst -> item <> " is now in the " <> dst <> "."
         LookTowards dir -> "You look " <> toLower dir <> ", but see nothing special."
+        -- Drop specific
+        DropWhat -> "What needs to dropped?"
+        DroppedItem object -> "You dropped " <> object <> "."
+        DroppedItemSomewhere object loc -> "You dropped " <> object <> " " <> loc <> "."
+        DroppedItemWithInventory object inv -> "You dropped " <> object <> ". Your inventory is now: " <> inv <> "."
+        YouDoNotHave object -> "You don't have a " <> object <> " to drop."
         -- Go specific
         GoWhere -> "Where do you want to go?"
         NoPath loc -> "There is no indication there's a way to get to \"" <> loc <> "\"."
