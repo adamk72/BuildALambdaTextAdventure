@@ -3,7 +3,7 @@ module Command.Get (module Command.Get) where
 import           Command.Messages
 import           Control.Monad.State
 import           Core.State
-import           Data.Text           (Text, unpack)
+import           Data.Text           (Text)
 import           Parser.Types
 
 getItem :: Text -> [Text] -> Actor -> GameWorld -> State GameWorld Text
@@ -15,7 +15,7 @@ getItem itemTag validItemTags actor gw
                     updatedGW = moveItemLoc foundObj ps gw
                 put updatedGW
                 msg $ PickedUp itemTag (getName actor)
-            Nothing -> error $ unpack $ renderMessage $ ItemDoesNotExist itemTag
+            Nothing -> msgGameWordError $ ItemDoesNotExist itemTag
     | otherwise = msg $ InvalidItem itemTag
 
 executeGet :: CommandExecutor

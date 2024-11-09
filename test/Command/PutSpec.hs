@@ -75,20 +75,22 @@ spec = do
                     expr = ComplexExpression "put" (NounClause "golden coin") (PrepClause "in") (NounClause "bag of holding")
                     (output, _) = runCommand executePut expr gw
 
-                output `shouldBe` renderMessage (InvalidItem "golden coin")
+                output `shouldBe` renderMessage (NoItemForContainer "golden coin" "bag of holding")
 
             it "prevents putting items in non-existent containers" $ do
                 let gw = defaultGW
+                    updatedGW = moveItemLoc testCoin testMeadow gw
                     expr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "magic box")
-                    (output, _) = runCommand executePut expr gw
+                    (output, _) = runCommand executePut expr updatedGW
 
-                output `shouldBe` renderMessage (InvalidItem "magic box")
+                output `shouldBe` renderMessage (NoContainerForItem "silver coin" "magic box")
 
         describe "state management" $ do
             it "moves item from location to container" $ do
                 let gw = defaultGW
+                    updatedGW = moveItemLoc testCoin testMeadow gw
                     expr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "bag of holding")
-                    (_, newState) = runCommand executePut expr gw
+                    (_, newState) = runCommand executePut expr updatedGW
 
                 -- Verify item is in container
                 case findItemByTag "bag of holding" newState >>= getInventory of
@@ -105,8 +107,9 @@ spec = do
             it "moves item from inventory to container" $ do
                 -- First get the item
                 let gw = defaultGW
+                    updatedGW = moveItemLoc testCoin testMeadow gw
                     getExpr = UnaryExpression "get" (NounClause "silver coin")
-                    (_, midState) = runCommand executeGet getExpr gw
+                    (_, midState) = runCommand executeGet getExpr updatedGW
 
                     -- Then put it in container
                     putExpr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "bag of holding")

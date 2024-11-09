@@ -58,7 +58,7 @@ spec = do
                     expr = UnaryExpression "get" (NounClause "golden coin")
                     (output, newState) = runCommand executeGet expr gw
 
-                output `shouldBe` "Cannot pick up \"golden coin\"."
+                output `shouldBe` renderMessage (InvalidItem "golden coin")
                 checkItemTagInPocket "golden coin" newState `shouldBe` False
 
         describe "inventory management" $ do

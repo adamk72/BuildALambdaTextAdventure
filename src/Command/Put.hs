@@ -8,24 +8,26 @@ import           Parser.Types
 
 putItemInContainer :: Text -> Text -> [Text] -> GameWorld -> State GameWorld Text
 putItemInContainer itemTag containerTag validItemTags gw
-    | itemTag `elem` validItemTags =
+    | itemTag `elem` validItemTags && containerTag `elem` validItemTags =
         case findItemByTag itemTag gw of
-            Nothing -> msg $ NoPath itemTag
-            Just item -> case findItemByTag containerTag gw of
-                Nothing -> msg $ InvalidItem itemTag
-                Just container -> case getInventory container of
+            Nothing ->  msgGameWordError $ ItemError itemTag
+            Just foundItem -> case findItemByTag containerTag gw of
+                Nothing -> msgGameWordError $ ItemError containerTag
+                Just validContainer -> case getInventory validContainer of
                     Nothing -> msg $ NotAContainer containerTag
                     Just containerLoc -> do
-                        let updatedGW = moveItemLoc item containerLoc gw
+                        let updatedGW = moveItemLoc foundItem containerLoc gw
                         put updatedGW
                         msg $ PutItemIn itemTag containerTag
-    | otherwise = msg $ InvalidItem itemTag
+    | itemTag `elem` validItemTags && notElem containerTag validItemTags = msg $    NoContainerForItem itemTag containerTag
+    | notElem  itemTag validItemTags && containerTag `elem` validItemTags = msg $ NoItemForContainer itemTag containerTag
+    | otherwise = msg $ InvalidItemInLocation itemTag
 
 executePut :: CommandExecutor
 executePut expr = do
     gw <- get
     let acLoc = getActiveActorLoc gw
-        validItemTags = map getTag $ getItemsAtLoc acLoc gw
+        validItemTags = map getTag $ getItemsAtLoc acLoc gw ++ getActorInventoryItems gw
     case expr of
         AtomicExpression {} ->
             msg PutWhat
