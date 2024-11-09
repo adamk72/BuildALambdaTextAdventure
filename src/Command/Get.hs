@@ -4,22 +4,34 @@ import           Command.Messages
 import           Control.Monad.State
 import           Core.State
 import           Data.List           (find)
-import           Data.Text           (unpack)
+import           Data.Text           (Text, unpack)
 import           Parser.Types
+
+getItem :: Text -> [Text] -> Actor -> GameWorld -> State GameWorld Text
+getItem itemTag  validItemTags actor gw
+    | itemTag `elem` validItemTags =
+        case find (\item -> getTag item == itemTag) (gwItems gw) of
+            Just foundObj -> do
+                let ps = getActorInventory gw
+                    updatedGW = moveItemLoc foundObj ps gw
+                put updatedGW
+                msg $ PickedUp itemTag (getName actor)
+            Nothing -> error $ unpack $ renderMessage $ ItemDoesNotExist itemTag
+    | otherwise = msg $ InvalidItem itemTag
 
 executeGet :: CommandExecutor
 executeGet expr = do
     gw <- get
     let acLoc = getActiveActorLoc gw
         ac = gwActiveActor gw
-        validObjTags = map getTag $ getItemsAtLoc acLoc gw
-    case expr of
-        (UnaryExpression _ (NounClause pickFrom))  | pickFrom `elem` validObjTags ->
-            case find (\item -> getTag item == pickFrom) (gwItems gw) of
-                Just foundObj -> do
-                    let ps = getActorInventory gw
-                        updatedGW = moveItemLoc foundObj ps gw
-                    put updatedGW
-                    return $ renderMessage $ PickedUp pickFrom (getName ac)
-                Nothing -> error $ unpack $ renderMessage $ ItemDoesNotExist pickFrom
-        _ -> return $ renderMessage $ InvalidItem "Pending"
+        validItemTags = map getTag $ getItemsAtLoc acLoc gw
+        handle = \case
+            AtomicExpression {} ->
+                msg GetWhat
+            UnaryExpression _ (NounClause itemTag) ->
+                getItem itemTag validItemTags ac gw
+            BinaryExpression {} ->
+                msg GetWhat
+            ComplexExpression _ (NounClause itemTag) (PrepClause _prep) (NounClause _locTag) ->
+                getItem itemTag validItemTags ac gw
+    handle expr
