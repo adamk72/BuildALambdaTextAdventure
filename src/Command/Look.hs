@@ -8,6 +8,21 @@ import           Control.Monad.State
 import           Core.Message
 import           Core.State
 import           Parser.Types
+import           Utils
+import Data.Text (Text)
+
+lookIn :: Text -> GameWorld -> State GameWorld Text
+lookIn containerTag gw = do
+    case getItemInventoryByTag of
+        Left err      -> err
+        Right message -> message
+        where
+            getItemInventoryByTag =
+                 case findItemByTag containerTag gw of
+                    Nothing -> Left $ msg $ NotAContainer containerTag
+                    Just validContainer -> case getInventory validContainer of
+                        Nothing -> Left $ msg $ NotAContainer containerTag
+                        Just containerLoc -> Right $ msg $ LookIn containerTag (oxfordEntityNames (getItemsAtLoc containerLoc gw))
 
 executeLook :: CommandExecutor
 executeLook expr = do
@@ -21,7 +36,7 @@ executeLook expr = do
             msg2 (YouAreIn $ locName acLoc) (LookAround objs)
         BinaryExpression _ (PrepClause "at") (NounClause target) ->
             return $ "You look at "  <> target <> "."
-        BinaryExpression _ (PrepClause "in") (NounClause target) ->
-            return $ "You look in "  <> target <> "."
+        BinaryExpression _ (PrepClause "in") (NounClause container) ->
+            lookIn container gw
         ComplexExpression _ (NounClause itemTag) _ (NounClause containerTag) ->
             msg $ PENDING
