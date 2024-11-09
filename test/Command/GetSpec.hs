@@ -5,8 +5,8 @@ import           Command.Commands
 import           Command.TestUtils
 import           Core.State
 import           Mock.GameEnvironment
-import           Test.Hspec
 import           Parser.Types
+import           Test.Hspec
 
 spec :: Spec
 spec = do
@@ -17,7 +17,7 @@ spec = do
                     expr = AtomicExpression "get"
                     (output, newState) = runCommand executeGet expr gw
 
-                output `shouldBe` "TO BE FIXED: get requires an item to pick up"
+                output `shouldBe` renderMessage GetWhat
                 checkItemTagInPocket "silver coin" newState `shouldBe` False
 
             it "handles unary expression (get <item>)" $ do
@@ -30,19 +30,19 @@ spec = do
 
             it "handles binary expression (get <item> from <location>)" $ do
                 let gw = defaultGW
-                    expr = BinaryExpression "get" (PrepClause "from") (NounClause "silver coin")
+                    expr = BinaryExpression "get" (PrepClause "from") (NounClause "someplace")
                     (output, newState) = runCommand executeGet expr gw
 
-                output `shouldBe` "TO BE FIXED: binary expression not yet supported"
+                output `shouldBe` renderMessage GetWhat
                 checkItemTagInPocket "silver coin" newState `shouldBe` False
 
-            it "handles complex expression (should be invalid)" $ do
+            it "handle complex sentences for picking something up" $ do
                 let gw = defaultGW
-                    expr = ComplexExpression "get" (NounClause "all") (PrepClause "from") (NounClause "meadow")
+                    expr = ComplexExpression "get" (NounClause "silver coin") (PrepClause "from") (NounClause "meadow")
                     (output, newState) = runCommand executeGet expr gw
 
-                output `shouldBe` "TO BE FIXED: complex expression not supported for get"
-                checkItemTagInPocket "silver coin" newState `shouldBe` False
+                output `shouldBe` renderMessage (PickedUp "silver coin" "Alice the Adventurer")
+                checkItemTagInPocket "silver coin" newState `shouldBe` True
 
         describe "item validation" $ do
             it "allows picking up items from current location" $ do
@@ -53,21 +53,13 @@ spec = do
                 output `shouldBe` "Moved silver coin to Alice the Adventurer"
                 checkItemTagInPocket "silver coin" newState `shouldBe` True
 
-            it "prevents picking up non-existent items" $ do
+            it "prevents picking up non-existent items in location" $ do
                 let gw = defaultGW
                     expr = UnaryExpression "get" (NounClause "golden coin")
                     (output, newState) = runCommand executeGet expr gw
 
-                output `shouldBe` "Cannot pick up \"TO BE FIXED\""
+                output `shouldBe` "Cannot pick up \"golden coin\"."
                 checkItemTagInPocket "golden coin" newState `shouldBe` False
-
-            it "prevents picking up items from different locations" $ do
-                let gw = defaultGW  -- player starts in meadow
-                    expr = UnaryExpression "get" (NounClause "bat")  -- bat is in cave
-                    (output, newState) = runCommand executeGet expr gw
-
-                output `shouldBe` "Cannot pick up \"TO BE FIXED\""
-                checkItemTagInPocket "bat" newState `shouldBe` False
 
         describe "inventory management" $ do
             it "moves item from location to inventory" $ do

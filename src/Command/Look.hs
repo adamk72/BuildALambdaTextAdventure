@@ -13,7 +13,7 @@ executeLook (UnaryExpression _ (NounClause "around")) = do
     gw <- get
     let acLoc = getActiveActorLoc gw
         objs = getItemsAtLoc acLoc gw
-    return $ renderMessage (YouAreIn $ locName acLoc) <> " " <> renderMessage (LookAround objs)
+    msg2 (YouAreIn $ locName acLoc) (LookAround objs)
 executeLook _ = do
     gw <- get
     let loc = locName $ getActiveActorLoc gw

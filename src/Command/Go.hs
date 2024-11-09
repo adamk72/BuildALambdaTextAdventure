@@ -9,15 +9,15 @@ import           Parser.Types
 
 moveTo :: Actor -> Text -> [Text] -> GameWorld -> State GameWorld Text
 moveTo actor dstTag validDstTags  gw
-    | dstTag == locTag (getLocation actor) = return $ renderMessage $ AlreadyAtLocation $ locTag (getLocation actor)
+    | dstTag == locTag (getLocation actor) = msg $ AlreadyAtLocation $ locTag (getLocation actor)
     | dstTag `elem` validDstTags =
         case find (\loc -> locTag loc == dstTag) (gwLocations gw) of
             Just newLoc -> do
                 let newAc = setActorLoc newLoc actor
                 put gw { gwActiveActor = newAc }
-                return $ renderMessage $ MovingToLocation dstTag
+                msg $ MovingToLocation dstTag
             Nothing -> error $ unpack $ renderMessage $ LocationError dstTag
-    | otherwise = return $ renderMessage $ NoPath dstTag
+    | otherwise = msg $ NoPath dstTag
 
 executeGo :: CommandExecutor
 executeGo expr = do
@@ -25,8 +25,7 @@ executeGo expr = do
     let ac = gwActiveActor gw
         validDstTags = destinationTags (getLocation ac)
     case expr of
-        (AtomicExpression _) -> return $ renderMessage GoWhere
+        (AtomicExpression _) -> msg GoWhere
         (UnaryExpression _ (NounClause dst) ) -> moveTo ac dst validDstTags gw
         (BinaryExpression _ _ (NounClause dst) ) -> moveTo ac dst validDstTags gw
-        _ -> return $ renderMessage NotSure
-        -- noWay -> return $ renderMessage $ NoPath noWay
+        _ -> msg NotSure

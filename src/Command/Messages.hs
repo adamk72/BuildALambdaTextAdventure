@@ -9,6 +9,16 @@ import           Utils
 
 type CommandExecutor = Expression -> State GameWorld Text
 
+msg :: CommandMessageType -> State GameWorld Text
+msg = return . renderMessage
+
+msgs :: [CommandMessageType] -> Text -> State GameWorld Text
+msgs messages separator = return $ intercalate separator (Prelude.map renderMessage messages)
+
+msg2 :: CommandMessageType -> CommandMessageType -> State GameWorld Text
+msg2 m1 m2 = msgs [m1, m2] " "
+
+
 class CommandMessage a where
     renderMessage :: a -> Text
 
@@ -29,6 +39,7 @@ data CommandMessageType
     | GoWhere
     | DoNotSeeItem Text
     | NotSure
+    | GetWhat
     | LocationError Text
     | DropWhat
     | DroppedItem Text
@@ -56,6 +67,8 @@ instance CommandMessage CommandMessageType where
         YouAreIn loc ->  "You are in " <> toLower loc <> "."
         PutItemIn item dst -> item <> " is now in the " <> dst <> "."
         LookTowards dir -> "You look " <> toLower dir <> ", but see nothing special."
+        -- Get Specific
+        GetWhat -> "What are you trying to get?"
         -- Drop specific
         DropWhat -> "What needs to dropped?"
         DroppedItem object -> "You dropped " <> object <> "."

@@ -15,9 +15,9 @@ dropObject object dstM actorLoc gw =
                 inv = oxfordEntityNames (getActorInventoryItems updatedGW)
             put updatedGW
             case dstM of
-                Nothing -> return $ renderMessage $ DroppedItemWithInventory object inv
-                Just dst -> return $ renderMessage $ DroppedItemSomewhere object dst
-        Nothing -> return $ renderMessage $ YouDoNotHave object
+                Nothing -> msg $ DroppedItemWithInventory object inv
+                Just dst -> msg $ DroppedItemSomewhere object dst
+        Nothing -> msg $ YouDoNotHave object
 
 executeDrop :: CommandExecutor
 executeDrop expr = do
@@ -25,11 +25,11 @@ executeDrop expr = do
     let acLoc = getActiveActorLoc gw
         handle = \case
             AtomicExpression _ ->
-                return $ renderMessage DropWhat
+                msg DropWhat
             UnaryExpression _ (NounClause object) ->
                 dropObject object Nothing acLoc gw
             BinaryExpression {} ->
-                return $ renderMessage DropWhat
+                msg DropWhat
             ComplexExpression _ (NounClause object) (PrepClause prep) (NounClause dst) ->
                 dropObject object (Just (prep <> " " <> dst)) acLoc gw
     handle expr

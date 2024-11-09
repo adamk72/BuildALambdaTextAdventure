@@ -11,13 +11,13 @@ executePut expr = do
     case expr of
         (ComplexExpression _ (NounClause itemTag) _ (NounClause containerTag)) ->
             case findItemByTag itemTag gw of
-                Nothing -> return $ renderMessage $ NoPath itemTag
+                Nothing -> msg $ NoPath itemTag
                 Just item -> case findItemByTag containerTag gw of
-                        Nothing -> return $ renderMessage $ NoPath containerTag
+                        Nothing -> msg $ NoPath containerTag
                         Just container -> case getInventory container of
-                            Nothing -> return $ renderMessage $ NotAContainer containerTag
+                            Nothing -> msg $ NotAContainer containerTag
                             Just containerLoc -> do
                                 let updatedGW = moveItemLoc item containerLoc gw
                                 put updatedGW
-                                return $ renderMessage $ PutItemIn itemTag containerTag
-        _ -> return $ renderMessage $ DontKnowWhere "Pending"
+                                msg $ PutItemIn itemTag containerTag
+        _ -> msg $ DontKnowWhere "Pending"
