@@ -70,6 +70,7 @@ spec = describe "Interpreter" $ do
             let (result, finalState) = runState (interpretCommand "look !!!") defaultGW
             case result of
                 Just txt -> "Don't know how to look !!!." `isPrefixOf` txt `shouldBe` True
+                -- Just txt -> "Don't know how to look !!!."  `shouldBe` txt
                 Nothing -> expectationFailure "Expected Just but got Nothing"
             finalState `shouldBe` defaultGW
 

@@ -76,7 +76,7 @@ spec = do
 
             it "should handle unknown commands gracefully" $ do
                 actionWrapper $ \handles -> do
-                    testCommand handles "nonsense" "Don't know how to nonsense."
+                    testCommand handles "nonsense" "Don't know how to nonsense. Got error: Unknown command."
 
         context "Navigation Commands" $ do
             it "should handle 'look' command" $ do

@@ -25,7 +25,7 @@ spec = do
                     expr = UnaryExpression "look" (NounClause "around")
                     (output, newState) = runCommand executeLook expr gw
 
-                output `shouldBe` "You are in a flowery meadow. You look around and see a sliver coin, a simple bag, a shiny bauble, and bag of holding."
+                output `shouldBe` "You are in a flowery meadow. You look around and see a sliver coin, a bag of holding, a simple bag, and a shiny bauble."
                 verifyStartLocation newState "meadow"
 
             it "handles binary expression (look at <thing>)" $ do
