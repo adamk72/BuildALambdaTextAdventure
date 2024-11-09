@@ -7,9 +7,10 @@ import           Command.CommandExecutor
 import           Control.Monad.State
 import           Core.Message
 import           Core.State
+import           Data.Text               (Text, isSuffixOf)
 import           Parser.Types
+import           Parser.Utils
 import           Utils
-import Data.Text (Text)
 
 lookIn :: Text -> GameWorld -> State GameWorld Text
 lookIn containerTag gw = do
@@ -24,6 +25,9 @@ lookIn containerTag gw = do
                         Nothing -> Left $ msg $ NotAContainer containerTag
                         Just containerLoc -> Right $ msg $ LookIn containerTag (oxfordEntityNames (getItemsAtLoc containerLoc gw))
 
+lookInActorInventory :: GameWorld -> Text
+lookInActorInventory gw = "Your inventory has: " <> oxfordEntityNames (getActorInventoryItems gw)
+
 executeLook :: CommandExecutor
 executeLook expr = do
     gw <- get
@@ -34,9 +38,15 @@ executeLook expr = do
             msg $ YouSeeGeneral "A general view of the space and possibly some items"
         UnaryExpression _ (NounClause "around") ->
             msg2 (YouAreIn $ locName acLoc) (LookAround objs)
-        BinaryExpression _ (PrepClause "at") (NounClause target) ->
-            return $ "You look at "  <> target <> "."
-        BinaryExpression _ (PrepClause "in") (NounClause container) ->
+        UnaryExpression _ (NounClause invClause) | "inventory" `isSuffixOf` invClause ->
+            return $ lookInActorInventory gw
+        UnaryExpression {} -> return "TBD"
+        BinaryExpression _ _ (NounClause invClause) | "inventory" `isSuffixOf` invClause ->
+            return $ lookInActorInventory gw
+        BinaryExpression _ (PrepClause atP) (NounClause target) | atP `isPrepVariantOf` "at" || atP `isPrepVariantOf` "toward"  ->
+            return $ "You look at " <> target <> "."
+        BinaryExpression _ (PrepClause inP) (NounClause container) | inP `isPrepVariantOf` "in" ->
             lookIn container gw
-        ComplexExpression _ (NounClause itemTag) _ (NounClause containerTag) ->
-            msg $ PENDING
+        BinaryExpression {} -> return "TBD"
+        ComplexExpression _  (NounClause object) (PrepClause prep) (NounClause target)->
+            return $ "You look at " <> object <> " " <> prep <> " " <> target <> "."

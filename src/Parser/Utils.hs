@@ -11,9 +11,10 @@ knownPreps =
     [ ("in", [["in"], ["inside"], ["into"]])
     , ("on", [["on"], ["onto"], ["upon"], ["on", "top", "of"]])
     , ("under", [["under"], ["beneath"], ["underneath"]])
-    , ("at", [["at"], ["towards"]])
+    , ("at", [["at"], ["towards"], ["toward"]])
     , ("from", [["from"]])
-    , ("to", [["to"], ["toward"], ["towards"]])
+    , ("to", [["to"]])
+    , ("toward", [["toward"], ["towards"]])
     ]
 
 knownArticles :: [Text]
