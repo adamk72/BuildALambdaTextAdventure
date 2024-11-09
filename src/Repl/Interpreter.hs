@@ -8,8 +8,9 @@ import           Command.Definitions
 import           Control.Monad.State
 import           Core.Config          (quitCommands)
 import           Core.State.GameState (GameWorld)
-import           Data.Text            (Text, toLower)
+import           Data.Text            (Text, toLower, words)
 import           Parser.Parser
+import           Prelude              hiding (words)
 
 firstRight :: Either Text a -> Either Text a -> Either Text a
 firstRight (Right x) _        = Right x
@@ -36,7 +37,9 @@ tryCommand input cmd =
 interpretCommand :: Text -> State GameWorld (Maybe Text)
 interpretCommand input = do
   let lower = toLower input
-      match = foldr firstRight (Left "No matching command found") $ map (tryCommand lower) commands
+      match = case findCommand (head $ words lower) of
+        Just cmdInfo -> tryCommand lower (toCommand cmdInfo)
+        Nothing      -> Left "Unknown command"
   case match of
     Right action -> do
         Just <$> action
