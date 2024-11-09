@@ -2,7 +2,7 @@ module MainSpec (spec) where
 
 import           Command.Messages
 import           Control.Exception.Base (finally)
-import           Data.Text              (Text, pack, unpack)
+import           Data.Text
 import           Prelude                hiding (sin)
 import           System.Exit
 import           System.IO              hiding (stdin, stdout)

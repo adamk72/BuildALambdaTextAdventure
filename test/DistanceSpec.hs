@@ -1,11 +1,11 @@
 module DistanceSpec (spec) where
 
-import           Command.Get
-import           Command.TestUtils
-import           Core.State
-import           Core.Distance
-import           Data.Maybe
-import           Mock.GameEnvironment
+-- import           Command.Get
+-- import           Command.TestUtils
+-- import           Core.State
+-- import           Core.Distance
+-- import           Data.Maybe
+-- import           Mock.GameEnvironment
 import           Test.Hspec
 
 spec :: Spec

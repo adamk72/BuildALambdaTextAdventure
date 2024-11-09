@@ -20,3 +20,4 @@ getDistance e1 e2
   | getLocation e1 == getLocation e2 = DistanceHere
   | fromJust (getInventory e1) == getLocation e2 = DistanceHeld
   | isNothing (getInventory e1) = DistanceNotHere
+  | otherwise = DistanceNotHere

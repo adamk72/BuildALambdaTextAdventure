@@ -4,7 +4,6 @@ module Repl.InterpreterSpec (spec) where
 import           Command.CommandExecutor (CommandExecutor)
 import           Command.CommandInfo     (CommandInfo (..), CommandVerb (..))
 import           Control.Monad.State
-import           Core.State              (GameWorld)
 import           Data.Text               (Text, isPrefixOf)
 import           Mock.GameEnvironment
 import           Repl.Interpreter
@@ -22,9 +21,6 @@ mkTestCommand verb txt aliases exec = CommandInfo
 -- Mock command executors for testing
 mockSuccessExecutor :: CommandExecutor
 mockSuccessExecutor _ = return "Success!"
-
-mockFailExecutor :: CommandExecutor
-mockFailExecutor _ = return "Failed!"
 
 -- Test suite
 spec :: Spec

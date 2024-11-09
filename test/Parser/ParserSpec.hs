@@ -2,7 +2,6 @@
 module Parser.ParserSpec (spec) where
 
 import Test.Hspec
-import Data.Text (Text)
 import Parser.Parser
 import Parser.Types
 

@@ -110,7 +110,6 @@ test-suite TextAdventure-test
       JSONSpec
       MainSpec
       Mock.GameEnvironment
-      Mock.TrialAdventureSpec
       Parser.ParserSpec
       Repl.InterpreterSpec
       Paths_TextAdventure
