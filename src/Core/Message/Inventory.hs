@@ -1,11 +1,9 @@
-module Core.Message.Inventory
-    ( InventoryMessage(..)
-    ) where
+module Core.Message.Inventory (InventoryMessage (..)) where
 
-import Data.Text (Text)
-import Core.Message.Common (MessageRenderer(..))
-import Core.State (Item)
-import Utils (oxfordEntityNames)
+import           Core.Message.Common (MessageRenderer (..))
+import           Core.State          (Item)
+import           Data.Text           (Text)
+import           Utils               (oxfordEntityNames)
 
 data InventoryMessage
     = PickedUp Text Text

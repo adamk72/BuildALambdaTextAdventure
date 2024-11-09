@@ -1,9 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Parser.ParserSpec (spec) where
 
-import Test.Hspec
-import Parser.Parser
-import Parser.Types
+import           Parser.Parser
+import           Parser.Types
+import           Test.Hspec
 
 spec :: Spec
 spec = do

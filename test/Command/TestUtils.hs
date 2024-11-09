@@ -3,9 +3,9 @@ module Command.TestUtils (module Command.TestUtils) where
 import           Command.CommandExecutor
 import           Control.Monad.State
 import           Core.State
-import           Data.Text           (Text)
+import           Data.Text               (Text)
+import           Parser.Types            (Expression)
 import           Test.Hspec
-import           Parser.Types        (Expression)
 
 
 -- | Run a command with an Expression

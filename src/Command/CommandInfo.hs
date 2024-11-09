@@ -1,10 +1,4 @@
-module Command.CommandInfo
-    ( CommandVerb(..)
-    , CommandInfo(..)
-    , allCommands
-    , knownVerbs
-    , findCommand
-    ) where
+module Command.CommandInfo (CommandInfo (..), CommandVerb (..), allCommands, findCommand, knownVerbs) where
 
 import           Command.CommandExecutor
 import           Command.Commands

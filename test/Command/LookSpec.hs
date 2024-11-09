@@ -5,8 +5,8 @@ import           Command.Commands
 import           Command.TestUtils
 import           Core.State
 import           Mock.GameEnvironment
-import           Test.Hspec
 import           Parser.Types
+import           Test.Hspec
 
 spec :: Spec
 spec = do

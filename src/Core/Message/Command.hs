@@ -1,9 +1,7 @@
-module Core.Message.Command
-    ( CommandMessage(..)
-    ) where
+module Core.Message.Command (CommandMessage (..)) where
 
-import Data.Text (Text)
-import Core.Message.Common (MessageRenderer(..))
+import           Core.Message.Common (MessageRenderer (..))
+import           Data.Text           (Text)
 
 data CommandMessage
     = DontKnowWhere Text

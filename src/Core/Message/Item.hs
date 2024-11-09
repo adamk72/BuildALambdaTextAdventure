@@ -1,9 +1,7 @@
-module Core.Message.Item
-    ( ItemMessage(..)
-    ) where
+module Core.Message.Item (ItemMessage (..)) where
 
-import Data.Text (Text)
-import Core.Message.Common (MessageRenderer(..))
+import           Core.Message.Common (MessageRenderer (..))
+import           Data.Text           (Text)
 
 data ItemMessage
     = DoNotSeeItem Text

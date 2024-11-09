@@ -5,7 +5,7 @@ module Utils (module Utils) where
 
 import           Core.State
 import           Data.Text  (Text, intercalate, toLower)
-import qualified Data.Text as T
+import qualified Data.Text  as T
 
 oxfordEntityNames :: [Entity] -> Text
 oxfordEntityNames = oxfordComma . map (toLower . getName)

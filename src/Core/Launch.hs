@@ -3,8 +3,7 @@
 
 module Core.Launch (launch) where
 
-import           Core.State (GameEnvironment (world), GameWorld,
-                             loadGameEnvironmentJSON)
+import           Core.State (GameEnvironment (world), GameWorld, loadGameEnvironmentJSON)
 import           Data.Text  (Text, pack)
 import           Repl.Repl  (loop)
 
@@ -21,7 +20,7 @@ launch :: FilePath -> IO (Either Text ())
 launch fp = do
     result <- loadGameEnvironmentJSON fp
     case result of
-        Left err -> return (Left $ "Error loading game: " <> pack (show err))
+        Left err      -> return (Left $ "Error loading game: " <> pack (show err))
         Right gameEnv -> startGame (world gameEnv)
   where
     startGame = gameLoop

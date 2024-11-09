@@ -20,7 +20,7 @@ steps:
   # Currently, this option is not configurable and will format all exports and
   # module declarations to minimize diffs
   #
-  # - module_header:
+  - module_header:
   #     # How many spaces use for indentation in the module header.
   #     indent: 4
   #
@@ -39,7 +39,7 @@ steps:
   #     #   determined by the `columns` setting. Not applicable when the export
   #     #   list contains comments as newlines will be required.
   #     # - always: always break before the "where".
-  #     break_where: exports
+      break_where: inline
   #
   #     # Where to put open bracket
   #     # Possible values:
@@ -174,7 +174,7 @@ steps:
       #   > import qualified Data.List      as List (init, last, length)
       #
       # Default: after_alias
-      list_align: after_alias
+      list_align: with_alias
 
       # Right-pad the module names to align imports in a group:
       #
@@ -216,7 +216,7 @@ steps:
       #   >     )
       #
       # Default: inline
-      long_list_align: inline
+      long_list_align: new_line
 
       # Align empty list (importing instances)
       #
@@ -451,7 +451,7 @@ steps:
 # Set this to null to disable all line wrapping.
 #
 # Default: 80.
-columns: 80
+columns: 120
 
 # By default, line endings are converted according to the OS. You can override
 # preferred format here.
@@ -470,9 +470,9 @@ newline: native
 # needs to be aware of these, so it can parse the file correctly.
 #
 # No language extensions are enabled by default.
-# language_extensions:
-  # - TemplateHaskell
-  # - QuasiQuotes
+language_extensions:
+  - OverloadedStrings
+  - LambdaCase
 
 # Attempt to find the cabal file in ancestors of the current directory, and
 # parse options (currently only language extensions) from that.

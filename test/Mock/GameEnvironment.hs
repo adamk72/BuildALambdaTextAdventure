@@ -1,4 +1,4 @@
-module Mock.GameEnvironment  (module Mock.GameEnvironment) where
+module Mock.GameEnvironment (module Mock.GameEnvironment) where
 
 import           Core.State
 import           Test.Hspec ()

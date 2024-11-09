@@ -39,7 +39,7 @@ spec = describe "Interpreter" $ do
         it "returns Left for malformed commands" $ do
             case tryCommand testCmd "" of
                 Left err -> err `shouldBe` "I couldn't understand ''. Please try rephrasing your command."
-                Right _ -> expectationFailure "Expected Left but got Right"
+                Right _  -> expectationFailure "Expected Left but got Right"
 
     describe "interpretCommand" $ do
         it "handles quit commands by returning Nothing" $ do
@@ -56,7 +56,7 @@ spec = describe "Interpreter" $ do
             let (result, finalState) = runState (interpretCommand "inventory") defaultGW
             case result of
                 Just txt -> "Your inventory is: " `isPrefixOf` txt `shouldBe` True
-                Nothing -> expectationFailure "Expected Just but got Nothing"
+                Nothing  -> expectationFailure "Expected Just but got Nothing"
             finalState `shouldBe` defaultGW
 
         it "is case insensitive" $ do
@@ -71,7 +71,7 @@ spec = describe "Interpreter" $ do
             case result of
                 Just txt -> "Don't know how to look !!!." `isPrefixOf` txt `shouldBe` True
                 -- Just txt -> "Don't know how to look !!!."  `shouldBe` txt
-                Nothing -> expectationFailure "Expected Just but got Nothing"
+                Nothing  -> expectationFailure "Expected Just but got Nothing"
             finalState `shouldBe` defaultGW
 
         it "preserves game state for unknown commands" $ do

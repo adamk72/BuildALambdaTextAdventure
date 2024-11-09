@@ -3,6 +3,7 @@ module Command.GetSpec (spec) where
 
 import           Command.Commands
 import           Command.TestUtils
+import           Core.Message
 import           Core.State
 import           Mock.GameEnvironment
 import           Parser.Types

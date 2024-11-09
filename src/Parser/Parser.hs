@@ -1,10 +1,4 @@
-module Parser.Parser
-    ( parsePhrase
-
-    , renderExpressionError
-    , renderExpression
-
-    ) where
+module Parser.Parser (parsePhrase, renderExpression, renderExpressionError) where
 
 import           Command.CommandInfo
 import           Data.Maybe          (listToMaybe)

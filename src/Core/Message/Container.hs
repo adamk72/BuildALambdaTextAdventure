@@ -1,9 +1,7 @@
-module Core.Message.Container
-    ( ContainerMessage(..)
-    ) where
+module Core.Message.Container (ContainerMessage (..)) where
 
-import Data.Text (Text)
-import Core.Message.Common (MessageRenderer(..))
+import           Core.Message.Common (MessageRenderer (..))
+import           Data.Text           (Text)
 
 data ContainerMessage
     = PutItemIn Text Text

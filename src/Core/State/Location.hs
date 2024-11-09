@@ -1,9 +1,7 @@
 {-# LANGUAGE DeriveGeneric   #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Core.State.Location
-    ( Location(..)
-    ) where
+module Core.State.Location (Location (..)) where
 
 import           Data.Aeson
 import           Data.Text    (Text)

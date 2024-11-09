@@ -4,8 +4,8 @@
 module JSONSpec (spec) where
 
 import           Core.State.Entity
+import           Core.State.GameState
 import           Core.State.JSON
-import            Core.State.GameState
 import           Core.State.TaggedEntity
 import           Data.Aeson
 import           Data.ByteString.Lazy    (ByteString)
@@ -161,5 +161,5 @@ spec = describe "GameWorld JSON Parsing" $ do
             let result = eitherDecode invalidJson :: Either String GameEnvironmentJSON
             case result of
                 Left err -> err `shouldContain` "Starting character with tag"
-                Right _ -> expectationFailure "Expected parsing to fail but it succeeded"
+                Right _  -> expectationFailure "Expected parsing to fail but it succeeded"
 

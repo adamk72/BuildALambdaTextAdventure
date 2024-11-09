@@ -1,9 +1,6 @@
-module Core.Message.Common
-    ( MessageRenderer(..)
-    , CommonMessage(..)
-    ) where
+module Core.Message.Common (CommonMessage (..), MessageRenderer (..)) where
 
-import Data.Text (Text)
+import           Data.Text (Text)
 
 -- Base type class for all message renderers
 class MessageRenderer a where

@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveGeneric   #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# OPTIONS_GHC -Wno-name-shadowing #-}
 
 module Core.State.JSON (module Core.State.JSON) where
@@ -11,9 +11,9 @@ import           Data.Aeson
 import           Data.Aeson.Types        (Parser)
 import qualified Data.ByteString.Lazy    as B
 import qualified Data.List               as List
+import           Data.Maybe
 import           Data.Text               (Text)
 import           GHC.Generics            (Generic)
-import Data.Maybe
 
 -- needed to create this in order to overcome a cycle problem that kept occurring while breaking the old State.hs file into separate files.
 newtype GameEnvironmentJSON = GameEnvironmentJSON { unGameEnvironment :: GameEnvironment }
@@ -76,7 +76,7 @@ findStartingActor :: Text -> [Actor] -> Either String Actor
 findStartingActor startingTag actors =
     case List.find (\c -> getTag c == startingTag) actors of
         Just actor -> Right actor
-        Nothing -> Left $ "Starting character with tag " ++ show startingTag ++ " not found"
+        Nothing    -> Left $ "Starting character with tag " ++ show startingTag ++ " not found"
 
 convertActor :: [Location] -> [EntityJSON] -> EntityJSON -> Parser Actor
 convertActor = convertEntityWithType ActorType
@@ -118,5 +118,5 @@ loadGameEnvironmentJSON :: FilePath -> IO (Either String GameEnvironment)
 loadGameEnvironmentJSON filePath = do
     jsonData <- B.readFile filePath
     case eitherDecode jsonData of
-        Left err        -> return $ Left $ "Error parsing JSON: " ++ err
+        Left err                        -> return $ Left $ "Error parsing JSON: " ++ err
         Right (GameEnvironmentJSON env) -> return $ Right env  -- Unwrap the newtype here

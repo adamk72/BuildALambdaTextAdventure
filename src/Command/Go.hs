@@ -26,7 +26,7 @@ executeGo expr = do
     let ac = gwActiveActor gw
         validDstTags = destinationTags (getLocation ac)
     case expr of
-        (AtomicExpression _) -> msg GoWhere
-        (UnaryExpression _ (NounClause dst) ) -> moveTo ac dst validDstTags gw
+        (AtomicExpression _)                     -> msg GoWhere
+        (UnaryExpression _ (NounClause dst) )    -> moveTo ac dst validDstTags gw
         (BinaryExpression _ _ (NounClause dst) ) -> moveTo ac dst validDstTags gw
-        _ -> msg NotSure
+        _                                        -> msg NotSure

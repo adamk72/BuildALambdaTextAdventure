@@ -1,14 +1,9 @@
-module Core.Message.Utils
-    ( msg
-    , msgs
-    , msg2
-    , msgGameWordError
-    ) where
+module Core.Message.Utils (msg, msg2, msgGameWordError, msgs) where
 
-import Control.Monad.State (State)
-import Core.State.GameState (GameWorld)
-import Core.Message.Common (MessageRenderer(..))
-import Data.Text (Text, unpack, intercalate)
+import           Control.Monad.State  (State)
+import           Core.Message.Common  (MessageRenderer (..))
+import           Core.State.GameState (GameWorld)
+import           Data.Text            (Text, intercalate, unpack)
 
 msg :: MessageRenderer a => a -> State GameWorld Text
 msg = return . renderMessage

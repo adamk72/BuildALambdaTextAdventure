@@ -3,10 +3,11 @@ module Command.PutSpec (spec) where
 
 import           Command.Commands
 import           Command.TestUtils
+import           Core.Message
 import           Core.State
 import           Mock.GameEnvironment
-import           Test.Hspec
 import           Parser.Types
+import           Test.Hspec
 
 spec :: Spec
 spec = do

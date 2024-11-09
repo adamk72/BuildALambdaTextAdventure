@@ -1,7 +1,7 @@
-module Parser.Utils (isPrepVariantOf, getPrepVariants, verbsRequiringObjects, knownArticles, knownPreps) where
-import           Data.Text     (Text, words)
+module Parser.Utils (getPrepVariants, isPrepVariantOf, knownArticles, knownPreps, verbsRequiringObjects) where
+import           Data.Text (Text, words)
 
-import           Prelude       hiding (words)
+import           Prelude   hiding (words)
 
 verbsRequiringObjects :: [Text]
 verbsRequiringObjects = ["put", "place", "move", "set"]

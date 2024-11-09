@@ -1,11 +1,11 @@
-module Command.Commands (
-    module Command.Actor
-  , module Command.Drop
-  , module Command.Get
-  , module Command.Go
-  , module Command.Look
-  , module Command.Put
-  ) where
+module Command.Commands
+    ( module Command.Actor
+    , module Command.Drop
+    , module Command.Get
+    , module Command.Go
+    , module Command.Look
+    , module Command.Put
+    ) where
 
 import           Command.Actor
 import           Command.Drop

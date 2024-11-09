@@ -31,6 +31,5 @@ executeDrop expr = do
                 dropObject object Nothing acLoc gw
             BinaryExpression {} ->
                 msg DropWhat
-            ComplexExpression _ (NounClause object) (PrepClause prep) (NounClause dst) ->
-                dropObject object (Just (prep <> " " <> dst)) acLoc gw
+            ComplexExpression _ (NounClause object) (PrepClause prep) (NounClause dst) -> dropObject object (Just (prep <> " " <> dst)) acLoc gw
     handle expr

@@ -1,9 +1,7 @@
-module Core.Message.Look
-    ( LookMessage(..)
-    ) where
+module Core.Message.Look (LookMessage (..)) where
 
-import Data.Text (Text, toLower)
-import Core.Message.Common (MessageRenderer(..))
+import           Core.Message.Common (MessageRenderer (..))
+import           Data.Text           (Text, toLower)
 
 data LookMessage
     = LookTowards Text

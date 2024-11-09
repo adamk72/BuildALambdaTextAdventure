@@ -1,9 +1,7 @@
-module Core.Message.Location
-    ( LocationMessage(..)
-    ) where
+module Core.Message.Location (LocationMessage (..)) where
 
-import Data.Text (Text, toLower)
-import Core.Message.Common (MessageRenderer(..))
+import           Core.Message.Common (MessageRenderer (..))
+import           Data.Text           (Text, toLower)
 
 data LocationMessage
     = AlreadyAtLocation Text

@@ -1,6 +1,6 @@
-module Parser.Types (Expression(..), NounClause(..), PrepClause(..), ParseError(..)) where
+module Parser.Types (Expression (..), NounClause (..), ParseError (..), PrepClause (..)) where
 
-import Data.Text
+import           Data.Text
 
 {-
 - `phrase`              => any arbitrary sentence.

@@ -1,9 +1,7 @@
-module Core.Message.Error
-    ( ErrorMessage(..)
-    ) where
+module Core.Message.Error (ErrorMessage (..)) where
 
-import Data.Text (Text)
-import Core.Message.Common (MessageRenderer(..))
+import           Core.Message.Common (MessageRenderer (..))
+import           Data.Text           (Text)
 
 data ErrorMessage
     = LocationError Text

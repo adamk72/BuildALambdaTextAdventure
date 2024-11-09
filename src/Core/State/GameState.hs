@@ -1,11 +1,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric  #-}
 
-module Core.State.GameState
-    ( GameWorld(..)
-    , GameEnvironment(..)
-    , Metadata(..)
-    ) where
+module Core.State.GameState (GameEnvironment (..), GameWorld (..), Metadata (..)) where
 
 import           Core.State.Entity   (Actor, Item)
 import           Core.State.Location (Location)
