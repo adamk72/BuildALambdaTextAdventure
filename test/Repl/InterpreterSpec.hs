@@ -1,102 +1,86 @@
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-
 module Repl.InterpreterSpec (spec) where
 
-import Test.Hspec
-import Control.Monad.State
-import Data.Text (Text, isInfixOf)
-import Core.State
-import Mock.GameEnvironment
-import Repl.Interpreter
-import Command.Common (CommandExecutor)
-import Parser.Parser
+import           Command.Common        (CommandExecutor)
+import           Command.Definitions  (CommandInfo(..), CommandVerb(..))
+import           Control.Monad.State
+import           Core.State          (GameWorld)
+import           Data.Text           (Text, isPrefixOf)
+import           Mock.GameEnvironment
+import           Repl.Interpreter
+import           Test.Hspec
 
--- Helper function to create a test command
-mockCommand :: Text -> CommandExecutor -> Command
-mockCommand name executor = Command name executor
+-- Helper function to create test commands
+mkTestCommand :: CommandVerb -> Text -> [Text] -> CommandExecutor -> CommandInfo
+mkTestCommand verb txt aliases exec = CommandInfo
+    { cmdVerb = verb
+    , cmdText = txt
+    , cmdAliases = aliases
+    , cmdExec = exec
+    }
 
--- Mock command executor that just returns its input as text
-mockExecutor :: CommandExecutor
-mockExecutor expr = return $ "Executed: " <> renderExpression expr
+-- Mock command executors for testing
+mockSuccessExecutor :: CommandExecutor
+mockSuccessExecutor _ = return "Success!"
 
--- Helper to run interpreter commands in a test context
-runInterpreter :: Text -> GameWorld -> (Maybe Text, GameWorld)
-runInterpreter input = runState (interpretCommand input)
+mockFailExecutor :: CommandExecutor
+mockFailExecutor _ = return "Failed!"
 
+-- Test suite
 spec :: Spec
-spec = do
-    describe "firstRight" $ do
-        it "returns first Right value when both are Right" $ do
-            let result = firstRight (Right "first" :: Either Text Text) (Right "second" :: Either Text Text)
-            result `shouldBe` (Right "first" :: Either Text Text)
-
-        it "returns second Right value when first is Left" $ do
-            let result = firstRight (Left "error" :: Either Text Text) (Right "success" :: Either Text Text)
-            result `shouldBe` (Right "success" :: Either Text Text)
-
-        it "returns first Left value when both are Left" $ do
-            let result = firstRight (Left "error1" :: Either Text Text) (Left "error2" :: Either Text Text)
-            result `shouldBe` (Left "error1" :: Either Text Text)
-
+spec = describe "Interpreter" $ do
     describe "tryCommand" $ do
-        let testCommand = mockCommand "test" mockExecutor
+        let testCmd = mkTestCommand LookVerb "test" [] mockSuccessExecutor
 
-        it "returns Right for valid commands" $ do
-            case tryCommand "look around" testCommand of
-                Right _ -> True `shouldBe` True  -- Command parsed successfully
-                Left _ -> expectationFailure "Expected Right, got Left"
+        it "succeeds for valid commands" $ do
+            case tryCommand testCmd "test around" of
+                Right action -> do
+                    let (output, finalState) = runState action defaultGW
+                    output `shouldBe` "Success!"
+                    finalState `shouldBe` defaultGW
+                Left err -> expectationFailure $ "Expected Right but got Left: " ++ show err
 
-        it "returns Left for invalid command syntax" $ do
-            case tryCommand "" testCommand of
-                Left _ -> True `shouldBe` True   -- Command parsing failed as expected
-                Right _ -> expectationFailure "Expected Left, got Right"
+        it "returns Left for malformed commands" $ do
+            case tryCommand testCmd "" of
+                Left err -> err `shouldBe` "I couldn't understand ''. Please try rephrasing your command."
+                Right _ -> expectationFailure "Expected Left but got Right"
 
     describe "interpretCommand" $ do
-        let initialWorld = defaultGW
-
-        it "handles valid 'look' command" $ do
-            let (result, _) = runInterpreter "look" initialWorld
-            result `shouldSatisfy` \case
-                Just txt -> "You are in" `isInfixOf` txt
-                Nothing -> False
-
-        it "handles valid 'look around' command" $ do
-            let (result, _) = runInterpreter "look around" initialWorld
-            result `shouldSatisfy` \case
-                Just txt -> "You look around" `isInfixOf` txt
-                Nothing -> False
-
-        it "returns Nothing for quit commands" $ do
-            let (result, _) = runInterpreter ":quit" initialWorld
+        it "handles quit commands by returning Nothing" $ do
+            let (result, finalState) = runState (interpretCommand ":quit") defaultGW
             result `shouldBe` Nothing
+            finalState `shouldBe` defaultGW
 
-        it "returns error message for unknown commands" $ do
-            let (result, _) = runInterpreter "dance" initialWorld
-            result `shouldSatisfy` \case
-                Just txt -> "Don't know how to dance" `isInfixOf` txt
-                Nothing -> False
+        it "handles unknown commands with an error message" $ do
+            let (result, finalState) = runState (interpretCommand "nonexistent") defaultGW
+            result `shouldBe` Just "Don't know how to nonexistent. Got error: Unknown command."
+            finalState `shouldBe` defaultGW
 
-        it "maintains game state after command execution" $ do
-            let (_, newWorld) = runInterpreter "look" initialWorld
-            newWorld `shouldBe` initialWorld  -- 'look' shouldn't modify state
+        it "returns the command output for known commands" $ do
+            let (result, finalState) = runState (interpretCommand "inventory") defaultGW
+            case result of
+                Just txt -> "Your inventory is: " `isPrefixOf` txt `shouldBe` True
+                Nothing -> expectationFailure "Expected Just but got Nothing"
+            finalState `shouldBe` defaultGW
 
-        it "processes commands case-insensitively" $ do
-            let (resultLower, _) = runInterpreter "look" initialWorld
-            let (resultUpper, _) = runInterpreter "LOOK" initialWorld
-            resultLower `shouldBe` resultUpper
+        it "is case insensitive" $ do
+            let (result1, state1) = runState (interpretCommand "INVENTORY") defaultGW
+            let (result2, state2) = runState (interpretCommand "inventory") defaultGW
+            result1 `shouldBe` result2
+            state1 `shouldBe` state2
+            state1 `shouldBe` defaultGW
 
-    describe "Command integration" $ do
-        let initialWorld = defaultGW
+        it "handles invalid command phrases" $ do
+            let (result, finalState) = runState (interpretCommand "look !!!") defaultGW
+            case result of
+                Just txt -> "Don't know how to look !!!." `isPrefixOf` txt `shouldBe` True
+                Nothing -> expectationFailure "Expected Just but got Nothing"
+            finalState `shouldBe` defaultGW
 
-        it "can execute movement commands" $ do
-            let (result, _) = runInterpreter "go cave" initialWorld
-            result `shouldSatisfy` \case
-                Just txt -> "Moving to cave" `isInfixOf` txt
-                Nothing -> False
+        it "preserves game state for unknown commands" $ do
+            let (_, finalState) = runState (interpretCommand "nonsense") defaultGW
+            finalState `shouldBe` defaultGW
 
-        it "can execute inventory commands" $ do
-            let (result, _) = runInterpreter "inventory" initialWorld
-            result `shouldSatisfy` \case
-                Just txt -> "Your inventory is" `isInfixOf` txt
-                Nothing -> False
+        it "preserves game state for quit commands" $ do
+            let (_, finalState) = runState (interpretCommand ":q") defaultGW
+            finalState `shouldBe` defaultGW
