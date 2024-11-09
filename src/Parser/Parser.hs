@@ -9,7 +9,7 @@ module Parser.Parser
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Maybe (listToMaybe)
-import Command.Definitions (knownVerbs)
+import Command.CommandInfo (knownVerbs)
 import Parser.Types
 
 -- | Support variables

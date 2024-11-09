@@ -26,13 +26,14 @@ source-repository head
 library
   exposed-modules:
       Command.Actor
+      Command.CommandExecutor
+      Command.CommandInfo
       Command.Commands
-      Command.Common
-      Command.Definitions
       Command.Drop
       Command.Get
       Command.Go
       Command.Look
+      Command.Messages
       Command.Put
       Core.Config
       Core.Distance

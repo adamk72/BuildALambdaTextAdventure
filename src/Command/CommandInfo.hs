@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Command.Definitions
+module Command.CommandInfo
     ( CommandVerb(..)
     , CommandInfo(..)
     , allCommands
@@ -11,7 +11,6 @@ module Command.Definitions
 import qualified Data.Text as T
 import Command.Commands
 import Data.List (find)
-import Command.Put
 
 data CommandVerb
     = LookVerb

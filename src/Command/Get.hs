@@ -1,6 +1,6 @@
 module Command.Get (module Command.Get) where
 
-import           Command.Common
+import           Command.Messages
 import           Control.Monad.State
 import           Core.State
 import           Data.List           (find)

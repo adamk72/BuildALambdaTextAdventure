@@ -1,5 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
-module Command.Common (module Command.Common) where
+module Command.Messages (module Command.Messages) where
 
 import           Control.Monad.State
 import           Core.State
@@ -30,11 +30,13 @@ data CommandMessageType
     | DoNotSeeItem Text
     | NotSure
     | LocationError Text
+    | PENDING
     deriving (Eq, Show)
 
 instance CommandMessage CommandMessageType where
     renderMessage = \case
         -- non-existence
+        PENDING -> "Pending, not sure what to do with this yet."
         ItemDoesNotExist item -> "Item does not exist in this game world: " <> item <> "."
         DoNotSeeItem item -> "Don't see a " <> item <> "."
         NoLocationSpecified -> "Unable to find a location at all."

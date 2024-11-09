@@ -1,5 +1,5 @@
 module Command.Drop (module Command.Drop) where
-import           Command.Common
+import           Command.Messages
 import           Core.State.Operations
 import           Control.Monad.State
 import           Parser.Types
@@ -17,3 +17,4 @@ executeDrop expr = do
           put updatedGW
           return $ target <> " dropped. " <> "Your inventory is now: " <> oxfordEntityNames (getActorInventoryItems updatedGW)
         Nothing -> return $ "You don't have a " <> target <> " to drop."
+    _ -> return $ renderMessage PENDING

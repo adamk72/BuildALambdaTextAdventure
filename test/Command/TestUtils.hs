@@ -1,6 +1,6 @@
 module Command.TestUtils (module Command.TestUtils) where
 
-import           Command.Common
+import           Command.CommandExecutor
 import           Control.Monad.State
 import           Core.State
 import           Data.Text           (Text)

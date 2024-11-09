@@ -1,9 +1,8 @@
 module Command.Put (module Command.Put) where
 
-import           Command.Common
+import           Command.Messages
 import           Control.Monad.State
 import           Core.State
-import           Data.Text           as T (words)
 import           Parser.Types
 
 executePut :: CommandExecutor

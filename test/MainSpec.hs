@@ -1,16 +1,15 @@
 module MainSpec (spec) where
 
-import           Command.Common
-import           Command.Go
+import           Command.Messages
 import           Control.Exception.Base (finally)
-import           Data.Text             (Text, pack, unpack)
-import           Prelude               hiding (sin)
+import           Data.Text              (Text, pack, unpack)
+import           Prelude                hiding (sin)
 import           System.Exit
-import           System.IO             hiding (stdin, stdout)
-import           System.Process        (CreateProcess (std_in, std_out),
-                                      ProcessHandle, StdStream (CreatePipe),
-                                      createProcess, proc, terminateProcess,
-                                      waitForProcess)
+import           System.IO              hiding (stdin, stdout)
+import           System.Process         (CreateProcess (std_in, std_out),
+                                         ProcessHandle, StdStream (CreatePipe),
+                                         createProcess, proc, terminateProcess,
+                                         waitForProcess)
 import           Test.Hspec
 
 -- Process Setup Helpers

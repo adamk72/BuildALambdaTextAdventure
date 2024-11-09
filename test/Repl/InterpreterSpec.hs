@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Repl.InterpreterSpec (spec) where
 
-import           Command.Common        (CommandExecutor)
-import           Command.Definitions  (CommandInfo(..), CommandVerb(..))
+import           Command.CommandExecutor (CommandExecutor)
+import           Command.CommandInfo     (CommandInfo (..), CommandVerb (..))
 import           Control.Monad.State
-import           Core.State          (GameWorld)
-import           Data.Text           (Text, isPrefixOf)
+import           Core.State              (GameWorld)
+import           Data.Text               (Text, isPrefixOf)
 import           Mock.GameEnvironment
 import           Repl.Interpreter
 import           Test.Hspec
