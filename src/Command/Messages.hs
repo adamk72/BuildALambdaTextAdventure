@@ -46,6 +46,8 @@ data CommandMessageType
     | DroppedItemWithInventory Text Text
     | DroppedItemSomewhere Text Text
     | YouDoNotHave Text
+    | PutWhere Text
+    | PutWhat
     | PENDING
     deriving (Eq, Show)
 
@@ -56,7 +58,6 @@ instance CommandMessage CommandMessageType where
         ItemDoesNotExist item -> "Item does not exist in this game world: " <> item <> "."
         DoNotSeeItem item -> "Don't see a " <> item <> "."
         NoLocationSpecified -> "Unable to find a location at all."
-        DontKnowWhere item -> "Don't know where to put " <> item <> "."
         NotAContainer item -> "The " <> item <> " is not a container."
         NotSure -> "Not sure how to do that."
         -- other
@@ -67,6 +68,10 @@ instance CommandMessage CommandMessageType where
         YouAreIn loc ->  "You are in " <> toLower loc <> "."
         PutItemIn item dst -> item <> " is now in the " <> dst <> "."
         LookTowards dir -> "You look " <> toLower dir <> ", but see nothing special."
+        -- Put Specific
+        PutWhat -> "What needs to be put?"
+        PutWhere item -> "Put " <> item <> " where?"
+        DontKnowWhere item -> "Don't know where to put " <> item <> "."
         -- Get Specific
         GetWhat -> "What are you trying to get?"
         -- Drop specific

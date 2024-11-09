@@ -17,7 +17,7 @@ spec = do
                     expr = AtomicExpression "put"
                     (output, newState) = runCommand executePut expr gw
 
-                output `shouldBe` "TO BE FIXED: put requires an item and a container"
+                output `shouldBe` renderMessage PutWhat
                 verifyStartLocation newState "meadow"
 
             it "handles unary expression (put <item>)" $ do
@@ -25,7 +25,7 @@ spec = do
                     expr = UnaryExpression "put" (NounClause "silver coin")
                     (output, newState) = runCommand executePut expr gw
 
-                output `shouldBe` "TO BE FIXED: put requires a container destination"
+                output `shouldBe` renderMessage (PutWhere "silver coin")
                 verifyStartLocation newState "meadow"
 
             it "handles binary expression (put in <container>)" $ do
@@ -33,7 +33,7 @@ spec = do
                     expr = BinaryExpression "put" (PrepClause "in") (NounClause "bag of holding")
                     (output, newState) = runCommand executePut expr gw
 
-                output `shouldBe` "TO BE FIXED: put requires an item to move"
+                output `shouldBe` renderMessage PutWhat
                 verifyStartLocation newState "meadow"
 
             it "handles complex expression (put <item> in <container>)" $ do
@@ -75,14 +75,14 @@ spec = do
                     expr = ComplexExpression "put" (NounClause "golden coin") (PrepClause "in") (NounClause "bag of holding")
                     (output, _) = runCommand executePut expr gw
 
-                output `shouldBe` "Location does not exist in this game world: golden coin."
+                output `shouldBe` renderMessage (InvalidItem "golden coin")
 
             it "prevents putting items in non-existent containers" $ do
                 let gw = defaultGW
                     expr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "magic box")
                     (output, _) = runCommand executePut expr gw
 
-                output `shouldBe` "Location does not exist in this game world: magic box."
+                output `shouldBe` renderMessage (InvalidItem "magic box")
 
         describe "state management" $ do
             it "moves item from location to container" $ do

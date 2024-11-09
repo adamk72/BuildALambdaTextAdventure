@@ -3,14 +3,13 @@ module Command.Get (module Command.Get) where
 import           Command.Messages
 import           Control.Monad.State
 import           Core.State
-import           Data.List           (find)
 import           Data.Text           (Text, unpack)
 import           Parser.Types
 
 getItem :: Text -> [Text] -> Actor -> GameWorld -> State GameWorld Text
-getItem itemTag  validItemTags actor gw
+getItem itemTag validItemTags actor gw
     | itemTag `elem` validItemTags =
-        case find (\item -> getTag item == itemTag) (gwItems gw) of
+        case findItemByTag itemTag gw of
             Just foundObj -> do
                 let ps = getActorInventory gw
                     updatedGW = moveItemLoc foundObj ps gw
