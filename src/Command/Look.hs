@@ -10,12 +10,18 @@ import           Core.State
 import           Parser.Types
 
 executeLook :: CommandExecutor
-executeLook (UnaryExpression _ (NounClause "around")) = do
+executeLook expr = do
     gw <- get
     let acLoc = getActiveActorLoc gw
         objs = getItemsAtLoc acLoc gw
-    msg2 (YouAreIn $ locName acLoc) (LookAround objs)
-executeLook _ = do
-    gw <- get
-    let loc = locName $ getActiveActorLoc gw
-    return $ renderMessage $ YouAreIn loc
+    case expr of
+        AtomicExpression {} ->
+            msg $ YouSeeGeneral "A general view of the space and possibly some items"
+        UnaryExpression _ (NounClause "around") ->
+            msg2 (YouAreIn $ locName acLoc) (LookAround objs)
+        BinaryExpression _ (PrepClause "at") (NounClause target) ->
+            return $ "You look at "  <> target <> "."
+        BinaryExpression _ (PrepClause "in") (NounClause target) ->
+            return $ "You look in "  <> target <> "."
+        ComplexExpression _ (NounClause itemTag) _ (NounClause containerTag) ->
+            msg $ PENDING
