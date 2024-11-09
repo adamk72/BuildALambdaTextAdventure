@@ -24,7 +24,7 @@ executeGet expr = do
     gw <- get
     let acLoc = getActiveActorLoc gw
         ac = gwActiveActor gw
-        validItemTags = map getTag $ getItemsAtLoc acLoc gw
+        validItemTags = getItemTagsAtLoc acLoc gw
         handle = \case
             AtomicExpression {} ->
                 msg GetWhat

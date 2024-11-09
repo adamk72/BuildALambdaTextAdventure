@@ -36,6 +36,9 @@ checkItemTagInPocket itemTag gw = do
     Nothing   -> False
 
 -- Helper to get objects at a location
+getItemTagsAtLoc :: Location -> GameWorld -> [Text]
+getItemTagsAtLoc loc gw = map getTag $ getItemsAtLoc loc gw
+
 getEntitiesAtLoc :: Location -> GameWorld -> [Entity]
 getEntitiesAtLoc loc gw =
     filter (\entity -> getLocation entity == loc) (getEntities gw)

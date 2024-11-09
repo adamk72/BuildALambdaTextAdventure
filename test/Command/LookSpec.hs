@@ -119,7 +119,7 @@ spec = do
 
                 case findItemByTag "bag of holding" finalState >>= getInventory of
                     Just loc ->
-                        let itemsInBag = map getTag $ getItemsAtLoc loc finalState
+                        let itemsInBag = getItemTagsAtLoc loc finalState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
                     Nothing ->
                         expectationFailure "Bag lost its inventory location"

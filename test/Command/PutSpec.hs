@@ -44,7 +44,7 @@ spec = do
                 output `shouldBe` "silver coin is now in the bag of holding."
                 case findItemByTag "bag of holding" newState >>= getInventory of
                     Just loc ->
-                        let itemsInBag = map getTag $ getItemsAtLoc loc newState
+                        let itemsInBag = getItemTagsAtLoc loc newState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
                     Nothing ->
                         expectationFailure "Bag lost its inventory location"
@@ -58,7 +58,7 @@ spec = do
                 output `shouldBe` "silver coin is now in the bag of holding."
                 case findItemByTag "bag of holding" newState >>= getInventory of
                     Just loc ->
-                        let itemsInBag = map getTag $ getItemsAtLoc loc newState
+                        let itemsInBag = getItemTagsAtLoc loc newState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
                     Nothing ->
                         expectationFailure "Bag lost its inventory location"
@@ -95,13 +95,13 @@ spec = do
                 -- Verify item is in container
                 case findItemByTag "bag of holding" newState >>= getInventory of
                     Just loc ->
-                        let itemsInBag = map getTag $ getItemsAtLoc loc newState
+                        let itemsInBag = getItemTagsAtLoc loc newState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
                     Nothing ->
                         expectationFailure "Bag lost its inventory location"
 
                 -- Verify item is not in original location
-                let itemsInMeadow = map getTag $ getItemsAtLoc testMeadow newState
+                let itemsInMeadow = getItemTagsAtLoc testMeadow newState
                 "silver coin" `elem` itemsInMeadow `shouldBe` False
 
             it "moves item from inventory to container" $ do
@@ -118,7 +118,7 @@ spec = do
                 -- Verify item is in container
                 case findItemByTag "bag of holding" finalState >>= getInventory of
                     Just loc ->
-                        let itemsInBag = map getTag $ getItemsAtLoc loc finalState
+                        let itemsInBag = getItemTagsAtLoc loc finalState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
                     Nothing ->
                         expectationFailure "Bag lost its inventory location"

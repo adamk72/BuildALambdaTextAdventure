@@ -89,7 +89,7 @@ spec = do
                     (_, finalState) = runCommand executeDrop dropExpr midState
 
                 -- Verify item is in location
-                let itemsInLoc = map getTag $ getItemsAtLoc testMeadow finalState
+                let itemsInLoc = getItemTagsAtLoc testMeadow finalState
                 "silver coin" `elem` itemsInLoc `shouldBe` True
 
                 -- Verify item is not in inventory
@@ -114,7 +114,7 @@ spec = do
                 -- Verify container contents remain intact
                 case findItemByTag "bag of holding" finalState >>= getInventory of
                     Just loc ->
-                        let itemsInBag = map getTag $ getItemsAtLoc loc finalState
+                        let itemsInBag = getItemTagsAtLoc loc finalState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
                     Nothing ->
                         expectationFailure "Bag lost its inventory location"
@@ -134,9 +134,9 @@ spec = do
                     (_, finalState) = runCommand executeDrop dropExpr state2
 
                 -- Verify item is in cave
-                let itemsInCave = map getTag $ getItemsAtLoc testCave finalState
+                let itemsInCave = getItemTagsAtLoc testCave finalState
                 "silver coin" `elem` itemsInCave `shouldBe` True
 
                 -- Verify item is not in meadow
-                let itemsInMeadow = map getTag $ getItemsAtLoc testMeadow finalState
+                let itemsInMeadow = getItemTagsAtLoc testMeadow finalState
                 "silver coin" `elem` itemsInMeadow `shouldBe` False

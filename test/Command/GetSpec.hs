@@ -71,7 +71,7 @@ spec = do
                 checkItemTagInPocket "silver coin" newState `shouldBe` True
 
                 -- Verify item is no longer in location
-                let itemsInMeadow = map getTag $ getItemsAtLoc testMeadow newState
+                let itemsInMeadow = getItemTagsAtLoc testMeadow newState
                 "silver coin" `elem` itemsInMeadow `shouldBe` False
 
             it "can pick up container items" $ do
@@ -94,7 +94,7 @@ spec = do
                 -- Verify the item is still in the bag after moving it
                 case findItemByTag "bag of holding" finalState >>= getInventory of
                     Just loc ->
-                        let itemsInBag = map getTag $ getItemsAtLoc loc finalState
+                        let itemsInBag = getItemTagsAtLoc loc finalState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
                     Nothing ->
                         expectationFailure "Bag lost its inventory location"
