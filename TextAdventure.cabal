@@ -57,6 +57,7 @@ library
       Core.State.TaggedEntity
       Parser.Parser
       Parser.Types
+      Parser.Utils
       Repl.Interpreter
       Repl.Repl
       Utils

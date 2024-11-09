@@ -1,6 +1,5 @@
 module Command.Commands (
-    module Core.Message
-  , module Command.Actor
+    module Command.Actor
   , module Command.Drop
   , module Command.Get
   , module Command.Go
@@ -9,7 +8,6 @@ module Command.Commands (
   ) where
 
 import           Command.Actor
-import           Core.Message
 import           Command.Drop
 import           Command.Get
 import           Command.Go

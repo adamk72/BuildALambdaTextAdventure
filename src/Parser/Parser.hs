@@ -1,34 +1,17 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE LambdaCase #-}
 module Parser.Parser
     ( parsePhrase
+
     , renderExpressionError
     , renderExpression
+
     ) where
 
-import Data.Text (Text)
-import qualified Data.Text as T
-import Data.Maybe (listToMaybe)
-import Command.CommandInfo (knownVerbs)
-import Parser.Types
-
--- | Support variables
-verbsRequiringObjects :: [Text]
-verbsRequiringObjects = ["put", "place", "move", "set"]
-
--- Base prepositions and their variants
-knownPreps :: [(Text, [[Text]])]
-knownPreps =
-    [ ("in", [["in"], ["inside"], ["into"]])
-    , ("on", [["on"], ["onto"], ["upon"], ["on", "top", "of"]])
-    , ("under", [["under"], ["beneath"], ["underneath"]])
-    , ("at", [["at"]])
-    , ("from", [["from"]])
-    , ("to", [["to"], ["toward"], ["towards"]])
-    ]
-
-knownArticles :: [Text]
-knownArticles = ["the", "a", "an"]
+import           Command.CommandInfo
+import           Data.Maybe          (listToMaybe)
+import           Data.Text           (Text)
+import qualified Data.Text           as T
+import           Parser.Types
+import           Parser.Utils
 
 -- | Helper functions
 isArticle :: Text -> Bool
