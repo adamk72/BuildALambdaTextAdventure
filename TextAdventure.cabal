@@ -33,11 +33,20 @@ library
       Command.Get
       Command.Go
       Command.Look
-      Command.Messages
       Command.Put
       Core.Config
       Core.Distance
       Core.Launch
+      Core.Message
+      Core.Message.Command
+      Core.Message.Common
+      Core.Message.Container
+      Core.Message.Error
+      Core.Message.Inventory
+      Core.Message.Item
+      Core.Message.Location
+      Core.Message.Look
+      Core.Message.Utils
       Core.State
       Core.State.Entity
       Core.State.EntityContainer

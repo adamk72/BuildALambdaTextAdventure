@@ -3,8 +3,9 @@
 
 module Command.Look (executeLook, renderMessage) where
 
-import           Command.Messages
+import           Command.CommandExecutor
 import           Control.Monad.State
+import           Core.Message
 import           Core.State
 import           Parser.Types
 

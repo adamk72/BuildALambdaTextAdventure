@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Command.CommandInfo
     ( CommandVerb(..)
     , CommandInfo(..)
@@ -8,9 +6,10 @@ module Command.CommandInfo
     , findCommand
     ) where
 
-import qualified Data.Text as T
-import Command.Commands
-import Data.List (find)
+import           Command.CommandExecutor
+import           Command.Commands
+import           Data.List               (find)
+import qualified Data.Text               as T
 
 data CommandVerb
     = LookVerb
@@ -25,10 +24,10 @@ data CommandVerb
     deriving (Show, Eq)
 
 data CommandInfo = CommandInfo
-    { cmdVerb :: CommandVerb
-    , cmdText :: T.Text
+    { cmdVerb    :: CommandVerb
+    , cmdText    :: T.Text
     , cmdAliases :: [T.Text]
-    , cmdExec :: CommandExecutor
+    , cmdExec    :: CommandExecutor
     }
 
 allCommands :: [CommandInfo]

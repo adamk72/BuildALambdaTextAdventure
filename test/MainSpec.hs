@@ -1,6 +1,6 @@
 module MainSpec (spec) where
 
-import           Command.Messages
+import           Core.Message
 import           Control.Exception.Base (finally)
 import           Data.Text
 import           Prelude                hiding (sin)

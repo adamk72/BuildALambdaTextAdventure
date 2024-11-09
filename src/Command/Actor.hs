@@ -1,7 +1,7 @@
 module Command.Actor (module Command.Actor) where
-import           Command.Messages
-import           Core.State.Operations
+import           Command.CommandExecutor
 import           Control.Monad.State
+import           Core.State.Operations
 import           Utils
 
 executeInventory :: CommandExecutor

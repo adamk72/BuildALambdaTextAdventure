@@ -1,9 +1,10 @@
 module Command.Put (module Command.Put) where
 
-import           Command.Messages
+import           Command.CommandExecutor
 import           Control.Monad.State
+import           Core.Message
 import           Core.State
-import           Data.Text (Text)
+import           Data.Text               (Text)
 import           Parser.Types
 
 putItemInContainer :: Text -> Text -> [Text] -> GameWorld -> State GameWorld Text

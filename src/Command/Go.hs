@@ -1,10 +1,11 @@
 module Command.Go (module Command.Go) where
 
-import           Command.Messages
+import           Command.CommandExecutor
 import           Control.Monad.State
+import           Core.Message
 import           Core.State
-import           Data.List           (find)
-import           Data.Text           (Text, unpack)
+import           Data.List               (find)
+import           Data.Text               (Text, unpack)
 import           Parser.Types
 
 moveTo :: Actor -> Text -> [Text] -> GameWorld -> State GameWorld Text

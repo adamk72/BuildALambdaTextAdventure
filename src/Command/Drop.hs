@@ -1,6 +1,7 @@
 module Command.Drop (module Command.Drop) where
-import           Command.Messages
+import           Command.CommandExecutor
 import           Control.Monad.State
+import           Core.Message
 import           Core.State
 import           Data.Text
 import           Parser.Types
@@ -15,7 +16,7 @@ dropObject object dstM actorLoc gw =
                 inv = oxfordEntityNames (getActorInventoryItems updatedGW)
             put updatedGW
             case dstM of
-                Nothing -> msg $ DroppedItemWithInventory object inv
+                Nothing  -> msg $ DroppedItemWithInventory object inv
                 Just dst -> msg $ DroppedItemSomewhere object dst
         Nothing -> msg $ YouDoNotHave object
 
