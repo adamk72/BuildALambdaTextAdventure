@@ -4,7 +4,6 @@
 module Command.Look (executeLook, renderMessage) where
 
 import           Command.CommandExecutor
-import           Control.Monad.State
 import           Core.Message
 import           Core.State
 import           Data.Text               (Text, isSuffixOf)
@@ -12,7 +11,7 @@ import           Parser.Types
 import           Parser.Utils
 import           Utils
 
-lookIn :: Text -> GameWorld -> State GameWorld Text
+lookIn :: Text -> GameWorld -> GameStateText
 lookIn containerTag gw = do
     case getItemInventoryByTag of
         Left err      -> err
@@ -30,7 +29,7 @@ lookInActorInventory gw = "Your inventory has: " <> oxfordEntityNames (getActorI
 
 executeLook :: CommandExecutor
 executeLook expr = do
-    gw <- get
+    gw <- getGameWorld
     let acLoc = getActiveActorLoc gw
         objs = getItemsAtLoc acLoc gw
     case expr of

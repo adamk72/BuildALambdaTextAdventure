@@ -3,11 +3,11 @@
 
 module Core.Launch (launch) where
 
-import           Core.State             (GameEnvironment (world), GameWorld, AppState(..), loadGameEnvironmentJSON)
-import           Data.Text              (Text, pack)
+import           Core.State      (AppState (..), GameEnvironment (world), GameWorld, loadGameEnvironmentJSON)
+import           Data.Text       (Text, pack)
 import           Logger
-import           Repl.Repl              (replLoop)
-import           System.FilePath        (takeDirectory, (</>))
+import           Repl.Repl       (replLoop)
+import           System.FilePath (takeDirectory, (</>))
 
 initAppState :: GameWorld -> FilePath -> IO AppState
 initAppState gw baseDir = do

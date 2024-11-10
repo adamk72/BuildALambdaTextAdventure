@@ -1,13 +1,12 @@
 module Command.Put (module Command.Put) where
 
 import           Command.CommandExecutor
-import           Control.Monad.State
 import           Core.Message
 import           Core.State
 import           Data.Text               (Text)
 import           Parser.Types
 
-putItemInContainer :: Text -> Text -> [Text] -> GameWorld -> State GameWorld Text
+putItemInContainer :: Text -> Text -> [Text] -> GameWorld -> GameStateText
 putItemInContainer itemTag containerTag validItemTags gw
     | itemTag `elem` validItemTags && containerTag `elem` validItemTags =
         case findItemByTag itemTag gw of
@@ -18,7 +17,7 @@ putItemInContainer itemTag containerTag validItemTags gw
                     Nothing -> msg $ NotAContainer containerTag
                     Just containerLoc -> do
                         let updatedGW = moveItemLoc foundItem containerLoc gw
-                        put updatedGW
+                        modifyGameWorld (const updatedGW)
                         msg $ PutItemIn itemTag containerTag
     | itemTag `elem` validItemTags && notElem containerTag validItemTags = msg $    NoContainerForItem itemTag containerTag
     | notElem  itemTag validItemTags && containerTag `elem` validItemTags = msg $ NoItemForContainer itemTag containerTag
@@ -26,7 +25,7 @@ putItemInContainer itemTag containerTag validItemTags gw
 
 executePut :: CommandExecutor
 executePut expr = do
-    gw <- get
+    gw <- getGameWorld
     let acLoc = getActiveActorLoc gw
         validItemTags = map getTag $ getItemsAtLoc acLoc gw ++ getActorInventoryItems gw
     case expr of

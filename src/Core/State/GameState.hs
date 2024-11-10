@@ -1,14 +1,25 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric  #-}
 
-module Core.State.GameState (GameEnvironment (..), GameWorld (..), Metadata (..), AppState(..)) where
+module Core.State.GameState (AppState (..), GameEnvironment (..), GameWorld (..), Metadata (..), GameState(..), GameMonad, GameStateText) where
 
+import           Control.Monad.State
 import           Core.State.Entity   (Actor, Item)
 import           Core.State.Location (Location)
 import           Data.Aeson          (FromJSON)
 import           Data.Text           (Text)
 import           GHC.Generics        (Generic)
-import Logger (GameHistory)
+import           Logger              (GameHistory)
+
+type GameMonad a = StateT GameState IO a
+
+-- | Combined state for game operations
+data GameState = GameState
+    { gsWorld :: GameWorld
+    , gsHistory :: GameHistory
+    }
+
+type GameStateText = GameMonad Text
 
 data AppState = AppState
     { gameWorld   :: GameWorld

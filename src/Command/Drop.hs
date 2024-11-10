@@ -1,6 +1,6 @@
 module Command.Drop (module Command.Drop) where
 import           Command.CommandExecutor
-import           Control.Monad.State
+import           Core.GameMonad
 import           Core.Message
 import           Core.State
 import           Data.Text
@@ -8,13 +8,13 @@ import           Parser.Types
 
 import           Utils
 
-dropObject :: Text -> Maybe Text -> Location -> GameWorld -> State GameWorld Text
+dropObject :: Text -> Maybe Text -> Location -> GameWorld -> GameStateText
 dropObject object dstM actorLoc gw =
     case findItemByTag object gw of
         Just item -> do
             let updatedGW = moveItemLoc item actorLoc gw
                 inv = oxfordEntityNames (getActorInventoryItems updatedGW)
-            put updatedGW
+            modifyGameWorld (\_ -> (updatedGW))
             case dstM of
                 Nothing  -> msg $ DroppedItemWithInventory object inv
                 Just dst -> msg $ DroppedItemSomewhere object dst
@@ -22,7 +22,7 @@ dropObject object dstM actorLoc gw =
 
 executeDrop :: CommandExecutor
 executeDrop expr = do
-    gw <- get
+    gw <- getGameWorld
     let acLoc = getActiveActorLoc gw
         handle = \case
             AtomicExpression _ ->

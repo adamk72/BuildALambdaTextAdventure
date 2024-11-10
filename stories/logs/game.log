@@ -40,3 +40,14 @@
 2024-11-10 02:59:40.612014 UTC Debug Starting new game loop iteration
 2024-11-10 03:00:32.228904 UTC Info Player requested game exit
 2024-11-10 03:00:32.231396 UTC Info Game ended normally
+2024-11-10 15:20:12.667402 UTC Info Initializing new game state  
+2024-11-10 15:20:12.668083 UTC Info Game loaded successfully from: stories/TrialAdventure.json  
+2024-11-10 15:20:12.668114 UTC Debug Starting new game loop iteration  
+2024-11-10 15:20:15.005557 UTC Debug Processing command: look around  
+2024-11-10 15:20:15.00614 UTC Info Executing command: look around  
+2024-11-10 15:20:15.006227 UTC Debug Executing look command  
+2024-11-10 15:20:15.006293 UTC Info Command result: You are in a flowery meadow. You look around and see a simple bag, a shiny bauble, a large blue phone booth, and a satchel that is inky black on the inside.  
+2024-11-10 15:20:15.006417 UTC Info Command completed  
+2024-11-10 15:20:15.006478 UTC Debug Starting new game loop iteration  
+2024-11-10 15:20:35.355866 UTC Info Player requested game exit  
+2024-11-10 15:20:35.358948 UTC Info Game ended normally  

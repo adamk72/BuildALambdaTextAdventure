@@ -1,7 +1,7 @@
-{-# LANGUAGE DeriveGeneric   #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use fromRight" #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RecordWildCards     #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Logger
     ( GameHistory (..)
     , LogEntry (..)
@@ -9,47 +9,31 @@ module Logger
     , getRecentCommands
     , initGameHistory
     , loadHistory
+    , logCommand
     , logDebug
     , logError
-    , logGameAction
     , logInfo
     , saveHistory
     ) where
 
+import           Control.Exception
 import           Control.Monad.IO.Class (MonadIO, liftIO)
-import           Data.Aeson             ((.:), (.=))
-import qualified Data.Aeson             as A
 import qualified Data.Text              as T
 import qualified Data.Text.IO           as TIO
 import           Data.Time              (UTCTime, getCurrentTime)
-import           GHC.Generics           (Generic)
 import           System.Directory       (createDirectoryIfMissing)
 import           System.FilePath        (takeDirectory)
 
--- | Log levels for different types of messages
 data LogLevel = Debug | Info | Error
-    deriving (Show, Eq, Ord, Read, Generic)
-
--- | Custom JSON instances for LogLevel
-instance A.ToJSON LogLevel where
-    toJSON Debug = A.String "Debug"
-    toJSON Info  = A.String "Info"
-    toJSON Error = A.String "Error"
-
-instance A.FromJSON LogLevel where
-    parseJSON = A.withText "LogLevel" $ \t -> case t of
-        "Debug" -> pure Debug
-        "Info"  -> pure Info
-        "Error" -> pure Error
-        _       -> fail $ "Invalid LogLevel: " ++ show t
+    deriving (Show, Eq, Ord)
 
 -- | Structure for a single log entry
 data LogEntry = LogEntry
     { timestamp :: UTCTime
     , level     :: LogLevel
     , message   :: T.Text
-    , isCommand :: Bool  -- Indicates if this entry is a player command
-    } deriving (Show, Eq, Generic)
+    , isCommand :: Bool  -- Flag to identify if this is a player command
+    } deriving (Show, Eq)
 
 -- | Game history containing both logs and recent commands
 data GameHistory = GameHistory
@@ -60,39 +44,22 @@ data GameHistory = GameHistory
     , historyFile       :: FilePath       -- Path to command history file
     } deriving (Show)
 
--- JSON instances for serialization
-instance A.ToJSON LogEntry where
-    toJSON entry = A.object
-        [ "timestamp" .= timestamp entry
-        , "level" .= level entry
-        , "message" .= message entry
-        , "isCommand" .= isCommand entry
-        ]
-
-instance A.FromJSON LogEntry where
-    parseJSON = A.withObject "LogEntry" $ \v -> LogEntry
-        <$> v .: "timestamp"
-        <*> v .: "level"
-        <*> v .: "message"
-        <*> v .: "isCommand"
-
--- | Initialize a new game history with default settings
+-- | Initialize a new game history
 initGameHistory :: FilePath -> FilePath -> IO GameHistory
 initGameHistory logPath histPath = do
-    -- Create directories if they don't exist
     createDirectoryIfMissing True (takeDirectory logPath)
     createDirectoryIfMissing True (takeDirectory histPath)
     return $ GameHistory
         { logEntries = []
         , recentCommands = []
-        , maxCommandHistory = 50  -- Store last 50 commands
+        , maxCommandHistory = 50
         , logFile = logPath
         , historyFile = histPath
         }
 
--- | Log a game action (command) with automatic command history update
-logGameAction :: MonadIO m => GameHistory -> T.Text -> m GameHistory
-logGameAction hist cmd = do
+-- | Log a player command - adds to command history and logs as Info
+logCommand :: MonadIO m => GameHistory -> T.Text -> m GameHistory
+logCommand hist cmd = do
     timestamp <- liftIO getCurrentTime
     let entry = LogEntry timestamp Info cmd True
         newHist = hist
@@ -105,21 +72,21 @@ logGameAction hist cmd = do
 
 -- | Log a debug message
 logDebug :: MonadIO m => GameHistory -> T.Text -> m GameHistory
-logDebug hist = logMessage hist Debug
+logDebug hist = logMessage hist Debug False
 
 -- | Log an info message
 logInfo :: MonadIO m => GameHistory -> T.Text -> m GameHistory
-logInfo hist = logMessage hist Info
+logInfo hist = logMessage hist Info False
 
 -- | Log an error message
 logError :: MonadIO m => GameHistory -> T.Text -> m GameHistory
-logError hist = logMessage hist Error
+logError hist = logMessage hist Error False
 
--- | Helper function to log messages of any level
-logMessage :: MonadIO m => GameHistory -> LogLevel -> T.Text -> m GameHistory
-logMessage hist level msg = do
+-- | Internal helper for logging messages
+logMessage :: MonadIO m => GameHistory -> LogLevel -> Bool -> T.Text -> m GameHistory
+logMessage hist level isCmd msg = do
     timestamp <- liftIO getCurrentTime
-    let entry = LogEntry timestamp level msg False
+    let entry = LogEntry timestamp level msg isCmd
         newHist = hist { logEntries = entry : logEntries hist }
     -- Write to log file
     liftIO $ TIO.appendFile (logFile hist) (formatLogEntry entry)
@@ -130,8 +97,8 @@ formatLogEntry :: LogEntry -> T.Text
 formatLogEntry LogEntry{..} = T.unwords
     [ T.pack (show timestamp)
     , T.pack (show level)
+    , if isCommand then "[COMMAND]" else ""
     , message
-    , T.pack (if isCommand then "[command]" else "")
     , "\n"
     ]
 
@@ -142,14 +109,18 @@ getRecentCommands = recentCommands
 -- | Save game history to file
 saveHistory :: GameHistory -> IO ()
 saveHistory hist = do
-    -- Save command history
-    A.encodeFile (historyFile hist) (recentCommands hist)
-    -- Log entries are already saved incrementally
+    -- Write all pending log entries
+    let logContent = T.unlines $ map formatLogEntry (reverse $ logEntries hist)
+    TIO.appendFile (logFile hist) logContent
+
+    -- Write command history
+    TIO.writeFile (historyFile hist) $ T.unlines (reverse $ recentCommands hist)
 
 -- | Load game history from file
 loadHistory :: FilePath -> FilePath -> IO GameHistory
 loadHistory logPath histPath = do
     hist <- initGameHistory logPath histPath
-    -- Load command history
-    commands <- either (const []) id <$> A.eitherDecodeFileStrict' histPath
-    return hist { recentCommands = commands }
+    -- Load previous commands if they exist
+    commands <- TIO.readFile histPath `catch` \(_ :: IOError) -> return ""
+    let loadedCommands = filter (not . T.null) $ T.lines commands
+    return hist { recentCommands = loadedCommands }

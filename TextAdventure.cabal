@@ -36,6 +36,7 @@ library
       Command.Put
       Core.Config
       Core.Distance
+      Core.GameMonad
       Core.Launch
       Core.Message
       Core.Message.Command

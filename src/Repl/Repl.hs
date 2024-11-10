@@ -1,38 +1,36 @@
 module Repl.Repl (replLoop) where
 
-import           Control.Monad.State
-import           Core.Config         (quitCommands, replPrompt)
-import           Core.State          (AppState (..))
-import           Data.Text           (Text)
-import qualified Data.Text.IO        as TIO
+import           Core.Config      (quitCommands, replPrompt)
+import           Core.GameMonad
+import           Core.State       (AppState (..), GameState (..))
+import           Data.Text        (Text)
+import qualified Data.Text.IO     as TIO
 import           Logger
-import           Repl.Interpreter    (interpretCommand)
-import           System.IO           (hFlush, stdout)
+import           Repl.Interpreter (interpretCommand)
+import           System.IO        (hFlush, stdout)
 
 -- | Main REPL loop that handles both game state and logging
 replLoop :: AppState -> IO (Maybe AppState)
-replLoop appState = do
+replLoop AppState{gameWorld = world, gameHistory = history} = do
     input <- read_
 
     if input `elem` quitCommands
     then do
-        finalHistory <- logInfo (gameHistory appState) "Player requested game exit"
+        finalHistory <- logInfo history "Player requested game exit"
         saveHistory finalHistory
         return Nothing
     else do
-        latestHistory <- logGameAction (gameHistory appState) input
+        let initialState = GameState world history
+        (result, GameState newWorld newHistory) <-
+            runGameMonad (interpretCommand input) initialState
 
-        let (outputM, newWorld) = runState (interpretCommand input) (gameWorld appState)
-        case outputM of
+        case result of
             Just output -> do
                 print_ output
-                updatedHistory <- logInfo latestHistory $ "Command output: " <> output
-                return $ Just $ appState
-                    { gameWorld = newWorld
-                    , gameHistory = updatedHistory
-                    }
+                newHistory2 <- logInfo newHistory "Command completed"
+                return $ Just $ AppState newWorld newHistory2
             Nothing -> do
-                finalHistory <- logInfo latestHistory "Command resulted in game exit"
+                finalHistory <- logInfo newHistory "Game exit requested"
                 saveHistory finalHistory
                 return Nothing
 
