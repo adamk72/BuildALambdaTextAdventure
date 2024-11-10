@@ -40,7 +40,6 @@ spec = describe "Interpreter" $ do
                 Left err -> expectationFailure $ "Expected Right but got Left: " ++ show err
 
         it "returns Left for malformed commands" $ do
-            initialState <- initTestState defaultGW
             case tryCommand testCmd "" of
                 Left err -> err `shouldBe` "I couldn't understand ''. Please try rephrasing your command."
                 Right _  -> expectationFailure "Expected Left but got Right"

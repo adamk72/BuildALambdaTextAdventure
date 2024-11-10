@@ -25,7 +25,7 @@ spec = do
                     expr = UnaryExpression "look" (NounClause "around")
                 (output, newState) <- runCommand executeLook expr gw
 
-                output `shouldBe` "You are in a flowery meadow. You look around and see a sliver coin, a bag of holding, a simple bag, and a shiny bauble."
+                output `shouldBe` "You are in a flowery meadow. You look around and see a silver coin, a bag of holding, a simple bag, and a shiny bauble."
                 verifyStartLocation newState "meadow"
 
             it "handles binary expression (look at <thing>)" $ do
@@ -65,7 +65,7 @@ spec = do
                     expr = UnaryExpression "look" (NounClause "around")
                 (output, _) <- runCommand executeLook expr gw
 
-                output `shouldBe` "You are in a flowery meadow. You look around and see a sliver coin, a simple bag, a shiny bauble, and bag of holding."
+                output `shouldBe` "You are in a flowery meadow. You look around and see a silver coin, a simple bag, a shiny bauble, and bag of holding."
 
             it "shows location and items when looking around in cave" $ do
                 let gw = defaultGW `withActorAt` testCave
@@ -80,6 +80,43 @@ spec = do
                 (output, _) <- runCommand executeLook expr gw
 
                 output `shouldBe` "You are in a flowery meadow. You look around and see ."
+
+        describe "container examination" $ do
+            it "shows content of a container with single item" $ do
+                let gw = defaultGW -- bag of holding already contains pearl by default
+                    expr = BinaryExpression "look" (PrepClause "in") (NounClause "bag of holding")
+                (output, newState) <- runCommand executeLook expr gw
+
+                output `shouldBe` "Inside the bag of holding you see a pearl of unique luster."
+                verifyStartLocation newState "meadow"
+
+                -- Verify pearl is still in the bag
+                case findItemByTag "bag of holding" newState >>= getInventory of
+                    Just loc -> do
+                        let itemsInBag = getItemTagsAtLoc loc newState
+                        itemsInBag `shouldContain` ["pearl"]
+                    Nothing -> expectationFailure "Bag lost its inventory location"
+
+            it "shows multiple items in container after adding item" $ do
+                -- First set up the container with multiple items
+                let gw = defaultGW
+                    setupExpr = ComplexExpression "put" (NounClause "bauble") (PrepClause "in") (NounClause "bag of holding")
+                (_, setupState) <- runCommand executePut setupExpr gw
+
+                -- Then look in the container
+                let lookExpr = BinaryExpression "look" (PrepClause "in") (NounClause "bag of holding")
+                (output, finalState) <- runCommand executeLook lookExpr setupState
+
+                output `shouldBe` "Inside the bag of holding you see a pearl of unique luster and a shiny bauble."
+                verifyStartLocation finalState "meadow"
+
+                -- Verify both items are still in the bag
+                case findItemByTag "bag of holding" finalState >>= getInventory of
+                    Just loc -> do
+                        let itemsInBag = getItemTagsAtLoc loc finalState
+                        itemsInBag `shouldContain` ["pearl"]
+                        itemsInBag `shouldContain` ["bauble"]
+                    Nothing -> expectationFailure "Bag lost its inventory location"
 
         describe "state preservation" $ do
             it "maintains actor location after looking" $ do

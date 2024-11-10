@@ -40,7 +40,7 @@ validJson = [r|
     "items": [
       {
         "tag": "silver coin",
-        "name": "a sliver coin",
+        "name": "a silver coin",
         "locationTag": "cave"
       }
     ],
@@ -99,7 +99,7 @@ invalidJson = [r|
     "items": [
       {
         "tag": "silver coin",
-        "name": "a sliver coin",
+        "name": "a silver coin",
         "locationTag": "cave"
       }
     ],

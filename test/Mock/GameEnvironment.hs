@@ -1,6 +1,7 @@
 module Mock.GameEnvironment (module Mock.GameEnvironment) where
 
 import           Core.State
+import           Data.Maybe
 import           Test.Hspec ()
 
 -- Common test gwLocations
@@ -81,7 +82,7 @@ testItemsForDefaultGw =
 testCoin :: Item
 testCoin = mkItem TaggedEntity
     { tag = "silver coin"
-    , name = "a sliver coin"
+    , name = "a silver coin"
     , location = testMeadow
     , inventory = Nothing
     }
