@@ -51,3 +51,669 @@
 2024-11-10 15:20:15.006478 UTC Debug Starting new game loop iteration  
 2024-11-10 15:20:35.355866 UTC Info Player requested game exit  
 2024-11-10 15:20:35.358948 UTC Info Game ended normally  
+2024-11-10 16:23:05.903807 UTC Info  Initializing new game state 
+2024-11-10 16:23:05.904573 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-10 16:23:05.904632 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:23:22.496564 UTC Info  Executing command: go cave 
+2024-11-10 16:23:22.496818 UTC Info  Command result: Moving to cave. 
+2024-11-10 16:23:22.497253 UTC Info  Command completed 
+2024-11-10 16:23:22.497305 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:23:24.983802 UTC Info  Executing command: go forest 
+2024-11-10 16:23:24.984334 UTC Info  Command result: Moving to forest. 
+2024-11-10 16:23:24.984858 UTC Info  Command completed 
+2024-11-10 16:23:24.984973 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:23:32.477845 UTC Info  Executing command: go castle entry 
+2024-11-10 16:23:32.478068 UTC Info  Command result: Moving to castle entry. 
+2024-11-10 16:23:32.478553 UTC Info  Command completed 
+2024-11-10 16:23:32.478645 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:23:35.267 UTC Info  Executing command: look 
+2024-11-10 16:23:35.267238 UTC Info  Command result: You take a quick glance around and see A general view of the space and possibly some items. 
+2024-11-10 16:23:35.267772 UTC Info  Command completed 
+2024-11-10 16:23:35.267862 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:23:38.878422 UTC Info  Executing command: look around 
+2024-11-10 16:23:38.878695 UTC Info  Command result: You are in in front of a grand castle. You look around and see greg the guard. 
+2024-11-10 16:23:38.879145 UTC Info  Command completed 
+2024-11-10 16:23:38.879284 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:24:53.326368 UTC Info  Executing command: go forest 
+2024-11-10 16:24:53.327586 UTC Info  Command result: Moving to forest. 
+2024-11-10 16:24:53.32771 UTC Info  Command completed 
+2024-11-10 16:24:53.327799 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:24:57.072064 UTC Info  Executing command: go cave  
+2024-11-10 16:24:57.072617 UTC Info  Command result: Moving to cave. 
+2024-11-10 16:24:57.073499 UTC Info  Command completed 
+2024-11-10 16:24:57.073706 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:24:58.900773 UTC Info  Executing command: go meadow 
+2024-11-10 16:24:58.901102 UTC Info  Command result: Moving to meadow. 
+2024-11-10 16:24:58.901594 UTC Info  Command completed 
+2024-11-10 16:24:58.901664 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:25:03.99306 UTC Info  Executing command: look in bag of holding 
+2024-11-10 16:25:03.993283 UTC Info  Command result: You look in the bag of holding and see a satchel that is inky black on the inside. 
+2024-11-10 16:25:03.993363 UTC Info  Command completed 
+2024-11-10 16:25:03.993407 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:25:28.291073 UTC Error  Command error: Unknown command 
+2024-11-10 16:25:28.291438 UTC Info  Command completed 
+2024-11-10 16:25:28.291851 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:25:34.205528 UTC Info  Executing command: look at bag of holding 
+2024-11-10 16:25:34.206036 UTC Info  Command result: You look at bag of holding. 
+2024-11-10 16:25:34.206772 UTC Info  Command completed 
+2024-11-10 16:25:34.206879 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:52:09.57234 UTC Info  Player requested game exit 
+2024-11-10 16:23:05.903807 UTC Info  Initializing new game state 
+
+2024-11-10 16:23:05.904573 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 16:23:05.904632 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:23:22.496564 UTC Info  Executing command: go cave 
+
+2024-11-10 16:23:22.496818 UTC Info  Command result: Moving to cave. 
+
+2024-11-10 16:23:22.497253 UTC Info  Command completed 
+
+2024-11-10 16:23:22.497305 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:23:24.983802 UTC Info  Executing command: go forest 
+
+2024-11-10 16:23:24.984334 UTC Info  Command result: Moving to forest. 
+
+2024-11-10 16:23:24.984858 UTC Info  Command completed 
+
+2024-11-10 16:23:24.984973 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:23:32.477845 UTC Info  Executing command: go castle entry 
+
+2024-11-10 16:23:32.478068 UTC Info  Command result: Moving to castle entry. 
+
+2024-11-10 16:23:32.478553 UTC Info  Command completed 
+
+2024-11-10 16:23:32.478645 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:23:35.267 UTC Info  Executing command: look 
+
+2024-11-10 16:23:35.267238 UTC Info  Command result: You take a quick glance around and see A general view of the space and possibly some items. 
+
+2024-11-10 16:23:35.267772 UTC Info  Command completed 
+
+2024-11-10 16:23:35.267862 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:23:38.878422 UTC Info  Executing command: look around 
+
+2024-11-10 16:23:38.878695 UTC Info  Command result: You are in in front of a grand castle. You look around and see greg the guard. 
+
+2024-11-10 16:23:38.879145 UTC Info  Command completed 
+
+2024-11-10 16:23:38.879284 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:24:53.326368 UTC Info  Executing command: go forest 
+
+2024-11-10 16:24:53.327586 UTC Info  Command result: Moving to forest. 
+
+2024-11-10 16:24:53.32771 UTC Info  Command completed 
+
+2024-11-10 16:24:53.327799 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:24:57.072064 UTC Info  Executing command: go cave  
+
+2024-11-10 16:24:57.072617 UTC Info  Command result: Moving to cave. 
+
+2024-11-10 16:24:57.073499 UTC Info  Command completed 
+
+2024-11-10 16:24:57.073706 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:24:58.900773 UTC Info  Executing command: go meadow 
+
+2024-11-10 16:24:58.901102 UTC Info  Command result: Moving to meadow. 
+
+2024-11-10 16:24:58.901594 UTC Info  Command completed 
+
+2024-11-10 16:24:58.901664 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:25:03.99306 UTC Info  Executing command: look in bag of holding 
+
+2024-11-10 16:25:03.993283 UTC Info  Command result: You look in the bag of holding and see a satchel that is inky black on the inside. 
+
+2024-11-10 16:25:03.993363 UTC Info  Command completed 
+
+2024-11-10 16:25:03.993407 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:25:28.291073 UTC Error  Command error: Unknown command 
+
+2024-11-10 16:25:28.291438 UTC Info  Command completed 
+
+2024-11-10 16:25:28.291851 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:25:34.205528 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 16:25:34.206036 UTC Info  Command result: You look at bag of holding. 
+
+2024-11-10 16:25:34.206772 UTC Info  Command completed 
+
+2024-11-10 16:25:34.206879 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:09.57234 UTC Info  Player requested game exit 
+
+2024-11-10 16:52:09.573777 UTC Info  Game ended normally 
+2024-11-10 16:23:05.903807 UTC Info  Initializing new game state 
+
+2024-11-10 16:23:05.904573 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 16:23:05.904632 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:23:22.496564 UTC Info  Executing command: go cave 
+
+2024-11-10 16:23:22.496818 UTC Info  Command result: Moving to cave. 
+
+2024-11-10 16:23:22.497253 UTC Info  Command completed 
+
+2024-11-10 16:23:22.497305 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:23:24.983802 UTC Info  Executing command: go forest 
+
+2024-11-10 16:23:24.984334 UTC Info  Command result: Moving to forest. 
+
+2024-11-10 16:23:24.984858 UTC Info  Command completed 
+
+2024-11-10 16:23:24.984973 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:23:32.477845 UTC Info  Executing command: go castle entry 
+
+2024-11-10 16:23:32.478068 UTC Info  Command result: Moving to castle entry. 
+
+2024-11-10 16:23:32.478553 UTC Info  Command completed 
+
+2024-11-10 16:23:32.478645 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:23:35.267 UTC Info  Executing command: look 
+
+2024-11-10 16:23:35.267238 UTC Info  Command result: You take a quick glance around and see A general view of the space and possibly some items. 
+
+2024-11-10 16:23:35.267772 UTC Info  Command completed 
+
+2024-11-10 16:23:35.267862 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:23:38.878422 UTC Info  Executing command: look around 
+
+2024-11-10 16:23:38.878695 UTC Info  Command result: You are in in front of a grand castle. You look around and see greg the guard. 
+
+2024-11-10 16:23:38.879145 UTC Info  Command completed 
+
+2024-11-10 16:23:38.879284 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:24:53.326368 UTC Info  Executing command: go forest 
+
+2024-11-10 16:24:53.327586 UTC Info  Command result: Moving to forest. 
+
+2024-11-10 16:24:53.32771 UTC Info  Command completed 
+
+2024-11-10 16:24:53.327799 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:24:57.072064 UTC Info  Executing command: go cave  
+
+2024-11-10 16:24:57.072617 UTC Info  Command result: Moving to cave. 
+
+2024-11-10 16:24:57.073499 UTC Info  Command completed 
+
+2024-11-10 16:24:57.073706 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:24:58.900773 UTC Info  Executing command: go meadow 
+
+2024-11-10 16:24:58.901102 UTC Info  Command result: Moving to meadow. 
+
+2024-11-10 16:24:58.901594 UTC Info  Command completed 
+
+2024-11-10 16:24:58.901664 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:25:03.99306 UTC Info  Executing command: look in bag of holding 
+
+2024-11-10 16:25:03.993283 UTC Info  Command result: You look in the bag of holding and see a satchel that is inky black on the inside. 
+
+2024-11-10 16:25:03.993363 UTC Info  Command completed 
+
+2024-11-10 16:25:03.993407 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:25:28.291073 UTC Error  Command error: Unknown command 
+
+2024-11-10 16:25:28.291438 UTC Info  Command completed 
+
+2024-11-10 16:25:28.291851 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:25:34.205528 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 16:25:34.206036 UTC Info  Command result: You look at bag of holding. 
+
+2024-11-10 16:25:34.206772 UTC Info  Command completed 
+
+2024-11-10 16:52:09.573777 UTC Info  Game ended normally 
+
+2024-11-10 16:52:19.87389 UTC Info  Initializing new game state 
+2024-11-10 16:52:19.874476 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-10 16:52:19.874566 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:52:24.611376 UTC Info  Executing command: get bag of holding 
+2024-11-10 16:52:24.611997 UTC Info  Command result: Moved bag of holding to Alice the Adventurer 
+2024-11-10 16:52:24.612815 UTC Info  Command completed 
+2024-11-10 16:52:24.612931 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:52:31.323347 UTC Info  Executing command: go cav 
+2024-11-10 16:52:31.323721 UTC Info  Command result: There is no indication there's a way to get to "cav". 
+2024-11-10 16:52:31.324199 UTC Info  Command completed 
+2024-11-10 16:52:31.324274 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:52:32.663795 UTC Error  Command error: Unknown command 
+2024-11-10 16:52:32.664163 UTC Info  Command completed 
+2024-11-10 16:52:32.66467 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:52:34.832235 UTC Info  Executing command: go cave 
+2024-11-10 16:52:34.832764 UTC Info  Command result: Moving to cave. 
+2024-11-10 16:52:34.833626 UTC Info  Command completed 
+2024-11-10 16:52:34.833782 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:52:40.081133 UTC Info  Executing command: go forest 
+2024-11-10 16:52:40.081475 UTC Info  Command result: Moving to forest. 
+2024-11-10 16:52:40.081977 UTC Info  Command completed 
+2024-11-10 16:52:40.082078 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:52:44.923607 UTC Info  Executing command: go castle entry 
+2024-11-10 16:52:44.92418 UTC Info  Command result: Moving to castle entry. 
+2024-11-10 16:52:44.924989 UTC Info  Command completed 
+2024-11-10 16:52:44.925115 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:52:46.391492 UTC Info  Executing command: look around 
+2024-11-10 16:52:46.391807 UTC Info  Command result: You are in in front of a grand castle. You look around and see greg the guard. 
+2024-11-10 16:52:46.392247 UTC Info  Command completed 
+2024-11-10 16:52:46.392315 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:52:47.578302 UTC Info  Executing command: look  
+2024-11-10 16:52:47.578535 UTC Info  Command result: You take a quick glance around and see A general view of the space and possibly some items. 
+2024-11-10 16:52:47.579062 UTC Info  Command completed 
+2024-11-10 16:52:47.57912 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:53:04.457891 UTC Info  Executing command: look at guard 
+2024-11-10 16:53:04.459781 UTC Info  Command result: You see Greg the Guard.': 
+2024-11-10 16:53:04.460028 UTC Info  Command completed 
+2024-11-10 16:53:04.460107 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:53:16.063967 UTC Info  Executing command: look at bag of holding 
+2024-11-10 16:53:16.064476 UTC Info  Command result: Don't see a bag of holdingto look at. 
+2024-11-10 16:53:16.065213 UTC Info  Command completed 
+2024-11-10 16:53:16.065313 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:53:27.214382 UTC Info  Executing command: look in bag of holding 
+2024-11-10 16:53:27.214654 UTC Info  Command result: You look in the bag of holding and see a satchel that is inky black on the inside. 
+2024-11-10 16:53:27.215137 UTC Info  Command completed 
+2024-11-10 16:53:27.215249 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:53:34.754787 UTC Info  Executing command: look at bag of holding 
+2024-11-10 16:53:34.755286 UTC Info  Command result: Don't see a bag of holdingto look at. 
+2024-11-10 16:53:34.756079 UTC Info  Command completed 
+2024-11-10 16:53:34.756183 UTC Debug  Starting new game loop iteration 
+2024-11-10 16:53:54.100301 UTC Info  Player requested game exit 
+2024-11-10 16:52:19.87389 UTC Info  Initializing new game state 
+
+2024-11-10 16:52:19.874476 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 16:52:19.874566 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:24.611376 UTC Info  Executing command: get bag of holding 
+
+2024-11-10 16:52:24.611997 UTC Info  Command result: Moved bag of holding to Alice the Adventurer 
+
+2024-11-10 16:52:24.612815 UTC Info  Command completed 
+
+2024-11-10 16:52:24.612931 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:31.323347 UTC Info  Executing command: go cav 
+
+2024-11-10 16:52:31.323721 UTC Info  Command result: There is no indication there's a way to get to "cav". 
+
+2024-11-10 16:52:31.324199 UTC Info  Command completed 
+
+2024-11-10 16:52:31.324274 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:32.663795 UTC Error  Command error: Unknown command 
+
+2024-11-10 16:52:32.664163 UTC Info  Command completed 
+
+2024-11-10 16:52:32.66467 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:34.832235 UTC Info  Executing command: go cave 
+
+2024-11-10 16:52:34.832764 UTC Info  Command result: Moving to cave. 
+
+2024-11-10 16:52:34.833626 UTC Info  Command completed 
+
+2024-11-10 16:52:34.833782 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:40.081133 UTC Info  Executing command: go forest 
+
+2024-11-10 16:52:40.081475 UTC Info  Command result: Moving to forest. 
+
+2024-11-10 16:52:40.081977 UTC Info  Command completed 
+
+2024-11-10 16:52:40.082078 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:44.923607 UTC Info  Executing command: go castle entry 
+
+2024-11-10 16:52:44.92418 UTC Info  Command result: Moving to castle entry. 
+
+2024-11-10 16:52:44.924989 UTC Info  Command completed 
+
+2024-11-10 16:52:44.925115 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:46.391492 UTC Info  Executing command: look around 
+
+2024-11-10 16:52:46.391807 UTC Info  Command result: You are in in front of a grand castle. You look around and see greg the guard. 
+
+2024-11-10 16:52:46.392247 UTC Info  Command completed 
+
+2024-11-10 16:52:46.392315 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:47.578302 UTC Info  Executing command: look  
+
+2024-11-10 16:52:47.578535 UTC Info  Command result: You take a quick glance around and see A general view of the space and possibly some items. 
+
+2024-11-10 16:52:47.579062 UTC Info  Command completed 
+
+2024-11-10 16:52:47.57912 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:53:04.457891 UTC Info  Executing command: look at guard 
+
+2024-11-10 16:53:04.459781 UTC Info  Command result: You see Greg the Guard.': 
+
+2024-11-10 16:53:04.460028 UTC Info  Command completed 
+
+2024-11-10 16:53:04.460107 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:53:16.063967 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 16:53:16.064476 UTC Info  Command result: Don't see a bag of holdingto look at. 
+
+2024-11-10 16:53:16.065213 UTC Info  Command completed 
+
+2024-11-10 16:53:16.065313 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:53:27.214382 UTC Info  Executing command: look in bag of holding 
+
+2024-11-10 16:53:27.214654 UTC Info  Command result: You look in the bag of holding and see a satchel that is inky black on the inside. 
+
+2024-11-10 16:53:27.215137 UTC Info  Command completed 
+
+2024-11-10 16:53:27.215249 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:53:34.754787 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 16:53:34.755286 UTC Info  Command result: Don't see a bag of holdingto look at. 
+
+2024-11-10 16:53:34.756079 UTC Info  Command completed 
+
+2024-11-10 16:53:34.756183 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:53:54.100301 UTC Info  Player requested game exit 
+
+2024-11-10 16:53:54.101905 UTC Info  Game ended normally 
+2024-11-10 16:52:19.87389 UTC Info  Initializing new game state 
+
+2024-11-10 16:52:19.874476 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 16:52:19.874566 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:24.611376 UTC Info  Executing command: get bag of holding 
+
+2024-11-10 16:52:24.611997 UTC Info  Command result: Moved bag of holding to Alice the Adventurer 
+
+2024-11-10 16:52:24.612815 UTC Info  Command completed 
+
+2024-11-10 16:52:24.612931 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:31.323347 UTC Info  Executing command: go cav 
+
+2024-11-10 16:52:31.323721 UTC Info  Command result: There is no indication there's a way to get to "cav". 
+
+2024-11-10 16:52:31.324199 UTC Info  Command completed 
+
+2024-11-10 16:52:31.324274 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:32.663795 UTC Error  Command error: Unknown command 
+
+2024-11-10 16:52:32.664163 UTC Info  Command completed 
+
+2024-11-10 16:52:32.66467 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:34.832235 UTC Info  Executing command: go cave 
+
+2024-11-10 16:52:34.832764 UTC Info  Command result: Moving to cave. 
+
+2024-11-10 16:52:34.833626 UTC Info  Command completed 
+
+2024-11-10 16:52:34.833782 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:40.081133 UTC Info  Executing command: go forest 
+
+2024-11-10 16:52:40.081475 UTC Info  Command result: Moving to forest. 
+
+2024-11-10 16:52:40.081977 UTC Info  Command completed 
+
+2024-11-10 16:52:40.082078 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:44.923607 UTC Info  Executing command: go castle entry 
+
+2024-11-10 16:52:44.92418 UTC Info  Command result: Moving to castle entry. 
+
+2024-11-10 16:52:44.924989 UTC Info  Command completed 
+
+2024-11-10 16:52:44.925115 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:46.391492 UTC Info  Executing command: look around 
+
+2024-11-10 16:52:46.391807 UTC Info  Command result: You are in in front of a grand castle. You look around and see greg the guard. 
+
+2024-11-10 16:52:46.392247 UTC Info  Command completed 
+
+2024-11-10 16:52:46.392315 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:52:47.578302 UTC Info  Executing command: look  
+
+2024-11-10 16:52:47.578535 UTC Info  Command result: You take a quick glance around and see A general view of the space and possibly some items. 
+
+2024-11-10 16:52:47.579062 UTC Info  Command completed 
+
+2024-11-10 16:52:47.57912 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:53:04.457891 UTC Info  Executing command: look at guard 
+
+2024-11-10 16:53:04.459781 UTC Info  Command result: You see Greg the Guard.': 
+
+2024-11-10 16:53:04.460028 UTC Info  Command completed 
+
+2024-11-10 16:53:04.460107 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:53:16.063967 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 16:53:16.064476 UTC Info  Command result: Don't see a bag of holdingto look at. 
+
+2024-11-10 16:53:16.065213 UTC Info  Command completed 
+
+2024-11-10 16:53:16.065313 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:53:27.214382 UTC Info  Executing command: look in bag of holding 
+
+2024-11-10 16:53:27.214654 UTC Info  Command result: You look in the bag of holding and see a satchel that is inky black on the inside. 
+
+2024-11-10 16:53:27.215137 UTC Info  Command completed 
+
+2024-11-10 16:53:27.215249 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 16:53:34.754787 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 16:53:34.755286 UTC Info  Command result: Don't see a bag of holdingto look at. 
+
+2024-11-10 16:53:34.756079 UTC Info  Command completed 
+
+2024-11-10 16:53:54.101905 UTC Info  Game ended normally 
+
+2024-11-10 17:00:26.980117 UTC Info  Initializing new game state 
+2024-11-10 17:00:26.980896 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-10 17:00:26.980963 UTC Debug  Starting new game loop iteration 
+2024-11-10 17:00:31.247735 UTC Info  Executing command: look in bag of holding 
+2024-11-10 17:00:31.248034 UTC Info  Command result: You look in the bag of holding and see a satchel that is inky black on the inside. 
+2024-11-10 17:00:31.248454 UTC Info  Command completed 
+2024-11-10 17:00:31.24851 UTC Debug  Starting new game loop iteration 
+2024-11-10 17:00:44.26038 UTC Info  Executing command: look at bag of holding 
+2024-11-10 17:00:44.260615 UTC Info  Command result: You see A satchel that is inky black on the inside. 
+2024-11-10 17:00:44.261108 UTC Info  Command completed 
+2024-11-10 17:00:44.261231 UTC Debug  Starting new game loop iteration 
+2024-11-10 17:00:50.499817 UTC Info  Executing command: get bag of holding 
+2024-11-10 17:00:50.500085 UTC Info  Command result: Moved bag of holding to Alice the Adventurer 
+2024-11-10 17:00:50.500162 UTC Info  Command completed 
+2024-11-10 17:00:50.500226 UTC Debug  Starting new game loop iteration 
+2024-11-10 17:00:53.815056 UTC Info  Executing command: look at bag of holding 
+2024-11-10 17:00:53.815305 UTC Info  Command result: In your inventory, you see :A satchel that is inky black on the inside. 
+2024-11-10 17:00:53.815753 UTC Info  Command completed 
+2024-11-10 17:00:53.815806 UTC Debug  Starting new game loop iteration 
+2024-11-10 17:01:33.046414 UTC Info  Player requested game exit 
+2024-11-10 17:00:26.980117 UTC Info  Initializing new game state 
+
+2024-11-10 17:00:26.980896 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 17:00:26.980963 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:00:31.247735 UTC Info  Executing command: look in bag of holding 
+
+2024-11-10 17:00:31.248034 UTC Info  Command result: You look in the bag of holding and see a satchel that is inky black on the inside. 
+
+2024-11-10 17:00:31.248454 UTC Info  Command completed 
+
+2024-11-10 17:00:31.24851 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:00:44.26038 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 17:00:44.260615 UTC Info  Command result: You see A satchel that is inky black on the inside. 
+
+2024-11-10 17:00:44.261108 UTC Info  Command completed 
+
+2024-11-10 17:00:44.261231 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:00:50.499817 UTC Info  Executing command: get bag of holding 
+
+2024-11-10 17:00:50.500085 UTC Info  Command result: Moved bag of holding to Alice the Adventurer 
+
+2024-11-10 17:00:50.500162 UTC Info  Command completed 
+
+2024-11-10 17:00:50.500226 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:00:53.815056 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 17:00:53.815305 UTC Info  Command result: In your inventory, you see :A satchel that is inky black on the inside. 
+
+2024-11-10 17:00:53.815753 UTC Info  Command completed 
+
+2024-11-10 17:00:53.815806 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:01:33.046414 UTC Info  Player requested game exit 
+
+2024-11-10 17:01:33.047957 UTC Info  Game ended normally 
+2024-11-10 17:00:26.980117 UTC Info  Initializing new game state 
+
+2024-11-10 17:00:26.980896 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 17:00:26.980963 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:00:31.247735 UTC Info  Executing command: look in bag of holding 
+
+2024-11-10 17:00:31.248034 UTC Info  Command result: You look in the bag of holding and see a satchel that is inky black on the inside. 
+
+2024-11-10 17:00:31.248454 UTC Info  Command completed 
+
+2024-11-10 17:00:31.24851 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:00:44.26038 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 17:00:44.260615 UTC Info  Command result: You see A satchel that is inky black on the inside. 
+
+2024-11-10 17:00:44.261108 UTC Info  Command completed 
+
+2024-11-10 17:00:44.261231 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:00:50.499817 UTC Info  Executing command: get bag of holding 
+
+2024-11-10 17:00:50.500085 UTC Info  Command result: Moved bag of holding to Alice the Adventurer 
+
+2024-11-10 17:00:50.500162 UTC Info  Command completed 
+
+2024-11-10 17:00:50.500226 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:00:53.815056 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 17:00:53.815305 UTC Info  Command result: In your inventory, you see :A satchel that is inky black on the inside. 
+
+2024-11-10 17:00:53.815753 UTC Info  Command completed 
+
+2024-11-10 17:01:33.047957 UTC Info  Game ended normally 
+
+2024-11-10 17:01:52.581012 UTC Info  Initializing new game state 
+2024-11-10 17:01:52.581904 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-10 17:01:52.581967 UTC Debug  Starting new game loop iteration 
+2024-11-10 17:01:59.078868 UTC Info  Executing command: get bag of holding 
+2024-11-10 17:01:59.079494 UTC Info  Command result: Moved bag of holding to Alice the Adventurer 
+2024-11-10 17:01:59.080296 UTC Info  Command completed 
+2024-11-10 17:01:59.080442 UTC Debug  Starting new game loop iteration 
+2024-11-10 17:02:01.954664 UTC Info  Executing command: look bag of holding 
+2024-11-10 17:02:01.954938 UTC Info  Command result: TBD 
+2024-11-10 17:02:01.955452 UTC Info  Command completed 
+2024-11-10 17:02:01.955587 UTC Debug  Starting new game loop iteration 
+2024-11-10 17:02:05.095073 UTC Info  Executing command: look at bag of holding 
+2024-11-10 17:02:05.096915 UTC Info  Command result: In your inventory, you see a satchel that is inky black on the inside. 
+2024-11-10 17:02:05.097032 UTC Info  Command completed 
+2024-11-10 17:02:05.097093 UTC Debug  Starting new game loop iteration 
+2024-11-10 17:02:34.485414 UTC Info  Player requested game exit 
+2024-11-10 17:01:52.581012 UTC Info  Initializing new game state 
+
+2024-11-10 17:01:52.581904 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 17:01:52.581967 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:01:59.078868 UTC Info  Executing command: get bag of holding 
+
+2024-11-10 17:01:59.079494 UTC Info  Command result: Moved bag of holding to Alice the Adventurer 
+
+2024-11-10 17:01:59.080296 UTC Info  Command completed 
+
+2024-11-10 17:01:59.080442 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:02:01.954664 UTC Info  Executing command: look bag of holding 
+
+2024-11-10 17:02:01.954938 UTC Info  Command result: TBD 
+
+2024-11-10 17:02:01.955452 UTC Info  Command completed 
+
+2024-11-10 17:02:01.955587 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:02:05.095073 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 17:02:05.096915 UTC Info  Command result: In your inventory, you see a satchel that is inky black on the inside. 
+
+2024-11-10 17:02:05.097032 UTC Info  Command completed 
+
+2024-11-10 17:02:05.097093 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:02:34.485414 UTC Info  Player requested game exit 
+
+2024-11-10 17:02:34.487045 UTC Info  Game ended normally 
+2024-11-10 17:01:52.581012 UTC Info  Initializing new game state 
+
+2024-11-10 17:01:52.581904 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 17:01:52.581967 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:01:59.078868 UTC Info  Executing command: get bag of holding 
+
+2024-11-10 17:01:59.079494 UTC Info  Command result: Moved bag of holding to Alice the Adventurer 
+
+2024-11-10 17:01:59.080296 UTC Info  Command completed 
+
+2024-11-10 17:01:59.080442 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:02:01.954664 UTC Info  Executing command: look bag of holding 
+
+2024-11-10 17:02:01.954938 UTC Info  Command result: TBD 
+
+2024-11-10 17:02:01.955452 UTC Info  Command completed 
+
+2024-11-10 17:02:01.955587 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 17:02:05.095073 UTC Info  Executing command: look at bag of holding 
+
+2024-11-10 17:02:05.096915 UTC Info  Command result: In your inventory, you see a satchel that is inky black on the inside. 
+
+2024-11-10 17:02:05.097032 UTC Info  Command completed 
+
+2024-11-10 17:02:34.487045 UTC Info  Game ended normally 
+

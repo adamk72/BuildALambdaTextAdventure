@@ -62,6 +62,11 @@
         "tag": "pearl",
         "name": "a pearl of unique luster",
         "locationTag": "bag of holding"
+      },
+      {
+        "tag": "another pearl",
+        "name": "another pearl of unique luster",
+        "locationTag": "bag of holding"
       }
     ],
     "locations": [

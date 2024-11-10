@@ -14,7 +14,7 @@ dropObject object dstM actorLoc gw =
         Just item -> do
             let updatedGW = moveItemLoc item actorLoc gw
                 inv = oxfordEntityNames (getActorInventoryItems updatedGW)
-            modifyGameWorld (\_ -> (updatedGW))
+            modifyGameWorld (const updatedGW)
             case dstM of
                 Nothing  -> msg $ DroppedItemWithInventory object inv
                 Just dst -> msg $ DroppedItemSomewhere object dst

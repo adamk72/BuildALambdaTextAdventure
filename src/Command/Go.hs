@@ -15,7 +15,7 @@ moveTo actor dstTag validDstTags  gw
         case find (\loc -> locTag loc == dstTag) (gwLocations gw) of
             Just newLoc -> do
                 let newAc = setActorLoc newLoc actor
-                modifyGameWorld (\_ -> (gw { gwActiveActor = newAc }))
+                modifyGameWorld (const gw {gwActiveActor = newAc})
                 msg $ MovingToLocation dstTag
             Nothing -> error $ unpack $ renderMessage $ LocationError dstTag
     | otherwise = msg $ NoPath dstTag

@@ -41,7 +41,7 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 - [] Pre-work for scenarios
   - [] Create "give" command for NPC interaction.
   - [] Create "talk" command for NPC interaction.
-  - [] "Look" should describe NPCs in location
+  - [x] "Look" should describe NPCs in location
   - [] "Look" should describe locations exits; not all exits will be "real" and lead to other places.
   - [] Allow for "open" and "close" commands (is this necessary; can we assume that if something isn't locked, it can be opened without needing a specific command?) Maybe treating as a status, like, "blocked" and "unblocked" makes more sense.
   - [] Allow for "lock" and "unlock" command.

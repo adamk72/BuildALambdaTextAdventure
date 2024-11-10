@@ -29,6 +29,10 @@ getActorInventoryItems gw = do
   let pocketSlot = getActorInventory gw
   getItemsAtLoc pocketSlot gw
 
+findItemByTagInActorInventory :: Text -> GameWorld -> Maybe Item
+findItemByTagInActorInventory iTag gw = do
+  List.find (\e -> getTag e == iTag) (getActorInventoryItems gw)
+
 checkItemTagInPocket :: Text -> GameWorld -> Bool
 checkItemTagInPocket itemTag gw = do
   case findItemByTag itemTag gw of
@@ -45,6 +49,10 @@ getEntitiesAtLoc loc gw =
 
 getItemsAtLoc :: Location -> GameWorld -> [Item]
 getItemsAtLoc loc gw = filterItems (getEntitiesAtLoc loc gw)
+
+findEntityByTagAtLoc :: Text -> Location -> GameWorld -> Maybe Entity
+findEntityByTagAtLoc eTag loc gw =
+    List.find (\e -> getTag e == eTag && getLocation e == loc) (getEntities gw)
 
 findItemByTag :: Text -> GameWorld -> Maybe Item
 findItemByTag itemTag gw = List.find (\item -> getTag item == itemTag) (gwItems gw)

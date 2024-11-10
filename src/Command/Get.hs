@@ -15,7 +15,7 @@ getItem itemTag validItemTags actor gw
             Just foundObj -> do
                 let ps = getActorInventory gw
                     updatedGW = moveItemLoc foundObj ps gw
-                modifyGameWorld (\_ -> (updatedGW))
+                modifyGameWorld (const updatedGW)
                 msg $ PickedUp itemTag (getName actor)
             Nothing -> msgGameWordError $ ItemDoesNotExist itemTag
     | otherwise = msg $ InvalidItem itemTag
