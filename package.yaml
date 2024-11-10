@@ -80,6 +80,8 @@ tests:
     - TextAdventure
     - QuickCheck
     - aeson
+    - directory
+    - filepath
     - bytestring
     - hspec
     - mtl

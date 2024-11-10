@@ -16,7 +16,7 @@ spec = do
             it "handles atomic expression (just 'put')" $ do
                 let gw = defaultGW
                     expr = AtomicExpression "put"
-                    (output, newState) = runCommand executePut expr gw
+                (output, newState) <- runCommand executePut expr gw
 
                 output `shouldBe` renderMessage PutWhat
                 verifyStartLocation newState "meadow"
@@ -24,7 +24,7 @@ spec = do
             it "handles unary expression (put <item>)" $ do
                 let gw = defaultGW
                     expr = UnaryExpression "put" (NounClause "silver coin")
-                    (output, newState) = runCommand executePut expr gw
+                (output, newState) <- runCommand executePut expr gw
 
                 output `shouldBe` renderMessage (PutWhere "silver coin")
                 verifyStartLocation newState "meadow"
@@ -32,7 +32,7 @@ spec = do
             it "handles binary expression (put in <container>)" $ do
                 let gw = defaultGW
                     expr = BinaryExpression "put" (PrepClause "in") (NounClause "bag of holding")
-                    (output, newState) = runCommand executePut expr gw
+                (output, newState) <- runCommand executePut expr gw
 
                 output `shouldBe` renderMessage PutWhat
                 verifyStartLocation newState "meadow"
@@ -40,7 +40,7 @@ spec = do
             it "handles complex expression (put <item> in <container>)" $ do
                 let gw = defaultGW
                     expr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "bag of holding")
-                    (output, newState) = runCommand executePut expr gw
+                (output, newState) <- runCommand executePut expr gw
 
                 output `shouldBe` "silver coin is now in the bag of holding."
                 case findItemByTag "bag of holding" newState >>= getInventory of
@@ -54,7 +54,7 @@ spec = do
             it "allows putting items in valid containers" $ do
                 let gw = defaultGW
                     expr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "bag of holding")
-                    (output, newState) = runCommand executePut expr gw
+                (output, newState) <- runCommand executePut expr gw
 
                 output `shouldBe` "silver coin is now in the bag of holding."
                 case findItemByTag "bag of holding" newState >>= getInventory of
@@ -67,14 +67,14 @@ spec = do
             it "prevents putting items in non-containers" $ do
                 let gw = defaultGW
                     expr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "bauble")
-                    (output, _) = runCommand executePut expr gw
+                (output, _) <- runCommand executePut expr gw
 
                 output `shouldBe` "The bauble is not a container."
 
             it "prevents putting non-existent items in containers" $ do
                 let gw = defaultGW
                     expr = ComplexExpression "put" (NounClause "golden coin") (PrepClause "in") (NounClause "bag of holding")
-                    (output, _) = runCommand executePut expr gw
+                (output, _) <- runCommand executePut expr gw
 
                 output `shouldBe` renderMessage (NoItemForContainer "golden coin" "bag of holding")
 
@@ -82,7 +82,7 @@ spec = do
                 let gw = defaultGW
                     updatedGW = moveItemLoc testCoin testMeadow gw
                     expr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "magic box")
-                    (output, _) = runCommand executePut expr updatedGW
+                (output, _) <- runCommand executePut expr updatedGW
 
                 output `shouldBe` renderMessage (NoContainerForItem "silver coin" "magic box")
 
@@ -91,7 +91,7 @@ spec = do
                 let gw = defaultGW
                     updatedGW = moveItemLoc testCoin testMeadow gw
                     expr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "bag of holding")
-                    (_, newState) = runCommand executePut expr updatedGW
+                (_, newState) <- runCommand executePut expr updatedGW
 
                 -- Verify item is in container
                 case findItemByTag "bag of holding" newState >>= getInventory of
@@ -110,11 +110,11 @@ spec = do
                 let gw = defaultGW
                     updatedGW = moveItemLoc testCoin testMeadow gw
                     getExpr = UnaryExpression "get" (NounClause "silver coin")
-                    (_, midState) = runCommand executeGet getExpr updatedGW
+                (_, midState) <- runCommand executeGet getExpr updatedGW
 
                     -- Then put it in container
-                    putExpr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "bag of holding")
-                    (_, finalState) = runCommand executePut putExpr midState
+                let putExpr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "bag of holding")
+                (_, finalState) <- runCommand executePut putExpr midState
 
                 -- Verify item is in container
                 case findItemByTag "bag of holding" finalState >>= getInventory of

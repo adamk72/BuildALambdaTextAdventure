@@ -144,6 +144,8 @@ test-suite TextAdventure-test
     , aeson
     , base >=4.7 && <5
     , bytestring
+    , directory
+    , filepath
     , hspec
     , mtl
     , process

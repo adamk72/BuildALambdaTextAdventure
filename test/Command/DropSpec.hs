@@ -16,7 +16,7 @@ spec = do
             it "handles atomic expression (just 'drop')" $ do
                 let gw = defaultGW
                     expr = AtomicExpression "drop"
-                    (output, newState) = runCommand executeDrop expr gw
+                (output, newState) <- runCommand executeDrop expr gw
 
                 output `shouldBe` renderMessage DropWhat
                 verifyStartLocation newState "meadow"
@@ -25,11 +25,11 @@ spec = do
                 -- First get the item
                 let gw = defaultGW
                     getExpr = UnaryExpression "get" (NounClause "silver coin")
-                    (_, midState) = runCommand executeGet getExpr gw
+                (_, midState) <- runCommand executeGet getExpr gw
 
                     -- Then drop it
-                    dropExpr = UnaryExpression "drop" (NounClause "silver coin")
-                    (output, finalState) = runCommand executeDrop dropExpr midState
+                let dropExpr = UnaryExpression "drop" (NounClause "silver coin")
+                (output, finalState) <- runCommand executeDrop dropExpr midState
 
                 output `shouldBe` renderMessage (DroppedItemWithInventory "silver coin" "") -- no inventory at this time
                 checkItemTagInPocket "silver coin" finalState `shouldBe` False
@@ -37,13 +37,13 @@ spec = do
             it "questions what is meant by an incomplete phrase" $ do
                 let gw = defaultGW
                     expr = BinaryExpression "drop" (PrepClause "on") (NounClause "ground")
-                    (output, _) = runCommand executeDrop expr gw
+                (output, _) <- runCommand executeDrop expr gw
                 output `shouldBe` renderMessage DropWhat
 
             it "handles full phrase" $ do
                 let gw = defaultGW
                     expr = ComplexExpression "drop" (NounClause "silver coin") (PrepClause "on") (NounClause "ground")
-                    (output, newState) = runCommand executeDrop expr gw
+                (output, newState) <- runCommand executeDrop expr gw
 
                 output `shouldBe` renderMessage (DroppedItemSomewhere "silver coin" "on ground") -- no inventory at this time
                 checkItemTagInPocket "silver coin" newState `shouldBe` False
@@ -51,7 +51,7 @@ spec = do
             it "handles dropping of all objects" $ do
                 let gw = defaultGW
                     expr = ComplexExpression "drop" (NounClause "all") (PrepClause "on") (NounClause "ground")
-                    (output, newState) = runCommand executeDrop expr gw
+                (output, newState) <- runCommand executeDrop expr gw
 
                 output `shouldBe` "IN DEVELOPMENT: dropping all items from inventory"
                 verifyStartLocation newState "meadow"
@@ -61,11 +61,11 @@ spec = do
                 -- First get the item
                 let gw = defaultGW
                     getExpr = UnaryExpression "get" (NounClause "silver coin")
-                    (_, midState) = runCommand executeGet getExpr gw
+                (_, midState) <- runCommand executeGet getExpr gw
 
                     -- Then drop it
-                    dropExpr = UnaryExpression "drop" (NounClause "silver coin")
-                    (output, finalState) = runCommand executeDrop dropExpr midState
+                let dropExpr = UnaryExpression "drop" (NounClause "silver coin")
+                (output, finalState) <- runCommand executeDrop dropExpr midState
 
                 output `shouldBe` renderMessage (DroppedItemWithInventory "silver coin" "")
                 checkItemTagInPocket "silver coin" finalState `shouldBe` False
@@ -73,7 +73,7 @@ spec = do
             it "prevents dropping items not in inventory" $ do
                 let gw = defaultGW
                     expr = UnaryExpression "drop" (NounClause "nonexistent")
-                    (output, newState) = runCommand executeDrop expr gw
+                (output, newState) <- runCommand executeDrop expr gw
 
                 output `shouldBe` "You don't have a nonexistent to drop."
                 verifyStartLocation newState "meadow"
@@ -83,11 +83,11 @@ spec = do
                 -- First get the item
                 let gw = defaultGW
                     getExpr = UnaryExpression "get" (NounClause "silver coin")
-                    (_, midState) = runCommand executeGet getExpr gw
+                (_, midState) <- runCommand executeGet getExpr gw
 
                     -- Then drop it
-                    dropExpr = UnaryExpression "drop" (NounClause "silver coin")
-                    (_, finalState) = runCommand executeDrop dropExpr midState
+                let dropExpr = UnaryExpression "drop" (NounClause "silver coin")
+                (_, finalState) <- runCommand executeDrop dropExpr midState
 
                 -- Verify item is in location
                 let itemsInLoc = getItemTagsAtLoc testMeadow finalState
@@ -100,17 +100,17 @@ spec = do
                 -- First get container and put item in it
                 let gw = defaultGW
                     getBagExpr = UnaryExpression "get" (NounClause "bag of holding")
-                    (_, state1) = runCommand executeGet getBagExpr gw
+                (_, state1) <- runCommand executeGet getBagExpr gw
 
-                    getCoinExpr = UnaryExpression "get" (NounClause "silver coin")
-                    (_, state2) = runCommand executeGet getCoinExpr state1
+                let getCoinExpr = UnaryExpression "get" (NounClause "silver coin")
+                (_, state2) <- runCommand executeGet getCoinExpr state1
 
-                    putExpr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "bag of holding")
-                    (_, state3) = runCommand executePut putExpr state2
+                let putExpr = ComplexExpression "put" (NounClause "silver coin") (PrepClause "in") (NounClause "bag of holding")
+                (_, state3) <- runCommand executePut putExpr state2
 
                     -- Then drop the container
-                    dropExpr = UnaryExpression "drop" (NounClause "bag of holding")
-                    (_, finalState) = runCommand executeDrop dropExpr state3
+                let dropExpr = UnaryExpression "drop" (NounClause "bag of holding")
+                (_, finalState) <- runCommand executeDrop dropExpr state3
 
                 -- Verify container contents remain intact
                 case findItemByTag "bag of holding" finalState >>= getInventory of
@@ -124,15 +124,15 @@ spec = do
                 -- First get the item in meadow
                 let gw = defaultGW
                     getExpr = UnaryExpression "get" (NounClause "silver coin")
-                    (_, state1) = runCommand executeGet getExpr gw
+                (_, state1) <- runCommand executeGet getExpr gw
 
                     -- Move to cave
-                    goExpr = UnaryExpression "go" (NounClause "cave")
-                    (_, state2) = runCommand executeGo goExpr state1
+                let goExpr = UnaryExpression "go" (NounClause "cave")
+                (_, state2) <- runCommand executeGo goExpr state1
 
                     -- Drop the item
-                    dropExpr = UnaryExpression "drop" (NounClause "silver coin")
-                    (_, finalState) = runCommand executeDrop dropExpr state2
+                let dropExpr = UnaryExpression "drop" (NounClause "silver coin")
+                (_, finalState) <- runCommand executeDrop dropExpr state2
 
                 -- Verify item is in cave
                 let itemsInCave = getItemTagsAtLoc testCave finalState
