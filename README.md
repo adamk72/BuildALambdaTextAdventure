@@ -143,3 +143,19 @@ The maybe function takes a default value, a function, and a Maybe value. If the 
 -- Just st <$ mapM_ print_ outM -- why doesn't this work?
 ```
 
+## Trigger patterns
+
+```haskell
+-- Todo: Note this as a trigger pattern
+{- Previous version for comparison
+launch :: FilePath -> IO ()
+launch fp = do
+   geJSON <- loadGameEnvironmentJSON fp
+   case geJSON of
+    Right adventure -> do
+        print $ world adventure
+        gameLoop $ world adventure
+    Left e -> print e
+-}
+```
+
