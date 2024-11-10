@@ -1,18 +1,18 @@
 module Core.Message.Look (LookMessage (..)) where
 
 import           Core.Message.Common (MessageRenderer (..))
-import           Data.Text           (Text, toLower)
+import           Data.Text           (Text)
+import qualified Data.Text           as T
 
 data LookMessage
-    = LookTowards Text
-    | LookAtWhat
+    = YouSeeGeneral Text
     | LookIn Text Text
-    | YouSeeGeneral Text
     deriving (Eq, Show)
 
 instance MessageRenderer LookMessage where
     renderMessage = \case
-        LookIn container content -> "You look in the " <> container <> " and see " <> content <> "."
-        YouSeeGeneral environment -> "You take a quick glance around and see " <> environment <> "."
-        LookAtWhat -> "What do you want to look at?"
-        LookTowards dir -> "You look " <> toLower dir <> ", but see nothing special."
+        YouSeeGeneral msg -> msg
+        LookIn container contents ->
+            if T.null contents
+            then "The " <> container <> " is empty."
+            else "Inside the " <> container <> " you see " <> contents <> "."

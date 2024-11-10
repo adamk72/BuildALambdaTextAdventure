@@ -1,27 +1,34 @@
 module Command.Put (module Command.Put) where
 
 import           Command.CommandExecutor
+import           Core.GameMonad
 import           Core.Message
 import           Core.State
 import           Data.Text               (Text)
 import           Parser.Types
 
 putItemInContainer :: Text -> Text -> [Text] -> GameWorld -> GameStateText
-putItemInContainer itemTag containerTag validItemTags gw
-    | itemTag `elem` validItemTags && containerTag `elem` validItemTags =
-        case findItemByTag itemTag gw of
-            Nothing ->  msgGameWordError $ ItemError itemTag
-            Just foundItem -> case findItemByTag containerTag gw of
-                Nothing -> msgGameWordError $ ItemError containerTag
-                Just validContainer -> case getInventory validContainer of
-                    Nothing -> msg $ NotAContainer containerTag
-                    Just containerLoc -> do
-                        let updatedGW = moveItemLoc foundItem containerLoc gw
-                        modifyGameWorld (const updatedGW)
-                        msg $ PutItemIn itemTag containerTag
-    | itemTag `elem` validItemTags && notElem containerTag validItemTags = msg $    NoContainerForItem itemTag containerTag
-    | notElem  itemTag validItemTags && containerTag `elem` validItemTags = msg $ NoItemForContainer itemTag containerTag
-    | otherwise = msg $ InvalidItemInLocation itemTag
+putItemInContainer itemTag containerTag validItemTags gw =
+    case (findItemByTag itemTag gw, findItemByTag containerTag gw) of
+        (Just item, Just container)
+            | itemTag `elem` validItemTags && containerTag `elem` validItemTags ->
+                if isContainer container
+                    then do
+                        let updatedGW = moveItemToContainer item container gw
+                        case updatedGW of
+                            Right newGW -> do
+                                modifyGameWorld (const newGW)
+                                msg $ PutItemIn itemTag containerTag
+                            Left err -> msg $ NotAContainer containerTag
+                    else msg $ NotAContainer containerTag
+            | itemTag `elem` validItemTags ->
+                msg $ NoContainerForItem itemTag containerTag
+            | containerTag `elem` validItemTags ->
+                msg $ NoItemForContainer itemTag containerTag
+            | otherwise ->
+                msg $ InvalidItemInLocation itemTag
+        (Nothing, _) -> msgGameWordError $ ItemError itemTag
+        (_, Nothing) -> msgGameWordError $ ItemError containerTag
 
 executePut :: CommandExecutor
 executePut expr = do
@@ -36,4 +43,4 @@ executePut expr = do
         BinaryExpression {} ->
             msg PutWhat
         ComplexExpression _ (NounClause itemTag) _ (NounClause containerTag) ->
-           putItemInContainer itemTag containerTag validItemTags gw
+            putItemInContainer itemTag containerTag validItemTags gw

@@ -50,6 +50,14 @@ testBagOfHolding = mkItem TaggedEntity
     , inventory = Just Location { locTag = "bag of holding", locName = "inside bag", destinationTags = [] }
     }
 
+testPearl :: Item
+testPearl = mkItem TaggedEntity
+    { tag = "pearl"
+    , name = "a pearl of unique luster"
+    , location = fromJust $ getInventory testBagOfHolding
+    , inventory = Nothing
+    }
+
 testBag :: Item
 testBag = mkItem TaggedEntity
     { tag = "bag"
