@@ -1152,3 +1152,74 @@
 
 2024-11-10 21:38:48.956315 UTC Info  Game ended normally 
 
+2024-11-10 21:53:42.002418 UTC Info  Player requested game exit 
+2024-11-10 21:48:49.833996 UTC Info  Initializing new game state 
+
+2024-11-10 21:48:49.83466 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 21:48:49.834703 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 21:48:55.976334 UTC Info  Executing command: look in bag of holding 
+
+2024-11-10 21:48:55.976624 UTC Info  Command result: Inside the bag of holding you see a satchel that is inky black on the inside and a satchel that is inky black on the inside. 
+
+2024-11-10 21:48:55.977085 UTC Info  Command completed 
+
+2024-11-10 21:48:55.977205 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 21:53:42.002418 UTC Info  Player requested game exit 
+
+2024-11-10 21:53:42.003592 UTC Info  Game ended normally 
+2024-11-10 21:48:49.833996 UTC Info  Initializing new game state 
+
+2024-11-10 21:48:49.83466 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 21:48:49.834703 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 21:48:55.976334 UTC Info  Executing command: look in bag of holding 
+
+2024-11-10 21:48:55.976624 UTC Info  Command result: Inside the bag of holding you see a satchel that is inky black on the inside and a satchel that is inky black on the inside. 
+
+2024-11-10 21:48:55.977085 UTC Info  Command completed 
+
+2024-11-10 21:53:42.003592 UTC Info  Game ended normally 
+
+2024-11-10 21:53:54.274815 UTC Info  Initializing new game state 
+2024-11-10 21:53:54.275278 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-10 21:53:54.275337 UTC Debug  Starting new game loop iteration 
+2024-11-10 21:54:05.43986 UTC Info  Executing command: look in bag of holding 
+2024-11-10 21:54:05.440242 UTC Info  Command result: Inside the bag of holding you see a pearl of unique luster and another pearl of unique luster. 
+2024-11-10 21:54:05.440808 UTC Info  Command completed 
+2024-11-10 21:54:05.441163 UTC Debug  Starting new game loop iteration 
+2024-11-10 21:54:18.533921 UTC Info  Player requested game exit 
+2024-11-10 21:53:54.274815 UTC Info  Initializing new game state 
+
+2024-11-10 21:53:54.275278 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 21:53:54.275337 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 21:54:05.43986 UTC Info  Executing command: look in bag of holding 
+
+2024-11-10 21:54:05.440242 UTC Info  Command result: Inside the bag of holding you see a pearl of unique luster and another pearl of unique luster. 
+
+2024-11-10 21:54:05.440808 UTC Info  Command completed 
+
+2024-11-10 21:54:05.441163 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 21:54:18.533921 UTC Info  Player requested game exit 
+
+2024-11-10 21:54:18.534945 UTC Info  Game ended normally 
+2024-11-10 21:53:54.274815 UTC Info  Initializing new game state 
+
+2024-11-10 21:53:54.275278 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-10 21:53:54.275337 UTC Debug  Starting new game loop iteration 
+
+2024-11-10 21:54:05.43986 UTC Info  Executing command: look in bag of holding 
+
+2024-11-10 21:54:05.440242 UTC Info  Command result: Inside the bag of holding you see a pearl of unique luster and another pearl of unique luster. 
+
+2024-11-10 21:54:05.440808 UTC Info  Command completed 
+
+2024-11-10 21:54:18.534945 UTC Info  Game ended normally 
+

@@ -83,7 +83,7 @@ spec = do
 
         describe "container examination" $ do
             it "shows content of a container with single item" $ do
-                let gw = defaultGW -- bag of holding already contains pearl by default
+                let gw = defaultGW  -- includes testPearl
                     expr = BinaryExpression "look" (PrepClause "in") (NounClause "bag of holding")
                 (output, newState) <- runCommand executeLook expr gw
 
@@ -98,16 +98,22 @@ spec = do
                     Nothing -> expectationFailure "Bag lost its inventory location"
 
             it "shows multiple items in container after adding item" $ do
-                -- First set up the container with multiple items
+                -- First get the bauble (since it starts in the meadow)
                 let gw = defaultGW
-                    setupExpr = ComplexExpression "put" (NounClause "bauble") (PrepClause "in") (NounClause "bag of holding")
-                (_, setupState) <- runCommand executePut setupExpr gw
+                    getExpr = UnaryExpression "get" (NounClause "bauble")
+                (_, state1) <- runCommand executeGet getExpr gw
 
-                -- Then look in the container
+                -- Then put the bauble in the bag
+                let putExpr = ComplexExpression "put" (NounClause "bauble") (PrepClause "in") (NounClause "bag of holding")
+                (_, state2) <- runCommand executePut putExpr state1
+
+                -- Finally look in the container
                 let lookExpr = BinaryExpression "look" (PrepClause "in") (NounClause "bag of holding")
-                (output, finalState) <- runCommand executeLook lookExpr setupState
+                (output, finalState) <- runCommand executeLook lookExpr state2
 
-                output `shouldBe` "Inside the bag of holding you see a pearl of unique luster and a shiny bauble."
+                -- Use shouldSatisfy to check content without depending on order
+                output `shouldSatisfy` (\s -> s == "Inside the bag of holding you see a pearl of unique luster and a shiny bauble." ||
+                                            s == "Inside the bag of holding you see a shiny bauble and a pearl of unique luster.")
                 verifyStartLocation finalState "meadow"
 
                 -- Verify both items are still in the bag

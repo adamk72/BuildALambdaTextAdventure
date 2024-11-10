@@ -77,7 +77,7 @@ testBauble = mkItem TaggedEntity
 
 testItemsForDefaultGw :: [Item]
 testItemsForDefaultGw =
-    [ testCoin, testEightBall, testBat, testBagOfHolding, testBag, testBauble ]
+    [ testCoin, testEightBall, testBat, testBagOfHolding, testBag, testBauble, testPearl ]
 
 testCoin :: Item
 testCoin = mkItem TaggedEntity

@@ -93,7 +93,13 @@ convertEntityWithType entityType locs items item = do
                 Just loc -> makeEntity item loc
                 Nothing -> case List.find (\itm -> jTag itm == targetTag &&
                                            fromMaybe False (jHasInventorySlot itm)) items of
-                        Just itm -> makeEntity itm (Location { locTag = jTag itm, locName = jTag itm, destinationTags = [] })
+                        Just containerItem ->
+                            -- Create proper inventory location for items in containers
+                            makeEntity item (Location
+                                { locTag = jTag containerItem <> "-inventory"  -- unique inventory location
+                                , locName = "inside " <> jName containerItem
+                                , destinationTags = []
+                                })
                         Nothing -> fail $ "Neither location nor container item found with tag " ++ show targetTag
             where
                 makeEntity itm loc = return $ Entity
@@ -110,7 +116,7 @@ convertEntityWithType entityType locs items item = do
                         (ActorType, _) ->
                             Just Location { locTag = jTag itm, locName = "your pockets", destinationTags = [] }
                         (_, Just True) ->
-                            Just Location { locTag = jTag itm, locName = jTag itm, destinationTags = [] }
+                            Just Location { locTag = jTag itm <> "-inventory", locName = "inside " <> jName itm, destinationTags = [] }
                         _ -> Nothing
         Nothing -> fail "No location tag provided for entity"
 
