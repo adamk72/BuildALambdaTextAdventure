@@ -1,13 +1,19 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric  #-}
 
-module Core.State.GameState (GameEnvironment (..), GameWorld (..), Metadata (..)) where
+module Core.State.GameState (GameEnvironment (..), GameWorld (..), Metadata (..), AppState(..)) where
 
 import           Core.State.Entity   (Actor, Item)
 import           Core.State.Location (Location)
 import           Data.Aeson          (FromJSON)
 import           Data.Text           (Text)
 import           GHC.Generics        (Generic)
+import Logger (GameHistory)
+
+data AppState = AppState
+    { gameWorld   :: GameWorld
+    , gameHistory :: GameHistory
+    }
 
 -- Todo: Refactor to to use Control.Lens
 data GameWorld = GameWorld {

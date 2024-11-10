@@ -1,28 +1,46 @@
-module Repl.Repl (loop) where
+module Repl.Repl (replLoop) where
 
 import           Control.Monad.State
-import           Core.Config         (replPrompt)
-import           Core.State          (GameWorld)
+import           Core.Config         (quitCommands, replPrompt)
+import           Core.State          (AppState (..))
 import           Data.Text           (Text)
 import qualified Data.Text.IO        as TIO
+import           Logger
 import           Repl.Interpreter    (interpretCommand)
 import           System.IO           (hFlush, stdout)
 
-loop :: GameWorld -> IO (Maybe GameWorld)
-loop gw = do
-  input <- read_
-  let (outM, st) = runState (eval_ input) gw
-  maybe (return Nothing) (\out -> print_ out >> return (Just st)) outM
+-- | Main REPL loop that handles both game state and logging
+replLoop :: AppState -> IO (Maybe AppState)
+replLoop appState = do
+    input <- read_
 
+    if input `elem` quitCommands
+    then do
+        finalHistory <- logInfo (gameHistory appState) "Player requested game exit"
+        saveHistory finalHistory
+        return Nothing
+    else do
+        latestHistory <- logGameAction (gameHistory appState) input
+
+        let (outputM, newWorld) = runState (interpretCommand input) (gameWorld appState)
+        case outputM of
+            Just output -> do
+                print_ output
+                updatedHistory <- logInfo latestHistory $ "Command output: " <> output
+                return $ Just $ appState
+                    { gameWorld = newWorld
+                    , gameHistory = updatedHistory
+                    }
+            Nothing -> do
+                finalHistory <- logInfo latestHistory "Command resulted in game exit"
+                saveHistory finalHistory
+                return Nothing
 
 read_ :: IO Text
-read_ = TIO.putStr replPrompt >>
-        hFlush stdout >>
-        TIO.getLine
+read_ = do
+    TIO.putStr replPrompt
+    hFlush stdout
+    TIO.getLine
 
 print_ :: Text -> IO ()
 print_ = TIO.putStrLn
-
-eval_ :: Text -> State GameWorld (Maybe Text)
-eval_ input = do
-  interpretCommand input

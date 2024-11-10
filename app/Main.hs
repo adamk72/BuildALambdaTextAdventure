@@ -103,7 +103,7 @@ runGameWithOption option = do
    case result of
         Left msg -> do
             TIO.putStrLn $ "Game ended with message: " <> msg
-            exitWith (ExitFailure 1)  -- or whatever exit code you prefer
+            exitWith (ExitFailure 1)
         Right () -> do
             TIO.putStrLn "Thanks for playing!"
             exitSuccess

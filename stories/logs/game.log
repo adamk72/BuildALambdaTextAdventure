@@ -1,0 +1,42 @@
+2024-11-10 02:58:13.281394 UTC Info Initializing new game state
+2024-11-10 02:58:13.28229 UTC Info Game loaded successfully from: stories/TrialAdventure.json
+2024-11-10 02:58:13.282347 UTC Debug Starting new game loop iteration
+2024-11-10 02:58:17.74098 UTC Info get bauble [command]
+2024-11-10 02:58:17.741593 UTC Info Command output: Moved bauble to Alice the Adventurer
+2024-11-10 02:58:17.742327 UTC Debug Starting new game loop iteration
+2024-11-10 02:58:19.348673 UTC Info Player requested game exit
+2024-11-10 02:58:19.350001 UTC Info Game ended normally
+2024-11-10 02:58:35.423628 UTC Info Initializing new game state
+2024-11-10 02:58:35.423769 UTC Info Game loaded successfully from: stories/TrialAdventure.json
+2024-11-10 02:58:35.423827 UTC Debug Starting new game loop iteration
+2024-11-10 02:58:40.533952 UTC Info get bauble [command]
+2024-11-10 02:58:40.534515 UTC Info Command output: Moved bauble to Alice the Adventurer
+2024-11-10 02:58:40.535164 UTC Debug Starting new game loop iteration
+2024-11-10 02:58:48.200068 UTC Info put bauble in bag [command]
+2024-11-10 02:58:48.200756 UTC Info Command output: bauble is now in the bag.
+2024-11-10 02:58:48.20146 UTC Debug Starting new game loop iteration
+2024-11-10 02:58:54.10215 UTC Info go cave [command]
+2024-11-10 02:58:54.102452 UTC Info Command output: Moving to cave.
+2024-11-10 02:58:54.102936 UTC Debug Starting new game loop iteration
+2024-11-10 02:58:56.875892 UTC Info go forest [command]
+2024-11-10 02:58:56.876122 UTC Info Command output: Moving to forest.
+2024-11-10 02:58:56.87652 UTC Debug Starting new game loop iteration
+2024-11-10 02:58:59.360004 UTC Info look around [command]
+2024-11-10 02:58:59.36042 UTC Info Command output: You are in a dense forest. You look around and see a magic globe that you can see another world within.
+2024-11-10 02:58:59.36111 UTC Debug Starting new game loop iteration
+2024-11-10 02:59:02.967691 UTC Info get globe [command]
+2024-11-10 02:59:02.968224 UTC Info Command output: Don't see a "globe".
+2024-11-10 02:59:02.969054 UTC Debug Starting new game loop iteration
+2024-11-10 02:59:06.792407 UTC Info get magic globe [command]
+2024-11-10 02:59:06.793033 UTC Info Command output: Moved magic globe to Alice the Adventurer
+2024-11-10 02:59:06.793176 UTC Debug Starting new game loop iteration
+2024-11-10 02:59:34.824815 UTC Info Player requested game exit
+2024-11-10 02:59:34.825477 UTC Info Game ended normally
+2024-11-10 02:59:36.94213 UTC Info Initializing new game state
+2024-11-10 02:59:36.942247 UTC Info Game loaded successfully from: stories/TrialAdventure.json
+2024-11-10 02:59:36.942293 UTC Debug Starting new game loop iteration
+2024-11-10 02:59:40.610837 UTC Info go cave [command]
+2024-11-10 02:59:40.611275 UTC Info Command output: Moving to cave.
+2024-11-10 02:59:40.612014 UTC Debug Starting new game loop iteration
+2024-11-10 03:00:32.228904 UTC Info Player requested game exit
+2024-11-10 03:00:32.231396 UTC Info Game ended normally

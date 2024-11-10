@@ -43,9 +43,12 @@ library:
   - aeson
   - bytestring
   - containers
+  - directory
+  - filepath
   - mtl
   - split
   - text
+  - time
 
 executables:
   TextAdventure-exe:
