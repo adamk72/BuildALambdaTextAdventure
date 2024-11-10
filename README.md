@@ -30,7 +30,7 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 ## Game Ideas
 
 - Allow the player to have multiple characters in multiple location:
-  - Have a command that let's the player switch between the characters;
+  - Have a command that lets the player switch between the characters;
   - If in the same location, allow direct communication and exchange of goods;
   - If in different locations, certain tools would allow for commands to be given from one character to another.
   - The thought here is that characters could act as distractions or provide "simultaneous" actions to occur that may impact the story arc.
@@ -38,8 +38,23 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 ## Todos
 
 ### Coding Todos
-
-- [] Where there are `error` throws, try logging instead.
+- [] Pre-work for scenarios
+  - [] Create "give" command for NPC interaction.
+  - [] Create "talk" command for NPC interaction.
+  - [] "Look" should describe NPCs in location
+  - [] "Look" should describe locations exits; not all exits will be "real" and lead to other places.
+  - [] Allow for "open" and "close" commands (is this necessary; can we assume that if something isn't locked, it can be opened without needing a specific command?) Maybe treating as a status, like, "blocked" and "unblocked" makes more sense.
+  - [] Allow for "lock" and "unlock" command.
+  - [] Possibly add "types" to Entities in order to generalize them. This way when using the "guard" tag, it means any guard instead of specific guard (with possibility of having subtypes like "bribable"?).
+  - [] Work out how currency and commodities will work so the player can hold and give arbitrary amounts of some items.
+- [] Logging, Gave saves, Game replays
+  - [] Log status for debugging.
+  - [] Where there are `error` throws, try logging instead.
+  - [] Save current state of game to files.
+  - [] Save commands so that the user can up arrow to get last command.
+  - [] Save (valid) moves to files so that the game can be replayed for testing.
+- [] Create 'prospect' location status, indicating Look is misdirecting the player
+  - [] Player should be able to have a running memory of what place has been visited, lifting the "prospect" condition.
 - [] Determine if it's worth consolidating the concept of "interactables" with that of "locations," since the code might end up being very similar (same with "characters").
 - [x] Properly update the Character's location when moving.
 - [x] Get basic launch structure into place.
