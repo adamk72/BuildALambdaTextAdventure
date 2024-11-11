@@ -141,17 +141,17 @@ spec = describe "GameWorld JSON Parsing" $ do
         it "starting character is a Actor type" $ do
             let Right gameEnvJSON = eitherDecode validJson
             case world (unGameEnvironment gameEnvJSON) of
-                Just gameWorld -> do
-                    let startingActor = gwActiveActor gameWorld
+                Just gw -> do
+                    let startingActor = gwActiveActor gw
                     startingActor `shouldSatisfy` isActor
                 Nothing -> expectationFailure "Expected GameWorld to be present"
 
         it "succeeds when starting character exists in playable characters list" $ do
             let Right gameEnvJSON = eitherDecode validJson
             case world (unGameEnvironment gameEnvJSON) of
-                Just gameWorld -> do
-                    let startingActorTag = getTag (gwActiveActor gameWorld)
-                    let playableActors = gwPlayableActors gameWorld
+                Just gw -> do
+                    let startingActorTag = getTag (gwActiveActor gw)
+                    let playableActors = gwPlayableActors gw
                     let foundActor = any (\actor -> getTag actor == startingActorTag) playableActors
                     foundActor `shouldBe` True
                 Nothing -> expectationFailure "Expected GameWorld to be present"

@@ -17,7 +17,7 @@ getItem itemTag srcM visibleItems actor gw
         Just item -> do
             let acInv = getActorInventory gw
             if getLocation item == acInv
-            then return $ "You already have " <> getName item
+            then msg $ AlreadyHaveItem (getName item)
             else tryGetItem item acInv srcM
 
   where
@@ -27,16 +27,16 @@ getItem itemTag srcM visibleItems actor gw
         Just src -> case findAnyLocationByTag src gw of
             Just loc -> if itemExistsAtLoc itemTag loc gw True
                        then moveAndMsg item locOrItem
-                       else return $ "That can't be found in " <> src
+                       else msg $ NotFoundIn itemTag src
             Nothing -> case findItemByTag src gw of
                 Just container -> if isContainer container
                                 then moveAndMsg item locOrItem
-                                else return $ src <> " isn't a container."
+                                else msg $ NotAContainer src
                 Nothing -> msg $ InvalidItem src
 
     moveAndMsg :: Item -> Location -> GameStateText
-    moveAndMsg item acInv = do
-        let updatedGW = moveItemLoc item acInv gw
+    moveAndMsg item dstLoc = do
+        let updatedGW = moveItemLoc item dstLoc gw
         modifyGameWorld (const updatedGW)
         msg $ PickedUp itemTag (getName actor)
 

@@ -11,7 +11,6 @@ data CommonMessage
     = ItemDoesNotExist Text
     | LocationDoesNotExist Text
     | NoLocationSpecified
-    | NotAContainer Text
     | PENDING
     deriving (Eq, Show)
 
@@ -20,5 +19,4 @@ instance MessageRenderer CommonMessage where
         ItemDoesNotExist item -> "Item does not exist in this game world: " <> item <> "."
         LocationDoesNotExist loc -> "Location does not exist in this game world: " <> loc <> "."
         NoLocationSpecified -> "Unable to find a location at all."
-        NotAContainer item -> "The " <> item <> " is not a container."
         PENDING -> "Pending, not sure what to do with this yet."
