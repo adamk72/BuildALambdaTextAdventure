@@ -3,7 +3,7 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 module JSONSpec (spec) where
 
-import           Core.State.Entity
+import           Entity.Entity
 import           Core.State.GameState
 import           Core.State.JSON
 import           Core.State.TaggedEntity

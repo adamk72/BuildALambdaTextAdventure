@@ -1,6 +1,6 @@
 module Core.State.Operations (module Core.State.Operations) where
 
-import           Core.State.Entity
+import           Entity.Entity
 import           Core.State.EntityContainer
 import           Core.State.GameState       (GameWorld (..))
 import           Core.State.Location        (Location (..))

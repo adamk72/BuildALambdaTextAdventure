@@ -1,6 +1,6 @@
 module Core.State.EntityContainer (module Core.State.EntityContainer) where
 
-import           Core.State.Entity
+import           Entity.Entity
 import           Core.State.GameState
 
 class EntityContainer a where

@@ -49,13 +49,14 @@ library
       Core.Message.Look
       Core.Message.Utils
       Core.State
-      Core.State.Entity
       Core.State.EntityContainer
       Core.State.GameState
       Core.State.JSON
       Core.State.Location
       Core.State.Operations
       Core.State.TaggedEntity
+      Entity.Entity
+      Entity.EntityConverter
       Logger
       Parser.Parser
       Parser.Types

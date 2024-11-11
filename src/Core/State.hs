@@ -1,6 +1,6 @@
 module Core.State
     ( module Core.GameMonad
-    , module Core.State.Entity
+    , module Entity.Entity
     , module Core.State.GameState
     , module Core.State.JSON
     , module Core.State.Location
@@ -9,7 +9,7 @@ module Core.State
     ) where
 
 import           Core.GameMonad
-import           Core.State.Entity
+import           Entity.Entity
 import           Core.State.GameState
 import           Core.State.JSON
 import           Core.State.Location

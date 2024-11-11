@@ -4,7 +4,7 @@
 module Core.State.GameState (AppState (..), GameEnvironment (..), GameWorld (..), Metadata (..), GameState(..), GameMonad, GameStateText) where
 
 import           Control.Monad.State
-import           Core.State.Entity   (Actor, Item)
+import           Entity.Entity   (Actor, Item)
 import           Core.State.Location (Location)
 import           Data.Aeson          (FromJSON)
 import           Data.Text           (Text)
