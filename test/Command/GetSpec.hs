@@ -5,6 +5,7 @@ import           Command.Commands
 import           Command.TestUtils
 import           Core.Message
 import           Core.State
+import           Data.Maybe
 import           Mock.GameEnvironment
 import           Parser.Types
 import           Test.Hspec
@@ -99,3 +100,65 @@ spec = do
                         in "silver coin" `elem` itemsInBag `shouldBe` True
                     Nothing ->
                         expectationFailure "Bag lost its inventory location"
+        describe "container interactions" $ do
+                    it "allows getting items from containers in the same location" $ do
+                        let gw = defaultGW
+                            expr = UnaryExpression "get" (NounClause "pearl")
+                        (output, newState) <- runCommand executeGet expr gw
+
+                        output `shouldBe` "Moved pearl to Alice the Adventurer"
+                        checkItemTagInPocket "pearl" newState `shouldBe` True
+
+                        -- Verify the item is no longer in the container
+                        case findItemByTag "bag of holding" newState >>= getInventory of
+                            Just loc -> do
+                                let itemsInBag = getItemTagsAtLoc loc newState
+                                "pearl" `elem` itemsInBag `shouldBe` False
+                            Nothing -> expectationFailure "Bag lost its inventory location"
+
+                    it "allows getting multiple items from the same container" $ do
+                        let gw = defaultGW
+                            expr1 = UnaryExpression "get" (NounClause "pearl")
+                            expr2 = UnaryExpression "get" (NounClause "another pearl")
+
+                        (_, midState) <- runCommand executeGet expr1 gw
+                        (output, finalState) <- runCommand executeGet expr2 midState
+
+                        output `shouldBe` "Moved another pearl to Alice the Adventurer"
+                        checkItemTagInPocket "pearl" finalState `shouldBe` True
+                        checkItemTagInPocket "another pearl" finalState `shouldBe` True
+
+                    it "prevents getting items from containers in other locations" $ do
+                        let gw = defaultGW `withActorAt` testCave  -- Move actor to cave
+                            expr = UnaryExpression "get" (NounClause "pearl")
+                        (output, newState) <- runCommand executeGet expr gw
+
+                        output `shouldBe` renderMessage (InvalidItem "pearl")
+                        checkItemTagInPocket "pearl" newState `shouldBe` False
+
+                    it "prevents getting the container and its contents simultaneously" $ do
+                        let gw = defaultGW
+                            expr = UnaryExpression "get" (NounClause "bag of holding")
+                        (output, newState) <- runCommand executeGet expr gw
+
+                        output `shouldBe` "Moved bag of holding to Alice the Adventurer"
+
+                        -- Verify container is in inventory but pearls remain inside
+                        checkItemTagInPocket "bag of holding" newState `shouldBe` True
+                        case findItemByTag "bag of holding" newState >>= getInventory of
+                            Just loc -> do
+                                let itemsInBag = getItemTagsAtLoc loc newState
+                                "pearl" `elem` itemsInBag `shouldBe` True
+                                "another pearl" `elem` itemsInBag `shouldBe` True
+                            Nothing -> expectationFailure "Bag lost its inventory location"
+
+                    it "allows getting items from containers owned by other actors but in same location" $ do
+                        -- Setup: Move a container to Bob's inventory first
+                        let gw = defaultGW
+                            updatedGW = moveItemLoc testBagOfHolding (fromJust $ getInventory $ head $ gwPlayableActors gw) gw
+                            expr = UnaryExpression "get" (NounClause "pearl")
+
+                        (output, newState) <- runCommand executeGet expr updatedGW
+
+                        output `shouldBe` "Moved pearl to Alice the Adventurer"
+                        checkItemTagInPocket "pearl" newState `shouldBe` True

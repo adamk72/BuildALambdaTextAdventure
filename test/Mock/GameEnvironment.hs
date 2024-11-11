@@ -59,6 +59,14 @@ testPearl = mkItem TaggedEntity
     , inventory = Nothing
     }
 
+testAnotherPearl :: Item
+testAnotherPearl = mkItem TaggedEntity
+    { tag = "another pearl"
+    , name = "another pearl of unique luster"
+    , location = fromJust $ getInventory testBagOfHolding
+    , inventory = Nothing
+    }
+
 testBag :: Item
 testBag = mkItem TaggedEntity
     { tag = "bag"
@@ -77,7 +85,7 @@ testBauble = mkItem TaggedEntity
 
 testItemsForDefaultGw :: [Item]
 testItemsForDefaultGw =
-    [ testCoin, testEightBall, testBat, testBagOfHolding, testBag, testBauble, testPearl ]
+    [ testCoin, testEightBall, testBat, testBagOfHolding, testBag, testBauble, testPearl, testAnotherPearl ]
 
 testCoin :: Item
 testCoin = mkItem TaggedEntity

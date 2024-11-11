@@ -1223,3 +1223,142 @@
 
 2024-11-10 21:54:18.534945 UTC Info  Game ended normally 
 
+2024-11-11 00:35:54.618421 UTC Info  Initializing new game state 
+2024-11-11 00:35:54.619103 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-11 00:35:54.61915 UTC Debug  Starting new game loop iteration 
+2024-11-11 00:35:57.332403 UTC Info  Executing command: look in bag 
+2024-11-11 00:35:57.332647 UTC Info  Command result: The bag is empty. 
+2024-11-11 00:35:57.333108 UTC Info  Command completed 
+2024-11-11 00:35:57.333247 UTC Debug  Starting new game loop iteration 
+2024-11-11 00:36:03.672595 UTC Info  Executing command: put bauble in bag 
+2024-11-11 00:36:03.673135 UTC Info  Command result: bauble is now in the bag. 
+2024-11-11 00:36:03.673692 UTC Info  Command completed 
+2024-11-11 00:36:03.673863 UTC Debug  Starting new game loop iteration 
+2024-11-11 00:36:05.680236 UTC Info  Executing command: look in bag 
+2024-11-11 00:36:05.68067 UTC Info  Command result: Inside the bag you see a shiny bauble. 
+2024-11-11 00:36:05.681254 UTC Info  Command completed 
+2024-11-11 00:36:05.681335 UTC Debug  Starting new game loop iteration 
+2024-11-11 00:36:41.984464 UTC Info  Executing command: look around 
+2024-11-11 00:36:41.984791 UTC Info  Command result: You are in a flowery meadow. You look around and see a simple bag, a large blue phone booth, a satchel that is inky black on the inside, just a plain old bag, and alice the adventurer. 
+2024-11-11 00:36:41.985227 UTC Info  Command completed 
+2024-11-11 00:36:41.985341 UTC Debug  Starting new game loop iteration 
+2024-11-11 00:36:55.245888 UTC Info  Executing command: look in bag of holding 
+2024-11-11 00:36:55.246171 UTC Info  Command result: Inside the bag of holding you see a pearl of unique luster and another pearl of unique luster. 
+2024-11-11 00:36:55.246682 UTC Info  Command completed 
+2024-11-11 00:36:55.246807 UTC Debug  Starting new game loop iteration 
+2024-11-11 00:37:05.259284 UTC Info  Executing command: get pearl 
+2024-11-11 00:37:05.259716 UTC Info  Command result: Don't see a "pearl". 
+2024-11-11 00:37:05.260324 UTC Info  Command completed 
+2024-11-11 00:37:05.260542 UTC Debug  Starting new game loop iteration 
+2024-11-11 00:38:45.942108 UTC Info  Player requested game exit 
+2024-11-11 00:35:54.618421 UTC Info  Initializing new game state 
+
+2024-11-11 00:35:54.619103 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-11 00:35:54.61915 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:35:57.332403 UTC Info  Executing command: look in bag 
+
+2024-11-11 00:35:57.332647 UTC Info  Command result: The bag is empty. 
+
+2024-11-11 00:35:57.333108 UTC Info  Command completed 
+
+2024-11-11 00:35:57.333247 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:36:03.672595 UTC Info  Executing command: put bauble in bag 
+
+2024-11-11 00:36:03.673135 UTC Info  Command result: bauble is now in the bag. 
+
+2024-11-11 00:36:03.673692 UTC Info  Command completed 
+
+2024-11-11 00:36:03.673863 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:36:05.680236 UTC Info  Executing command: look in bag 
+
+2024-11-11 00:36:05.68067 UTC Info  Command result: Inside the bag you see a shiny bauble. 
+
+2024-11-11 00:36:05.681254 UTC Info  Command completed 
+
+2024-11-11 00:36:05.681335 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:36:41.984464 UTC Info  Executing command: look around 
+
+2024-11-11 00:36:41.984791 UTC Info  Command result: You are in a flowery meadow. You look around and see a simple bag, a large blue phone booth, a satchel that is inky black on the inside, just a plain old bag, and alice the adventurer. 
+
+2024-11-11 00:36:41.985227 UTC Info  Command completed 
+
+2024-11-11 00:36:41.985341 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:36:55.245888 UTC Info  Executing command: look in bag of holding 
+
+2024-11-11 00:36:55.246171 UTC Info  Command result: Inside the bag of holding you see a pearl of unique luster and another pearl of unique luster. 
+
+2024-11-11 00:36:55.246682 UTC Info  Command completed 
+
+2024-11-11 00:36:55.246807 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:37:05.259284 UTC Info  Executing command: get pearl 
+
+2024-11-11 00:37:05.259716 UTC Info  Command result: Don't see a "pearl". 
+
+2024-11-11 00:37:05.260324 UTC Info  Command completed 
+
+2024-11-11 00:37:05.260542 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:38:45.942108 UTC Info  Player requested game exit 
+
+2024-11-11 00:38:45.946156 UTC Info  Game ended normally 
+2024-11-11 00:35:54.618421 UTC Info  Initializing new game state 
+
+2024-11-11 00:35:54.619103 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-11 00:35:54.61915 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:35:57.332403 UTC Info  Executing command: look in bag 
+
+2024-11-11 00:35:57.332647 UTC Info  Command result: The bag is empty. 
+
+2024-11-11 00:35:57.333108 UTC Info  Command completed 
+
+2024-11-11 00:35:57.333247 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:36:03.672595 UTC Info  Executing command: put bauble in bag 
+
+2024-11-11 00:36:03.673135 UTC Info  Command result: bauble is now in the bag. 
+
+2024-11-11 00:36:03.673692 UTC Info  Command completed 
+
+2024-11-11 00:36:03.673863 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:36:05.680236 UTC Info  Executing command: look in bag 
+
+2024-11-11 00:36:05.68067 UTC Info  Command result: Inside the bag you see a shiny bauble. 
+
+2024-11-11 00:36:05.681254 UTC Info  Command completed 
+
+2024-11-11 00:36:05.681335 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:36:41.984464 UTC Info  Executing command: look around 
+
+2024-11-11 00:36:41.984791 UTC Info  Command result: You are in a flowery meadow. You look around and see a simple bag, a large blue phone booth, a satchel that is inky black on the inside, just a plain old bag, and alice the adventurer. 
+
+2024-11-11 00:36:41.985227 UTC Info  Command completed 
+
+2024-11-11 00:36:41.985341 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:36:55.245888 UTC Info  Executing command: look in bag of holding 
+
+2024-11-11 00:36:55.246171 UTC Info  Command result: Inside the bag of holding you see a pearl of unique luster and another pearl of unique luster. 
+
+2024-11-11 00:36:55.246682 UTC Info  Command completed 
+
+2024-11-11 00:36:55.246807 UTC Debug  Starting new game loop iteration 
+
+2024-11-11 00:37:05.259284 UTC Info  Executing command: get pearl 
+
+2024-11-11 00:37:05.259716 UTC Info  Command result: Don't see a "pearl". 
+
+2024-11-11 00:37:05.260324 UTC Info  Command completed 
+
+2024-11-11 00:38:45.946156 UTC Info  Game ended normally 
+
