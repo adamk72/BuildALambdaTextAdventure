@@ -19,7 +19,7 @@ putItemInContainer itemTag containerTag validItemTags gw =
                             Right newGW -> do
                                 modifyGameWorld (const newGW)
                                 msg $ PutItemIn itemTag containerTag
-                            Left err -> msg $ NotAContainer containerTag
+                            Left err -> return err
                     else msg $ NotAContainer containerTag
             | itemTag `elem` validItemTags ->
                 msg $ NoContainerForItem itemTag containerTag

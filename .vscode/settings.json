@@ -5,6 +5,7 @@
     "ltag",
     "metavar",
     "prettyprinter",
-    "sout"
+    "sout",
+    "wrld"
   ]
 }

@@ -8,11 +8,11 @@ verbsRequiringObjects = ["put", "place", "move", "set"]
 
 knownPreps :: [(Text, [[Text]])]
 knownPreps =
-    [ ("in", [["in"], ["inside"], ["into"]])
+    [ ("in", [["in"], ["inside"], ["into"], ["in", "to"]])
     , ("on", [["on"], ["onto"], ["upon"], ["on", "top", "of"]])
     , ("under", [["under"], ["beneath"], ["underneath"]])
     , ("at", [["at"], ["towards"], ["toward"]])
-    , ("from", [["from"]])
+    , ("from", [["from"], ["out", "of"]])
     , ("to", [["to"]])
     , ("toward", [["toward"], ["towards"]])
     ]

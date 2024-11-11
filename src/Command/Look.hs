@@ -78,7 +78,7 @@ executeLook expr = do
         BinaryExpression _ (PrepClause prep) (NounClause target)
             | prep `isPrepVariantOf` "at" || prep `isPrepVariantOf` "toward" ->
                 lookAt target acLoc gw
-            | prep `isPrepVariantOf` "in" || prep `isPrepVariantOf` "inside" ->
+            | prep `isPrepVariantOf` "in" ->
                 lookInContainer target gw
             | otherwise ->
                 return "TBD"
