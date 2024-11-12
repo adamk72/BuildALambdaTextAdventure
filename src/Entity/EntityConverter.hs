@@ -1,16 +1,15 @@
-{-# LANGUAGE OverloadedStrings #-}
-module Entity.EntityConverter
-    ( convertToEntityWorld
-    , EntityConversionError(..)
-    ) where
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE KindSignatures #-}
+module Entity.EntityConverter (EntityConversionError (..), convertToEntityWorld) where
 
+import           Core.State.JSONTypes (EntityJSON (..), GameWorldJSON (..))
+import qualified Core.State.Location  as L (Location (..))
+import           Data.Map             as Map
+import qualified Data.Set             as Set
+import           Data.Text            (Text)
 import           Entity.Entity
-import           Core.State.GameState    (GameEnvironment(..), Metadata(..))
-import           Core.State.JSON         (GameWorldJSON(..), EntityJSON(..))
-import           Core.State.Location     (Location(..))
-import qualified Data.Map               as Map
-import qualified Data.Set               as Set
-import           Data.Text              (Text)
+import Prelude as P
 
 data EntityConversionError
     = DuplicateId Text
@@ -20,20 +19,13 @@ data EntityConversionError
     deriving (Show, Eq)
 
 -- | Convert from a GameEnvironment to our new Entity-based World
-convertToEntityWorld :: GameEnvironment -> Either EntityConversionError World
-convertToEntityWorld GameEnvironment{..} =
-    case world of
-        Nothing -> Left $ MissingStartingActor "No world data found"
-        Just worldData -> convertGameWorldJSON worldData
-
--- | Convert from GameWorldJSON to World
-convertGameWorldJSON :: GameWorldJSON -> Either EntityConversionError World
-convertGameWorldJSON GameWorldJSON{..} = do
+convertToEntityWorld :: GameWorldJSON -> Either EntityConversionError World
+convertToEntityWorld GameWorldJSON{..} = do
     -- First validate all IDs are unique
     validateUniqueIds jLocations jPlayableActors jItems
 
     -- Create all locations
-    let locEntities = map convertLocation jLocations
+    let locEntities = P.map convertLocation jLocations
         locMap = Map.fromList [(getId loc, loc) | loc <- locEntities]
 
     -- Convert actors, referencing the new location IDs
@@ -46,26 +38,26 @@ convertGameWorldJSON GameWorldJSON{..} = do
 
     Right $ World locMap actorMap itemMap
 
-validateUniqueIds :: [Location] -> [EntityJSON] -> [EntityJSON] -> Either EntityConversionError ()
+validateUniqueIds :: [L.Location] -> [EntityJSON] -> [EntityJSON] -> Either EntityConversionError ()
 validateUniqueIds locs actors items =
     let allIds = Set.fromList $
-            map locTag locs ++
-            map jTag actors ++
-            map jTag items
+            P.map L.locTag locs ++
+            P.map jTag actors ++
+            P.map jTag items
         totalCount = length locs + length actors + length items
     in if Set.size allIds /= totalCount
        then Left $ DuplicateId "Found duplicate IDs in input data"
        else Right ()
 
-convertLocation :: Location -> Entity 'LocationT
+convertLocation :: L.Location -> Entity 'LocationT
 convertLocation loc =
     Location
         { locationBase = EntityBase
-            { entityId = EntityId (locTag loc)
-            , entityTag = locTag loc  -- For now, keeping same as ID
-            , entityName = locName loc
+            { entityId = EntityId (L.locTag loc)
+            , entityTag = L.locTag loc  -- For now, keeping same as ID
+            , entityName = L.locName loc
             }
-        , destinations = map EntityId (destinationTags loc)
+        , destinations = P.map EntityId (L.destinationTags loc)
         }
 
 convertActorWithLoc :: Map EntityId (Entity 'LocationT)
@@ -113,4 +105,4 @@ convertItemWithLoc locMap actorMap json =
 
 fromMaybe :: a -> Maybe a -> a
 fromMaybe def Nothing = def
-fromMaybe _ (Just x) = x
+fromMaybe _ (Just x)  = x

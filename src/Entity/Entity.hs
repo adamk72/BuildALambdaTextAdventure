@@ -1,7 +1,10 @@
-{-# LANGUAGE DataKinds      #-}
-{-# LANGUAGE GADTs          #-}
-{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE FlexibleInstances  #-}
+{-# LANGUAGE GADTs              #-}
+{-# LANGUAGE KindSignatures     #-}
+{-# LANGUAGE StandaloneDeriving #-}
 module Entity.Entity (module Entity.Entity) where
+
 import           Data.Map
 import           Data.Text
 
@@ -18,21 +21,29 @@ data EntityBase (a :: EntityType) = EntityBase
 
 data Entity (a :: EntityType) where
     Location ::
-        { locationBase     :: EntityBase 'LocationT
-        , destinations :: [EntityId]
+        { locationBase   :: EntityBase 'LocationT
+        , destinations   :: [EntityId]
         } -> Entity 'LocationT
 
     Actor ::
         { actorBase      :: EntityBase 'ActorT
         , actorLocation  :: EntityId
-        , actorContents :: [EntityId] -- "inventory"
+        , actorContents  :: [EntityId]
         } -> Entity 'ActorT
 
     Item ::
-        { itemBase       :: EntityBase 'ItemT
-        , itemLocation   :: EntityId
-        , itemContents :: Maybe [EntityId]
+        { itemBase      :: EntityBase 'ItemT
+        , itemLocation  :: EntityId
+        , itemContents  :: Maybe [EntityId]
         } -> Entity 'ItemT
+
+deriving instance Show (Entity 'LocationT)
+deriving instance Show (Entity 'ActorT)
+deriving instance Show (Entity 'ItemT)
+
+deriving instance Eq (Entity 'LocationT)
+deriving instance Eq (Entity 'ActorT)
+deriving instance Eq (Entity 'ItemT)
 
 class Tagged (a :: EntityType) where
     getId   :: Entity a -> EntityId

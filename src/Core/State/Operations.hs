@@ -4,7 +4,6 @@ import           Entity.Entity
 import           Core.State.EntityContainer
 import           Core.State.GameState       (GameWorld (..))
 import           Core.State.Location        (Location (..))
-import           Core.State.TaggedEntity
 import qualified Data.List                  as List
 import           Data.Maybe
 import           Data.Text                  (Text)

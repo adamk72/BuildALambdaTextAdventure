@@ -4,7 +4,7 @@
 module Core.State.GameState (AppState (..), GameEnvironment (..), GameWorld (..), Metadata (..), GameState(..), GameMonad, GameStateText) where
 
 import           Control.Monad.State
-import           Entity.Entity   (Actor, Item)
+import           Entity.Entity
 import           Core.State.Location (Location)
 import           Data.Aeson          (FromJSON)
 import           Data.Text           (Text)
@@ -28,10 +28,10 @@ data AppState = AppState
 
 -- Todo: Refactor to to use Control.Lens
 data GameWorld = GameWorld {
-    gwActiveActor    :: Actor,
-    gwPlayableActors :: [Actor],
-    gwLocations      :: [Location],
-    gwItems          :: [Item]
+    gwActiveActor    :: Entity 'ActorT,
+    gwPlayableActors :: [Entity 'ActorT],
+    gwLocations      :: [Entity 'LocationT],
+    gwItems          :: [Entity 'ItemT]
 } deriving (Show, Eq, Generic)
 
 -- Note: FromJSON instance will be defined in JSON.hs

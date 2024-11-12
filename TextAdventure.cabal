@@ -35,7 +35,6 @@ library
       Command.Look
       Command.Put
       Core.Config
-      Core.Distance
       Core.GameMonad
       Core.Launch
       Core.Message
@@ -52,9 +51,9 @@ library
       Core.State.EntityContainer
       Core.State.GameState
       Core.State.JSON
+      Core.State.JSONTypes
       Core.State.Location
       Core.State.Operations
-      Core.State.TaggedEntity
       Entity.Entity
       Entity.EntityConverter
       Logger
@@ -73,6 +72,8 @@ library
   default-extensions:
       OverloadedStrings
       LambdaCase
+      RecordWildCards
+      DataKinds
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       aeson
@@ -91,7 +92,6 @@ executable TextAdventure-exe
   main-is: Main.hs
   other-modules:
       CmdOptions
-      GameConfigConverter
       JsonProcessing
       Paths_TextAdventure
   autogen-modules:
@@ -101,6 +101,8 @@ executable TextAdventure-exe
   default-extensions:
       OverloadedStrings
       LambdaCase
+      RecordWildCards
+      DataKinds
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       TextAdventure
@@ -124,7 +126,6 @@ test-suite TextAdventure-test
       Command.LookSpec
       Command.PutSpec
       Command.TestUtils
-      DistanceSpec
       JSONSpec
       MainSpec
       Mock.GameEnvironment
@@ -138,6 +139,8 @@ test-suite TextAdventure-test
   default-extensions:
       OverloadedStrings
       LambdaCase
+      RecordWildCards
+      DataKinds
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       QuickCheck

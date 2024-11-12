@@ -3,8 +3,8 @@ module Core.State.EntityContainer (module Core.State.EntityContainer) where
 import           Entity.Entity
 import           Core.State.GameState
 
-class EntityContainer a where
-    getEntities :: a -> [Entity]
+class EntityContainer c where
+    getEntities :: c -> [Entity a]
 
 instance EntityContainer GameWorld where
-    getEntities gw = gwItems gw ++ gwPlayableActors gw
+    getEntities gw = undefined -- gwItems gw ++ gwPlayableActors gw
