@@ -1,8 +1,9 @@
 {-# LANGUAGE DataKinds          #-}
 {-# LANGUAGE FlexibleInstances  #-}
-{-# LANGUAGE GADTs              #-}
+{-# LANGUAGE GADTs             #-}
 {-# LANGUAGE KindSignatures     #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE NamedFieldPuns #-}
 module Entity.Entity (module Entity.Entity) where
 
 import           Data.Map
@@ -37,6 +38,34 @@ data Entity (a :: EntityType) where
         , itemContents  :: Maybe [EntityId]
         } -> Entity 'ItemT
 
+{-
+Pattern Matching with Destructuring:
+    We pattern match the entire constructor pattern, including the nested EntityBase pattern.
+    We destructure the EntityBase pattern to extract the entityName field.
+Accessing entityName:
+    We directly access the entityName field from the destructured pattern.
+-}
+getEntityName :: Entity a -> Text
+getEntityName entity =
+  case entity of
+    Location { locationBase = EntityBase { entityName } } -> entityName
+    Actor { actorBase = EntityBase { entityName } } -> entityName
+    Item { itemBase = EntityBase { entityName } } -> entityName
+
+data AnyEntity where
+    AnyLocation :: Entity 'LocationT -> AnyEntity
+    AnyActor    :: Entity 'ActorT -> AnyEntity
+    AnyItem     :: Entity 'ItemT -> AnyEntity
+
+data AnyMovableEntity where
+    AnyMovableActor    :: Entity 'ActorT -> AnyMovableEntity
+    AnyMovableItem     :: Entity 'ItemT -> AnyMovableEntity
+
+deriving instance Show AnyEntity
+deriving instance Eq AnyEntity
+deriving instance Show AnyMovableEntity
+deriving instance Eq AnyMovableEntity
+
 deriving instance Show (Entity 'LocationT)
 deriving instance Show (Entity 'ActorT)
 deriving instance Show (Entity 'ItemT)
@@ -52,6 +81,7 @@ class Tagged (a :: EntityType) where
 
 class Movable (a :: EntityType) where
     getLocation :: Entity a -> EntityId
+    setLocation :: EntityId -> Entity a -> Entity a
 
 class Container (a :: EntityType) where
     getContents :: Entity a -> [EntityId]
@@ -73,9 +103,13 @@ instance Tagged 'ItemT where
 
 instance Movable 'ActorT where
     getLocation (Actor _ loc _) = loc
+    setLocation newLoc (Actor base _ otherFields) = Actor base newLoc otherFields
+
 
 instance Movable 'ItemT where
     getLocation (Item _ loc _) = loc
+    setLocation newLoc (Item base _ otherFields) = Item base newLoc otherFields
+
 
 instance Container 'LocationT where
     getContents (Location _ contents) = contents
@@ -92,6 +126,23 @@ data World = World
     , actors    :: Map EntityId (Entity 'ActorT)
     , items     :: Map EntityId (Entity 'ItemT)
     }
+
+
+-- | Get all entities of a specific type from the world
+getAllEntitiesOfType :: World -> (World -> Map EntityId (Entity a)) -> [Entity a]
+getAllEntitiesOfType world getter = elems (getter world)
+
+-- | Get all locations in the world
+getAllLocations :: World -> [Entity 'LocationT]
+getAllLocations world = getAllEntitiesOfType world locations
+
+-- | Get all actors in the world
+getAllActors :: World -> [Entity 'ActorT]
+getAllActors world = getAllEntitiesOfType world actors
+
+-- | Get all items in the world
+getAllItems :: World -> [Entity 'ItemT]
+getAllItems world = getAllEntitiesOfType world items
 
 isContainer :: Entity a -> Bool
 isContainer (Location _ _)      = True

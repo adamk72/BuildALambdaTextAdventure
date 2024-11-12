@@ -48,11 +48,9 @@ library
       Core.Message.Look
       Core.Message.Utils
       Core.State
-      Core.State.EntityContainer
       Core.State.GameState
       Core.State.JSON
       Core.State.JSONTypes
-      Core.State.Location
       Core.State.Operations
       Entity.Entity
       Entity.EntityConverter

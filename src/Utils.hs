@@ -7,8 +7,8 @@ import           Core.State
 import           Data.Text  (Text, intercalate, toLower)
 import qualified Data.Text  as T
 
-oxfordEntityNames :: [Entity] -> Text
-oxfordEntityNames = oxfordComma . map (toLower . getName)
+oxfordEntityNames :: [Entity a] -> Text
+oxfordEntityNames = oxfordComma . map (toLower . getEntityName)
 
 oxfordComma :: [Text] -> Text
 oxfordComma [] = ""
