@@ -9,7 +9,7 @@ import           Parser.Types
 import           Parser.Utils
 
 -- | Attempt to take an item from a specific location or container
-getItem :: Text -> Maybe Text -> [Item] -> Actor -> GameWorld -> GameStateText
+getItem :: Text -> Maybe Text -> [Item] -> Actor -> World -> GameStateText
 getItem itemTag srcM visibleItems actor gw
     | not (tagInItemList itemTag visibleItems) = msg $ InvalidItem itemTag
     | otherwise = case findItemByTag itemTag gw of
@@ -37,12 +37,12 @@ getItem itemTag srcM visibleItems actor gw
     moveAndMsg :: Item -> Location -> GameStateText
     moveAndMsg item dstLoc = do
         let updatedGW = moveItemLoc item dstLoc gw
-        modifyGameWorld (const updatedGW)
+        modifyWorld (const updatedGW)
         msg $ PickedUp itemTag (getName actor)
 
 executeGet :: CommandExecutor
 executeGet expr = do
-    gw <- getGameWorld
+    gw <- getWorld
     let ac = gwActiveActor gw
         acLoc = getActiveActorLoc gw
         visibleItems = getItemsAtLocDeep acLoc gw True

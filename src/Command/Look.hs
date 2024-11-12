@@ -13,7 +13,7 @@ import           Parser.Utils
 import           Utils
 
 -- | Look inside a container
-lookInContainer :: Text -> GameWorld -> GameStateText
+lookInContainer :: Text -> World -> GameStateText
 lookInContainer containerTag gw =
     case findItemByTag containerTag gw of
         Nothing -> msg $ ItemDoesNotExist containerTag
@@ -25,7 +25,7 @@ lookInContainer containerTag gw =
             else msg $ NotAContainer containerTag
 
 -- | Look at a specific item or entity
-lookAt :: Text -> Location -> GameWorld -> GameStateText
+lookAt :: Text -> Location -> World -> GameStateText
 lookAt eTag loc gw = do
     case findEntityByTagAtLoc eTag loc gw of
         Just entity -> return $ "You see " <> getName entity <> "."
@@ -44,12 +44,12 @@ lookAt eTag loc gw = do
                         [] -> return $ "Don't see a " <> eTag <> " to look at."
 
 -- | Look at inventory contents
-lookInActorInventory :: GameWorld -> Text
+lookInActorInventory :: World -> Text
 lookInActorInventory gw =
     "Your inventory has: " <> oxfordEntityNames (getActorInventoryItems gw)
 
 -- | Helper to find all instances of an entity by tag
-findAllInstances :: Text -> GameWorld -> [(Location, Entity)]
+findAllInstances :: Text -> World -> [(Location, Entity)]
 findAllInstances targetTag gw =
     [ (loc, e)
     | e <- getEntities gw
@@ -59,7 +59,7 @@ findAllInstances targetTag gw =
 
 executeLook :: CommandExecutor
 executeLook expr = do
-    gw <- getGameWorld
+    gw <- getWorld
     let acLoc = getActiveActorLoc gw
         objs = getEntitiesAtLoc acLoc gw
     case expr of

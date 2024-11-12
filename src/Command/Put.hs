@@ -7,7 +7,7 @@ import           Core.State
 import           Data.Text               (Text)
 import           Parser.Types
 
-putItemInContainer :: Text -> Text -> [Text] -> GameWorld -> GameStateText
+putItemInContainer :: Text -> Text -> [Text] -> World -> GameStateText
 putItemInContainer itemTag containerTag validItemTags gw =
     case (findItemByTag itemTag gw, findItemByTag containerTag gw) of
         (Just item, Just container)
@@ -17,7 +17,7 @@ putItemInContainer itemTag containerTag validItemTags gw =
                         let updatedGW = moveItemToContainer item container gw
                         case updatedGW of
                             Right newGW -> do
-                                modifyGameWorld (const newGW)
+                                modifyWorld (const newGW)
                                 msg $ PutItemIn itemTag containerTag
                             Left err -> return err
                     else msg $ NotAContainer containerTag
@@ -32,7 +32,7 @@ putItemInContainer itemTag containerTag validItemTags gw =
 
 executePut :: CommandExecutor
 executePut expr = do
-    gw <- getGameWorld
+    gw <- getWorld
     let acLoc = getActiveActorLoc gw
         validItemTags = map getTag $ getItemsAtLoc acLoc gw ++ getActorInventoryItems gw
     case expr of

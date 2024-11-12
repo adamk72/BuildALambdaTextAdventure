@@ -3,13 +3,13 @@
 
 module Core.Launch (launch) where
 
-import           Core.State      (AppState (..), GameEnvironment (world), GameWorld, loadGameEnvironmentJSON)
+import           Core.State      (AppState (..), GameEnvironment (world), World, loadGameEnvironmentJSON)
 import           Data.Text       (Text, pack)
 import           Logger
 import           Repl.Repl       (replLoop)
 import           System.FilePath (takeDirectory, (</>))
 
-initAppState :: GameWorld -> FilePath -> IO AppState
+initAppState :: World -> FilePath -> IO AppState
 initAppState gw baseDir = do
     let logPath = baseDir </> "logs" </> "game.log"
         histPath = baseDir </> "logs" </> "history.json"

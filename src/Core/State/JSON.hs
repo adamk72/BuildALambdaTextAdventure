@@ -1,21 +1,15 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE RecordWildCards #-}
 
-module Core.State.JSON
-    ( loadGameEnvironmentJSON
-    , GameEnvironmentJSON(..)
-    ) where
+module Core.State.JSON (GameEnvironmentJSON (..), loadGameEnvironmentJSON) where
 
-import Entity.Entity
-import           Core.State.JSONTypes
+import           Core.State.JSONTypes (Metadata(..), WorldJSON(..))
 import           Data.Aeson
-import qualified Data.ByteString.Lazy    as B
-import           GHC.Generics            (Generic)
-import Core.State.GameState (Metadata)
+import qualified Data.ByteString.Lazy as B
+import           GHC.Generics         (Generic)
 
 -- | Wrapper for GameEnvironment with JSON data
 newtype GameEnvironmentJSON = GameEnvironmentJSON {
-    unGameEnvironment :: (Metadata, Maybe GameWorldJSON)
+    unGameEnvironment :: (Metadata, Maybe WorldJSON)
 } deriving (Show, Eq, Generic)
 
 instance FromJSON GameEnvironmentJSON where
@@ -25,9 +19,9 @@ instance FromJSON GameEnvironmentJSON where
         return $ GameEnvironmentJSON (metadata, worldJSON)
 
 -- | Load and parse a game environment from a JSON file
-loadGameEnvironmentJSON :: FilePath -> IO (Either String (Metadata, Maybe GameWorldJSON))
+loadGameEnvironmentJSON :: FilePath -> IO (Either String (Metadata, Maybe WorldJSON))
 loadGameEnvironmentJSON filePath = do
     jsonData <- B.readFile filePath
     case eitherDecode jsonData of
-        Left err -> return $ Left $ "Error parsing JSON: " ++ err
+        Left err                        -> return $ Left $ "Error parsing JSON: " ++ err
         Right (GameEnvironmentJSON env) -> return $ Right env

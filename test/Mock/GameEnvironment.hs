@@ -112,8 +112,8 @@ testBat = mkItem TaggedEntity
         }
 
 -- World builders
-makeTestWorld :: Actor -> [Actor] -> [Location] -> [Item] -> GameWorld
-makeTestWorld active playable locs inters = GameWorld
+makeTestWorld :: Actor -> [Actor] -> [Location] -> [Item] -> World
+makeTestWorld active playable locs inters = World
     { gwActiveActor = active
     , gwPlayableActors = playable
     , gwLocations = locs
@@ -121,7 +121,7 @@ makeTestWorld active playable locs inters = GameWorld
     }
 
 -- Common world configurations
-defaultGW :: GameWorld
+defaultGW :: World
 defaultGW = makeTestWorld
     (testAlice testMeadow)
     [testBob testMeadow]
@@ -129,12 +129,12 @@ defaultGW = makeTestWorld
     testItemsForDefaultGw
 
 -- Helper functions for common test operations
-withActorAt :: GameWorld -> Location -> GameWorld
+withActorAt :: World -> Location -> World
 withActorAt w newLoc = w
     { gwActiveActor = setActorLoc newLoc (gwActiveActor w) }
 
-withLocations :: GameWorld -> [Location] -> GameWorld
+withLocations :: World -> [Location] -> World
 withLocations w locs = w { gwLocations = locs }
 
--- withPlayableActors :: GameWorld -> [Actor] -> GameWorld
+-- withPlayableActors :: World -> [Actor] -> World
 -- withPlayableActors world actors = world { gwPlayableActors = actors }

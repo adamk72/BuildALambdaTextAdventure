@@ -1,7 +1,7 @@
-module Core.GameMonad (getGameWorld, logGameDebug, logGameError, logGameInfo, modifyGameWorld, runGameMonad) where
+module Core.GameMonad (getWorld, logGameDebug, logGameError, logGameInfo, modifyWorld, runGameMonad) where
 
 import           Control.Monad.State
-import           Core.State.GameState (GameMonad, GameState (..), GameWorld)
+import           Core.State.GameState (GameMonad, GameState (..), World)
 import           Data.Text            (Text)
 import           Logger
 
@@ -9,13 +9,13 @@ import           Logger
 runGameMonad :: GameMonad a -> GameState -> IO (a, GameState)
 runGameMonad = runStateT
 
--- | Get the current GameWorld
-getGameWorld :: GameMonad GameWorld
-getGameWorld = gets gsWorld
+-- | Get the current World
+getWorld :: GameMonad World
+getWorld = gets gsWorld
 
--- | Modify the GameWorld
-modifyGameWorld :: (GameWorld -> GameWorld) -> GameMonad ()
-modifyGameWorld f = modify $ \s -> s { gsWorld = f (gsWorld s) }
+-- | Modify the World
+modifyWorld :: (World -> World) -> GameMonad ()
+modifyWorld f = modify $ \s -> s { gsWorld = f (gsWorld s) }
 
 -- | Logging functions that work within GameMonad
 logGameDebug :: Text -> GameMonad ()

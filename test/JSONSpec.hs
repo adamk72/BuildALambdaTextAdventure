@@ -132,7 +132,7 @@ invalidJson = [r|
 |]
 
 spec :: Spec
-spec = describe "GameWorld JSON Parsing" $ do
+spec = describe "World JSON Parsing" $ do
     context "Valid JSON parsing" $ do
         it "successfully parses" $ do
             let result = eitherDecode validJson :: Either String GameEnvironmentJSON
@@ -144,7 +144,7 @@ spec = describe "GameWorld JSON Parsing" $ do
                 Just gw -> do
                     let startingActor = gwActiveActor gw
                     startingActor `shouldSatisfy` isActor
-                Nothing -> expectationFailure "Expected GameWorld to be present"
+                Nothing -> expectationFailure "Expected World to be present"
 
         it "succeeds when starting character exists in playable characters list" $ do
             let Right gameEnvJSON = eitherDecode validJson
@@ -154,7 +154,7 @@ spec = describe "GameWorld JSON Parsing" $ do
                     let playableActors = gwPlayableActors gw
                     let foundActor = any (\actor -> getTag actor == startingActorTag) playableActors
                     foundActor `shouldBe` True
-                Nothing -> expectationFailure "Expected GameWorld to be present"
+                Nothing -> expectationFailure "Expected World to be present"
 
     context "Invalid JSON parsing" $ do
         it "provides appropriate error message for missing starting character" $ do

@@ -12,6 +12,4 @@ import           Core.GameMonad
 import           Entity.Entity
 import           Core.State.GameState
 import           Core.State.JSON
-import           Core.State.Location
 import           Core.State.Operations
-import           Core.State.TaggedEntity

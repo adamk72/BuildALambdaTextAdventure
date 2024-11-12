@@ -7,5 +7,5 @@ import           Utils
 -- Todo: This can call the Look command with a Binary Expression instead ("look inventory").
 executeInventory :: CommandExecutor
 executeInventory _ = do
-  gw <- getGameWorld
+  gw <- getWorld
   return $ "Your inventory is: " <> oxfordEntityNames (getActorInventoryItems gw)

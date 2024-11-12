@@ -3,13 +3,14 @@
 {-# LANGUAGE KindSignatures #-}
 module Entity.EntityConverter (EntityConversionError (..), convertToEntityWorld) where
 
-import           Core.State.JSONTypes (EntityJSON (..), GameWorldJSON (..))
-import qualified Core.State.Location  as L (Location (..))
+import           Core.State.JSONTypes (EntityJSON (..), WorldJSON (..))
+import qualified Core.State.JSONTypes as JSON (Location(..))  -- Qualified import
 import           Data.Map             as Map
 import qualified Data.Set             as Set
 import           Data.Text            (Text)
 import           Entity.Entity
 import Prelude as P
+
 
 data EntityConversionError
     = DuplicateId Text
@@ -19,8 +20,8 @@ data EntityConversionError
     deriving (Show, Eq)
 
 -- | Convert from a GameEnvironment to our new Entity-based World
-convertToEntityWorld :: GameWorldJSON -> Either EntityConversionError World
-convertToEntityWorld GameWorldJSON{..} = do
+convertToEntityWorld :: WorldJSON -> Either EntityConversionError World
+convertToEntityWorld WorldJSON{..} = do
     -- First validate all IDs are unique
     validateUniqueIds jLocations jPlayableActors jItems
 
@@ -38,10 +39,10 @@ convertToEntityWorld GameWorldJSON{..} = do
 
     Right $ World locMap actorMap itemMap
 
-validateUniqueIds :: [L.Location] -> [EntityJSON] -> [EntityJSON] -> Either EntityConversionError ()
+validateUniqueIds :: [JSON.Location] -> [EntityJSON] -> [EntityJSON] -> Either EntityConversionError ()
 validateUniqueIds locs actors items =
     let allIds = Set.fromList $
-            P.map L.locTag locs ++
+            P.map JSON.locTag locs ++     -- Remove L. qualifier
             P.map jTag actors ++
             P.map jTag items
         totalCount = length locs + length actors + length items
@@ -49,15 +50,15 @@ validateUniqueIds locs actors items =
        then Left $ DuplicateId "Found duplicate IDs in input data"
        else Right ()
 
-convertLocation :: L.Location -> Entity 'LocationT
+convertLocation :: JSON.Location -> Entity 'LocationT
 convertLocation loc =
-    Location
+    Location                             -- This Location is from Entity.Entity
         { locationBase = EntityBase
-            { entityId = EntityId (L.locTag loc)
-            , entityTag = L.locTag loc  -- For now, keeping same as ID
-            , entityName = L.locName loc
+            { entityId = EntityId (JSON.locTag loc)    -- Use qualified access
+            , entityTag = JSON.locTag loc              -- Use qualified access
+            , entityName = JSON.locName loc            -- Use qualified access
             }
-        , destinations = P.map EntityId (L.destinationTags loc)
+        , destinations = P.map EntityId (JSON.destinationTags loc)  -- Use qualified access
         }
 
 convertActorWithLoc :: Map EntityId (Entity 'LocationT)
