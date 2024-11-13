@@ -1,4 +1,7 @@
+{-# LANGUAGE GADTs #-}
 module Core.Ops.Location (module Core.Ops.Location) where
+import Entity.Entity
+import qualified Data.Map as Map
 
 
 -- | Update an entity's location

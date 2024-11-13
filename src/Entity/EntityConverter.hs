@@ -82,7 +82,11 @@ convertActorWithLoc locMap json =
                         , entityName = jName json
                         }
                     , actorLocation = locId
-                    , actorInventory = []
+                    , actorInventory =  EntityBase
+                        { entityId = EntityId (jTag json)
+                        , entityTags = Nothing
+                        , entityName = "contents of your pockets"
+                        }
                     }
                else Left $ InvalidLocationReference locTag
 
@@ -104,7 +108,11 @@ convertItemWithLoc locMap actorMap json =
                         }
                     , itemLocation = containerId
                     , itemInventory = if fromMaybe False (jHasInventorySlot json)
-                                   then Just []
+                                   then Just EntityBase
+                                        { entityId = EntityId (jTag json)
+                                        , entityTags = Nothing
+                                        , entityName = "contents of " <> jTag json
+                                        }
                                    else Nothing
                     }
                else Left $ InvalidLocationReference locTag

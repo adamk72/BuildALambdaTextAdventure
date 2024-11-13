@@ -1,14 +1,17 @@
-module Entity.Inventory where
+{-# LANGUAGE GADTs #-}
+module Core.Ops.Inventory (module Core.Ops.Inventory) where
 
 import Entity.Entity
+import Core.Ops.EntityInfo
 import Data.Text (Text)
 import Data.Map as Map
 import Data.Maybe (isJust)
+import Core.Ops.Location
 
 -- | Types and basic definitions
 data InventoryError
-    = NotAContainer Text              -- ^ Target is not a container
-    | InvalidContainer Text           -- ^ Container doesn't exist
+    = NotAContainerTarget Text       -- ^ Target is not a container
+    | InvalidContainer Text          -- ^ Container doesn't exist
     | InvalidItem Text               -- ^ Item doesn't exist
     | ItemNotVisible Text Text       -- ^ Item not in current location (includes item tag and location)
     | SameContainer Text             -- ^ Item is already in this container
@@ -24,10 +27,18 @@ getInventory :: Entity a -> Maybe (EntityBase 'LocationT)
 getInventory entity = case entity of
     Location {} -> Nothing
     Actor {actorInventory = inv} -> Just inv
-    Item {itemInventory = invM} - invM
+    Item {itemInventory = invM} -> invM
 
 hasInventory :: Entity a -> Bool
 hasInventory = isJust . getInventory
+
+-- | Helper to check if a SomeEntity has inventory
+hasSomeInventory :: SomeEntity -> Bool
+hasSomeInventory (SomeEntity e) = hasInventory e
+
+-- | Helper to get inventory from a SomeEntity
+getSomeInventory :: SomeEntity -> Maybe (EntityBase 'LocationT)
+getSomeInventory (SomeEntity e) = getInventory e
 
 getInventoryId :: Entity a -> Maybe EntityId
 getInventoryId entity = entityId <$> getInventory entity
@@ -86,7 +97,7 @@ getInventoryContents entity world =
     case getInventoryId entity of
         Nothing -> []
         Just invId ->
-            filter (\item -> getLocation item == invId) $
+            Prelude.filter (\item -> getLocation item == invId) $
             Map.elems $ items world
 
 -- | Visibility checking
@@ -94,23 +105,27 @@ isItemVisible :: Entity 'ItemT -> Entity 'LocationT -> World -> Bool
 isItemVisible item loc world =
     let locId = getId loc
         directlyVisible = getLocation item == locId
-        visibleInContainers = any (isInInventoryOf item) (getContainersAtLoc locId world)
+        visibleInContainers = Prelude.any visibleInContainer (getContainersAtLoc locId world)
     in directlyVisible || visibleInContainers
+    where
+        visibleInContainer :: SomeEntity -> Bool
+        visibleInContainer (SomeEntity container) = isInInventoryOf item container
 
-getContainersAtLoc :: EntityId -> World -> [Entity a]
+getContainersAtLoc :: EntityId -> World -> [SomeEntity]
 getContainersAtLoc locId world =
-    let itemContainers = filter hasInventory $
+    let itemContainers = Prelude.map SomeEntity $
+            Prelude.filter hasInventory $
             Map.elems $ Map.filter (\i -> getLocation i == locId) (items world)
-        actorContainers =
+        actorContainers = Prelude.map SomeEntity $
             Map.elems $ Map.filter (\a -> getLocation a == locId) (actors world)
     in itemContainers ++ actorContainers
 
 -- | Movement operations
-moveItemToContainer :: Entity 'ItemT -> Entity a -> Entity 'LocationT -> World -> InventoryResult
+moveItemToContainer :: Tagged a => Entity 'ItemT -> Entity a -> Entity 'LocationT -> World -> InventoryResult
 moveItemToContainer item target currentLoc world =
     case getInventory target of
         Nothing ->
-            Left $ NotAContainer (getName target)
+            Left $ NotAContainerTarget (getName target)
         Just containerInv -> do
             let containerId = entityId containerInv
                 itemName = getName item
@@ -121,13 +136,24 @@ moveItemToContainer item target currentLoc world =
                     then Right $ updateLocation containerId item world
                     else Left $ ItemNotVisible itemName (getName currentLoc)
 
+-- Todo: Clean this up later; this is a work around for a problem with Tagged.
 tryMoveItem :: Text -> Text -> World -> InventoryResult
 tryMoveItem itemTag containerTag world =
-    case (findEntityById itemTag world, findEntityById containerTag world) of
-        (Just item@Item{}, Just container) -> do
-            case Map.lookup (getLocation item) (locations world) of
-                Just loc -> moveItemToContainer item container loc world
-                Nothing -> error "Invalid item location" -- Should never happen
+    case (findEntityByTag itemTag world, findEntityByTag containerTag world) of
+        (Just (SomeEntity item@Item{}), Just (SomeEntity container)) ->
+            case container of
+                Location {} ->
+                    case Map.lookup (getLocation item) (locations world) of
+                        Just loc -> moveItemToContainer item container loc world
+                        Nothing -> error "Invalid item location"
+                Actor {} ->
+                    case Map.lookup (getLocation item) (locations world) of
+                        Just loc -> moveItemToContainer item container loc world
+                        Nothing -> error "Invalid item location"
+                Item {} ->
+                    case Map.lookup (getLocation item) (locations world) of
+                        Just loc -> moveItemToContainer item container loc world
+                        Nothing -> error "Invalid item location"
         (Nothing, _) -> Left $ InvalidItem itemTag
         (_, Nothing) -> Left $ InvalidContainer containerTag
         _ -> Left $ InvalidItem itemTag
