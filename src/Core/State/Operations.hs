@@ -4,9 +4,8 @@ module Core.State.Operations (module Core.State.Operations) where
 
 import           Entity.Entity
 import qualified Data.Map            as Map
-import           Data.Maybe          (catMaybes)
+import           Data.Maybe          (isJust)
 import           Data.Text           (Text)
-import qualified Data.List           as List
 import           Prelude            hiding (getContents)
 
 maybeToEither :: Text -> Maybe a -> Either Text a
@@ -50,15 +49,62 @@ getEntityNameById eId world =
         Just (SomeEntity entity) -> Just (getEntityName entity)
         Nothing -> Nothing
 
-getActorInventory :: World -> Either Text EntityId
-getActorInventory world =
-    Right $ actorLocation (activeActor world)
+getActiveActorInventoryID :: World -> EntityId
+getActiveActorInventoryID w = entityId (actorInventory (activeActor w))
 
 -- | Get contents of a container entity
-getContainerContents :: (Container a) => Entity a -> World -> [Entity 'ItemT]
-getContainerContents container world =
-    let contentIds = getContents container
-    in catMaybes [Map.lookup _id (items world) | _id <- contentIds]
+getInventory :: Entity a -> Maybe (EntityBase 'LocationT)
+getInventory entity = case entity of
+    Location {} -> Nothing
+    Actor {actorInventory = inv} -> Just inv
+    Item {itemInventory = invM } -> invM
+
+-- | Check if an Entity has an inventory
+hasInventory :: Entity a -> Bool
+hasInventory = isJust . getInventory
+
+-- | Get the ID of an Entity's inventory location
+getInventoryId :: Entity a -> Maybe EntityId
+getInventoryId entity = entityId <$> getInventory entity
+
+-- | Create a new inventory location for an Actor
+createActorInventory :: EntityId -> Text -> EntityBase 'LocationT
+createActorInventory ownerId name = EntityBase
+    { entityId = EntityId (unEntityId ownerId <> "-inventory")
+    , entityTags = Nothing
+    , entityName = name <> "'s inventory"
+    }
+
+-- | Create a new inventory location for an Item
+createItemInventory :: EntityId -> Text -> EntityBase 'LocationT
+createItemInventory containerId name = EntityBase
+    { entityId = EntityId (unEntityId containerId <> "-contents")
+    , entityTags = Nothing
+    , entityName = "inside " <> name
+    }
+
+-- | Update an Actor's inventory
+setActorInventory :: EntityBase 'LocationT -> Entity 'ActorT -> Entity 'ActorT
+setActorInventory newInv actor = actor { actorInventory = newInv }
+
+-- | Update an Item's inventory
+setItemInventory :: Maybe (EntityBase 'LocationT) -> Entity 'ItemT -> Entity 'ItemT
+setItemInventory newInv item = item { itemInventory = newInv }
+
+-- | Check if an Entity is in another Entity's inventory
+isInInventoryOf :: (Movable a) => Entity a -> Entity b -> Bool
+isInInventoryOf movable container =
+    case getInventoryId container of
+        Just invId -> getLocation movable == invId
+        Nothing -> False
+
+getInventoryContents :: Entity a -> World -> [Entity 'ItemT]
+getInventoryContents entity world =
+    case getInventoryId entity of
+        Nothing -> []
+        Just invId ->
+            filter (\item -> getLocation item == invId) $
+            Map.elems $ items world
 
 -- | Move an item into a container
 moveItemToContainer :: Tagged a => Entity 'ItemT -> Entity a -> World -> Either Text World
@@ -68,34 +114,6 @@ moveItemToContainer item container world
     | otherwise =
         Left $ "The " <> getName container <> " is not a container."
 
--- | Check if an item exists in a location
-itemTagExistsAtActorLoc :: Text -> World -> Bool
-itemTagExistsAtActorLoc t = itemExistsAtActorLoc (EntityId t)
-
-itemExistsAtActorLoc :: EntityId -> World -> Bool
-itemExistsAtActorLoc itemId w = itemExistsAtLoc itemId (actorLocation (activeActor w)) w True
-
-itemExistsAtLoc :: EntityId -> EntityId -> World -> Bool -> Bool
-itemExistsAtLoc itemTag locId world checkContainers =
-    let directItems = Map.filter (\item -> itemLocation item == locId) (items world)
-        hasDirectItem = any (\item -> getId item == itemTag) (Map.elems directItems)
-        containerItems = if checkContainers
-                        then concatMap (`getContainerContents` world) $
-                             List.filter isContainer $ Map.elems directItems
-                        else []
-        hasContainerItem = any (\item -> getId item == itemTag) containerItems
-    in hasDirectItem || hasContainerItem
-
--- | Get all items in a location including those in containers
-getItemsAtLocationDeep :: EntityId -> World -> Bool -> [Entity 'ItemT]
-getItemsAtLocationDeep locId world includeContainers =
-    let directItems = Map.elems $ Map.filter (\item -> itemLocation item == locId) (items world)
-        containerItems = if includeContainers
-                        then concatMap (`getContainerContents` world) $
-                             List.filter isContainer directItems
-                        else []
-    in directItems ++ containerItems
-
 -- | Helper function to remove duplicates while preserving order
-nub :: Eq a => [a] -> [a]
-nub = List.foldr (\x acc -> if x `elem` acc then acc else x : acc) []
+-- nub :: Eq a => [a] -> [a]
+-- nub = List.foldr (\x acc -> if x `elem` acc then acc else x : acc) []
