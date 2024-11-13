@@ -29,3 +29,7 @@ atMay xs n
 intToText :: Int -> Text
 intToText = T.pack . show
 
+maybeToEither :: Text -> Maybe a -> Either Text a
+maybeToEither err Nothing = Left err
+maybeToEither _ (Just x)  = Right x
+

@@ -89,7 +89,6 @@ convertActorWithLoc locMap json =
 convertItemWithLoc :: Map EntityId (Entity 'LocationT)
                   -> Map EntityId (Entity 'ActorT)
                   -> EntityJSON
-
                   -> Either EntityConversionError (Entity 'ItemT)
 convertItemWithLoc locMap actorMap json =
     case jLocTag json of
