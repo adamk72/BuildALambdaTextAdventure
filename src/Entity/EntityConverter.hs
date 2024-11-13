@@ -60,7 +60,7 @@ convertLocation loc =
     Location                             -- This Location is from Entity.Entity
         { locationBase = EntityBase
             { entityId = EntityId (JSON.locTag loc)    -- Use qualified access
-            , entityTags = fromMaybe [] (JSON.locTags loc)           -- Use qualified access
+            , entityTags = JSON.locTags loc          -- Use qualified access
             , entityName = JSON.locName loc            -- Use qualified access
             }
         , destinations = P.map EntityId (JSON.destinationTags loc)  -- Use qualified access
@@ -78,7 +78,7 @@ convertActorWithLoc locMap json =
                then Right $ Actor
                     { actorBase = EntityBase
                         { entityId = EntityId (jTag json)
-                        , entityTags = fromMaybe [] (jTags json)
+                        , entityTags = jTags json
                         , entityName = jName json
                         }
                     , actorLocation = locId
@@ -100,7 +100,7 @@ convertItemWithLoc locMap actorMap json =
                then Right $ Item
                     { itemBase = EntityBase
                         { entityId = EntityId (jTag json)
-                        , entityTags = fromMaybe [] (jTags json)
+                        , entityTags = jTags json
                         , entityName = jName json
                         }
                     , itemLocation = containerId

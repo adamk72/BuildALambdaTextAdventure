@@ -1,13 +1,12 @@
 {-# LANGUAGE DataKinds          #-}
 {-# LANGUAGE FlexibleInstances  #-}
 {-# LANGUAGE GADTs              #-}
-{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE KindSignatures     #-}
+{-# LANGUAGE StandaloneDeriving #-}
 module Entity.Entity (module Entity.Entity) where
 
-import           Data.Map as Map
+import           Data.Map  as Map
 import           Data.Text
-import Prelude as P
 
 -- Core types
 data EntityType = LocationT | ActorT | ItemT
@@ -17,7 +16,7 @@ newtype EntityId = EntityId { unEntityId :: Text }
 
 data EntityBase (a :: EntityType) = EntityBase
     { entityId   :: EntityId
-    , entityTags :: [Text]
+    , entityTags :: Maybe [Text]
     , entityName :: Text
     } deriving (Show, Eq)
 
@@ -51,7 +50,7 @@ deriving instance Eq (Entity 'ItemT)
 -- Type classes for entity behaviors
 class Tagged (a :: EntityType) where
     getId   :: Entity a -> EntityId
-    getTags :: Entity a -> [Text]
+    getTags :: Entity a -> Maybe [Text]
     getName :: Entity a -> Text
 
 class Movable (a :: EntityType) where
@@ -121,13 +120,13 @@ getAllItems :: World -> [Entity 'ItemT]
 getAllItems world = getAllEntitiesOfType world items
 
 isContainer ::  Entity a -> Bool
-isContainer (Location {}) = True
-isContainer (Actor {}) = True
+isContainer (Location {})       = True
+isContainer (Actor {})          = True
 isContainer (Item _ _ (Just _)) = True
-isContainer (Item _ _ Nothing) = False
+isContainer (Item _ _ Nothing)  = False
 
 getEntityName :: Entity a -> Text
 getEntityName entity = case entity of
     Location base _ -> entityName base
-    Actor base _ _ -> entityName base
-    Item base _ _ -> entityName base
+    Actor base _ _  -> entityName base
+    Item base _ _   -> entityName base
