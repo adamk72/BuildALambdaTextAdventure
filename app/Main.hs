@@ -1,100 +1,63 @@
 {-# LANGUAGE LambdaCase #-}
 
-import           CmdOptions         as Cmd (parse, showHelp)
-import           Control.Monad
-import qualified Core.Launch        as Core
-import           Data.List          (find)
+module Main (main) where
 
-import           Core.State         (Metadata (..))
-import           Data.Text          as T (Text, concat, intercalate, pack,
-                                          unpack)
-import qualified Data.Text.IO       as TIO
-import           JsonProcessing     as Help (getJsonFilePaths, readAllMetadata,
-                                             storyDirectory)
-import           Prelude            hiding (error)
-import           System.Environment as E (getArgs)
-import           System.Exit        (ExitCode (ExitFailure), exitSuccess,
-                                     exitWith)
-
-newtype AdventureName = AdventureName { unAdventureName :: Text }
-data AdventureInfo = AdventureInfo
-    { filePath       :: FilePath
-    , err            :: Maybe String
-    , advTitle       :: Text
-    , advLaunchTag   :: Text
-    , advDescription :: Text
-    } deriving (Show)
-
--- Convert metadata to our domain type
-toAdventureInfo :: (FilePath, Either String Metadata) -> AdventureInfo
-toAdventureInfo (fp, Left _err) = AdventureInfo
-    { filePath = fp
-    , err = Just _err
-    , advTitle = ""
-    , advLaunchTag = ""
-    , advDescription = ""
-    }
-
-toAdventureInfo (fp, Right meta) = AdventureInfo
-    { filePath = fp
-    , err = Nothing
-    , advTitle = title meta
-    , advLaunchTag = launchTag meta
-    , advDescription = description meta
-    }
-
-formatAdventureInfo :: AdventureInfo -> Text
-formatAdventureInfo adv = T.concat
-    [ advTitle adv
-    , " ("
-    , advLaunchTag adv
-    , ") -"
-    , advDescription adv
-    ]
+import           CmdOptions           as Cmd (parse, showHelp)
+import           Control.Monad        (forM_, void)
+import qualified Core.Launch          as Core
+import           Core.State.JSONTypes (Metadata (..))
+import           Data.Either          (isRight)
+import           Data.List            (find)
+import           Data.Text            (Text, intercalate, pack, unpack)
+import qualified Data.Text.IO         as TIO
+import           JsonProcessing       (getJsonFilePaths, readAllMetadata, storyDirectory)
+import           System.Environment   (getArgs)
+import           System.Exit          (ExitCode (ExitFailure), exitSuccess, exitWith)
 
 data Command
-    = RunAdventure AdventureName
+    = RunAdventure FilePath
     | ShowHelp
     | InvalidAdventure Text
 
-parseArgs :: [AdventureName] -> [String] -> Command
-parseArgs validNames = \case
+parseArgs :: [(FilePath, Either String Metadata)] -> [String] -> Command
+parseArgs adventures = \case
     ["-a", option] ->
-        let name = pack option
-        in if name `elem` map unAdventureName validNames
-           then RunAdventure (AdventureName name)
-           else InvalidAdventure name
+        let tag = pack option
+        in case findAdventureByTag tag adventures of
+            Just path -> RunAdventure path
+            Nothing   -> InvalidAdventure tag
     _ -> ShowHelp
+  where
+    findAdventureByTag tag = fmap fst . find (\(_, Right md) -> launchTag md == tag)
+
+formatMetadata :: Metadata -> Text
+formatMetadata md = title md <> " (" <> launchTag md <> ") - " <> description md
 
 main :: IO ()
 main = do
     jsonPaths <- getJsonFilePaths storyDirectory
-    metadataResults <- readAllMetadata jsonPaths
+    adventures <- readAllMetadata jsonPaths
 
-    let adventures = map toAdventureInfo metadataResults
-        validNames = map (AdventureName . advLaunchTag) adventures
-        formattedAdventures = map formatAdventureInfo adventures
+    -- Handle any loading errors first
+    forM_ adventures $ \(path, result) ->
+        case result of
+            Left err -> TIO.putStrLn $ "Error loading " <> pack path <> ": " <> pack err
+            Right _  -> return ()
 
-    forM_ adventures $ \adv ->
-        case err adv of
-            Just _err ->
-                TIO.putStrLn $ "Error loading " <> T.pack (filePath adv) <> ": " <> T.pack _err
-            Nothing ->
-                return ()
+    -- Get only the valid adventures
+    let validAdventures = filter (isRight . snd) adventures
+        adventureDescriptions = map (formatMetadata . (\(Right md) -> md) . snd) validAdventures
 
-    E.getArgs >>= \args ->
-        case parseArgs validNames args of
-            RunAdventure name -> do
-                case find (\adv -> advLaunchTag adv == unAdventureName name) adventures of
-                    Just adv -> runGameWithOption (filePath adv)
-                    Nothing  -> TIO.putStrLn "Error: Adventure not found"
+    getArgs >>= \args ->
+        case parseArgs validAdventures args of
+            RunAdventure path -> runGameWithOption path
             InvalidAdventure name -> do
                 TIO.putStrLn $ "Invalid adventure name: " <> name <> "\n"
-                Cmd.showHelp (unpack $ intercalate "\n" formattedAdventures)
+                Cmd.showHelp (unpack $ intercalate "\n" adventureDescriptions)
             ShowHelp ->
-                displayHelp formattedAdventures
+                displayHelp adventureDescriptions
 
-displayHelp :: [Text]-> IO ()
+displayHelp :: [Text] -> IO ()
 displayHelp = void . Cmd.parse . unpack . intercalate "\n"
 
 runGameWithOption :: FilePath -> IO ()

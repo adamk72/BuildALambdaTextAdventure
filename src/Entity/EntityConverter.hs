@@ -1,7 +1,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE KindSignatures #-}
-module Entity.EntityConverter (EntityConversionError (..), convertToEntityWorld) where
+module Entity.EntityConverter (convertToEntityWorld) where
 
 import           Core.State.JSONTypes (EntityJSON (..), WorldJSON (..))
 import qualified Core.State.JSONTypes as JSON (Location(..))  -- Qualified import
@@ -12,12 +12,7 @@ import           Entity.Entity
 import Prelude as P
 
 
-data EntityConversionError
-    = DuplicateId Text
-    | MissingStartingActor Text
-    | InvalidLocationReference Text
-    | InvalidContainerReference Text
-    deriving (Show, Eq)
+type EntityConversionError = Text
 
 -- | Convert from a GameEnvironment to our new Entity-based World
 convertToEntityWorld :: WorldJSON -> Either EntityConversionError World
@@ -40,7 +35,7 @@ convertToEntityWorld WorldJSON{..} = do
     let activeActorId = EntityId jStartingActorTag
     activeActor <- case Map.lookup activeActorId actorMap of
                      Just actor -> Right actor
-                     Nothing    -> Left $ MissingStartingActor jStartingActorTag
+                     Nothing    -> Left $ "Missing staring actor for this tag: " <> jStartingActorTag
 
     Right $ World locMap actorMap itemMap activeActor
 
@@ -52,7 +47,7 @@ validateUniqueIds locs actors items =
             P.map jTag items
         totalCount = length locs + length actors + length items
     in if Set.size allIds /= totalCount
-       then Left $ DuplicateId "Found duplicate IDs in input data"
+       then Left "Found duplicate IDs in input data"
        else Right ()
 
 convertLocation :: JSON.Location -> Entity 'LocationT
@@ -71,7 +66,7 @@ convertActorWithLoc :: Map EntityId (Entity 'LocationT)
                    -> Either EntityConversionError (Entity 'ActorT)
 convertActorWithLoc locMap json =
     case jLocTag json of
-        Nothing -> Left $ InvalidLocationReference (jTag json)
+        Nothing -> Left $ "Invalid location reference from character list: " <> jTag json
         Just locTag ->
             let locId = EntityId locTag
             in if locId `Map.member` locMap
@@ -88,7 +83,7 @@ convertActorWithLoc locMap json =
                         , entityName = "contents of your pockets"
                         }
                     }
-               else Left $ InvalidLocationReference locTag
+               else Left $ "Location tag: "  <> locTag <> " is invalid reference for a character."
 
 convertItemWithLoc :: Map EntityId (Entity 'LocationT)
                   -> Map EntityId (Entity 'ActorT)
@@ -96,7 +91,7 @@ convertItemWithLoc :: Map EntityId (Entity 'LocationT)
                   -> Either EntityConversionError (Entity 'ItemT)
 convertItemWithLoc locMap actorMap json =
     case jLocTag json of
-        Nothing -> Left $ InvalidLocationReference (jTag json)
+        Nothing -> Left $ "Invalid location reference from item list: " <> jTag json
         Just locTag ->
             let containerId = EntityId locTag
             in if containerId `Map.member` locMap || containerId `Map.member` actorMap
@@ -115,7 +110,7 @@ convertItemWithLoc locMap actorMap json =
                                         }
                                    else Nothing
                     }
-               else Left $ InvalidLocationReference locTag
+               else Left $ "Location tag: "  <> locTag <> " is invalid reference for to apply to item."
 
 fromMaybe :: a -> Maybe a -> a
 fromMaybe def Nothing = def

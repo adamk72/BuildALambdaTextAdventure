@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
-module JsonProcessing (storyDirectory, getJsonFilePaths, readAllMetadata) where
+module JsonProcessing (getJsonFilePaths, readAllMetadata, storyDirectory) where
 
-import           Core.State           (GameEnvironment (..), Metadata (..))
-import           Core.State.JSON      (GameEnvironmentJSON(..))
+import           Core.State.JSON      (GameEnvironmentJSON (..))
+import           Core.State.JSONTypes (Metadata (..))
 import           Data.Aeson           (eitherDecode)
 import qualified Data.ByteString.Lazy as B
 import qualified Data.Either          as Either
@@ -25,7 +25,7 @@ getJsonFilePaths dir = do
 readMetadata :: FilePath -> IO (Either String Metadata)
 readMetadata filePath = do
     content <- B.readFile filePath
-    return $ metadata . unGameEnvironment <$> (eitherDecode content :: Either String GameEnvironmentJSON)
+    return $ fmap (fst . unGameEnvironment) (eitherDecode content :: Either String GameEnvironmentJSON)
 
 readAllMetadata :: [Either String FilePath] -> IO [(FilePath, Either String  Metadata)]
 readAllMetadata filePaths = do

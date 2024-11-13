@@ -3,9 +3,9 @@
 {-# HLINT ignore "Use !!" #-}
 module Utils (module Utils) where
 
-import           Core.State
-import           Data.Text  (Text, intercalate, toLower)
-import qualified Data.Text  as T
+import           Data.Text     (Text, intercalate, toLower)
+import qualified Data.Text     as T
+import           Entity.Entity
 
 oxfordEntityNames :: [Entity a] -> Text
 oxfordEntityNames = oxfordComma . map (toLower . getEntityName)

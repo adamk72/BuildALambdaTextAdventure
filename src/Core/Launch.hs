@@ -3,11 +3,13 @@
 
 module Core.Launch (launch) where
 
-import           Core.State      (AppState (..), GameEnvironment (world), World, loadGameEnvironmentJSON)
-import           Data.Text       (Text, pack)
+import           Core.State           (AppState (..), loadGameEnvironmentJSON)
+import           Data.Text            (Text, pack)
 import           Logger
-import           Repl.Repl       (replLoop)
-import           System.FilePath (takeDirectory, (</>))
+import           Repl.Repl            (replLoop)
+import           System.FilePath      (takeDirectory, (</>))
+import Entity.EntityConverter (convertToEntityWorld)
+import Core.State.GameState (World)
 
 initAppState :: World -> FilePath -> IO AppState
 initAppState gw baseDir = do
@@ -48,8 +50,8 @@ launch fp = do
                 _ <- logError history $ "Error loading game: " <> pack (show err)
                 return $ Left $ "Error loading game: " <> pack (show err)
 
-        Right gameEnv ->
-            case world gameEnv of
+        Right (_, world) ->
+            case world of
                 Nothing -> do
                     let logPath = takeDirectory fp </> "logs" </> "game.log"
                         histPath = takeDirectory fp </> "logs" </> "history.json"
@@ -57,8 +59,12 @@ launch fp = do
                     _ <- logError history "No game world found in environment"
                     return $ Left "No game world found!"
 
-                Just gw -> do
-                    state <- initAppState gw (takeDirectory fp)
-                    newHistory <- logInfo (gameHistory state) $
-                        "Game loaded successfully from: " <> pack fp
-                    gameLoop state { gameHistory = newHistory }
+                Just gwJSON -> do
+                    let gwE = convertToEntityWorld gwJSON
+                    case gwE of
+                        Right gw -> do
+                            state <- initAppState gw (takeDirectory fp)
+                            newHistory <- logInfo (gameHistory state) $
+                                "Game loaded successfully from: " <> pack fp
+                            gameLoop state { gameHistory = newHistory }
+                        Left err -> return $ Left ("Something went wrong with parsing the JSON: " <> err)

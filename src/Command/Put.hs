@@ -7,34 +7,32 @@ import           Core.State
 import           Data.Text               (Text)
 import           Parser.Types
 
-putItemInContainer :: Text -> Text -> [Text] -> World -> GameStateText
-putItemInContainer itemTag containerTag validItemTags gw =
-    case (findItemByTag itemTag gw, findItemByTag containerTag gw) of
-        (Just item, Just container)
-            | itemTag `elem` validItemTags && containerTag `elem` validItemTags ->
-                if isContainer container
-                    then do
-                        let updatedGW = moveItemToContainer item container gw
-                        case updatedGW of
-                            Right newGW -> do
-                                modifyWorld (const newGW)
-                                msg $ PutItemIn itemTag containerTag
-                            Left err -> return err
-                    else msg $ NotAContainer containerTag
-            | itemTag `elem` validItemTags ->
-                msg $ NoContainerForItem itemTag containerTag
-            | containerTag `elem` validItemTags ->
-                msg $ NoItemForContainer itemTag containerTag
-            | otherwise ->
-                msg $ InvalidItemInLocation itemTag
-        (Nothing, _) -> msgGameWordError $ ItemError itemTag
-        (_, Nothing) -> msgGameWordError $ ItemError containerTag
+putItemInContainer :: Text -> Text -> World -> GameStateText
+putItemInContainer itemTag containerTag gw = undefined
+    -- case (findEntityByTag itemTag gw, findEntityByTag containerTag gw) of
+    --     (Just item, Just container)
+    --         | itemTagExistsAtActorLoc itemTag gw && itemTagExistsAtActorLoc containerTag gw ->
+    --             if isContainer container
+    --                 then do
+    --                     let updatedGW = moveItemToContainer item container gw
+    --                     case updatedGW of
+    --                         Right newGW -> do
+    --                             modifyWorld (const newGW)
+    --                             msg $ PutItemIn itemTag containerTag
+    --                         Left err -> return err
+    --                 else msg $ Core.Message.NotAContainer containerTag
+    --         | itemTagExistsAtActorLoc itemTag gw ->
+    --             msg $ NoContainerForItem itemTag containerTag
+    --         | itemTagExistsAtActorLoc containerTag gw ->
+    --             msg $ NoItemForContainer itemTag containerTag
+    --         | otherwise ->
+    --             msg $ InvalidItemInLocation itemTag
+    --     (Nothing, _) -> msgGameWordError $ ItemError itemTag
+    --     (_, Nothing) -> msgGameWordError $ ItemError containerTag
 
 executePut :: CommandExecutor
 executePut expr = do
     gw <- getWorld
-    let acLoc = getActiveActorLoc gw
-        validItemTags = map getTag $ getItemsAtLoc acLoc gw ++ getActorInventoryItems gw
     case expr of
         AtomicExpression {} ->
             msg PutWhat
@@ -43,4 +41,4 @@ executePut expr = do
         BinaryExpression {} ->
             msg PutWhat
         ComplexExpression _ (NounClause itemTag) _ (NounClause containerTag) ->
-            putItemInContainer itemTag containerTag validItemTags gw
+            putItemInContainer itemTag containerTag gw

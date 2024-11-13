@@ -148,7 +148,7 @@ spec = do
                 let originalItems = gwItems gw
                     newItems = gwItems newState
 
-                map (getLocation) newItems `shouldMatchList` map (getLocation) originalItems
+                map (getLocationId) newItems `shouldMatchList` map (getLocationId) originalItems
 
             it "maintains container contents after looking" $ do
                 -- First put something in a container

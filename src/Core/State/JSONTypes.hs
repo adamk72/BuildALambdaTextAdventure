@@ -2,7 +2,6 @@
 {-# LANGUAGE DeriveGeneric  #-}
 module Core.State.JSONTypes (EntityJSON (..), Location (..), Metadata (..), WorldJSON (..)) where
 
-
 import           Data.Aeson
 import           Data.Text    (Text)
 import           GHC.Generics (Generic)
@@ -32,7 +31,6 @@ data Location = Location {
     destinationTags :: [Text]       -- Will be converted to [EntityId]
 } deriving (Show, Eq, Generic)
 
-
 instance FromJSON Location where
     parseJSON = withObject "Location" $ \v ->
         Location
@@ -43,10 +41,10 @@ instance FromJSON Location where
 
 -- | JSON representation of the game world
 data WorldJSON = WorldJSON {
+    jStartingActorTag :: Text,
     jPlayableActors   :: [EntityJSON],
     jLocations        :: [Location],
-    jItems            :: [EntityJSON],
-    jStartingActorTag :: Text
+    jItems            :: [EntityJSON]
 } deriving (Show, Eq, Generic)
 
 instance FromJSON WorldJSON where

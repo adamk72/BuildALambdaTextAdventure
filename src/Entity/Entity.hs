@@ -66,8 +66,8 @@ class Tagged (a :: EntityType) where
     getName :: Entity a -> Text
 
 class Movable (a :: EntityType) where
-    getLocation :: Entity a -> EntityId
-    setLocation :: EntityId -> Entity a -> Entity a
+    getLocationId :: Entity a -> EntityId
+    setLocationId :: EntityId -> Entity a -> Entity a
 
 instance Tagged 'LocationT where
     getId (Location base _) = entityId base
@@ -85,12 +85,12 @@ instance Tagged 'ItemT where
     getName (Item base _ _) = entityName base
 
 instance Movable 'ActorT where
-    getLocation (Actor _ loc _) = loc
-    setLocation newLoc (Actor base _ inv) = Actor base newLoc inv
+    getLocationId (Actor _ loc _) = loc
+    setLocationId newLoc (Actor base _ inv) = Actor base newLoc inv
 
 instance Movable 'ItemT where
-    getLocation (Item _ loc _) = loc
-    setLocation newLoc (Item base _ inv) = Item base newLoc inv
+    getLocationId (Item _ loc _) = loc
+    setLocationId newLoc (Item base _ inv) = Item base newLoc inv
 
 getAllEntitiesOfType :: World -> (World -> Map EntityId (Entity a)) -> [Entity a]
 getAllEntitiesOfType world getter = elems (getter world)

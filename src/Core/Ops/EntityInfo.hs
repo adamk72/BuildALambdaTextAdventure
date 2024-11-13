@@ -15,10 +15,19 @@ findEntityById targetId world =
                 Just item -> Just (SomeEntity item)
                 Nothing   -> Nothing
 
+getActiveActorLocation :: World -> Text
+getActiveActorLocation w =
+    let actorLoc = getLocationId (activeActor w)
+    in case getEntityNameById actorLoc w of
+        Just name -> name
+        Nothing -> "Location " <> unEntityId actorLoc <> " not found"
+
 findEntityByTag :: Text -> World -> Maybe SomeEntity
 findEntityByTag t = findEntityById (EntityId t)
 
--- Helper function to get name from SomeEntity
+getEntityNameByTag :: Text -> World -> Maybe Text
+getEntityNameByTag t = getEntityNameById (EntityId t)
+
 getEntityNameById :: EntityId -> World -> Maybe Text
 getEntityNameById eId world =
     case findEntityById eId world of

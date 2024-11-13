@@ -12,7 +12,7 @@ import Core.Ops.Location
 data InventoryError
     = NotAContainerTarget Text       -- ^ Target is not a container
     | InvalidContainer Text          -- ^ Container doesn't exist
-    | InvalidItem Text               -- ^ Item doesn't exist
+    | InvalidItemTag Text            -- ^ Item doesn't exist
     | ItemNotVisible Text Text       -- ^ Item not in current location (includes item tag and location)
     | SameContainer Text             -- ^ Item is already in this container
     deriving (Show, Eq)
@@ -89,22 +89,25 @@ makeActorContainer actor world =
 isInInventoryOf :: (Movable a) => Entity a -> Entity b -> Bool
 isInInventoryOf movable container =
     case getInventoryId container of
-        Just invId -> getLocation movable == invId
+        Just invId -> getLocationId movable == invId
         Nothing -> False
 
-getInventoryContents :: Entity a -> World -> [Entity 'ItemT]
-getInventoryContents entity world =
+getActiveActorInventoryList :: World -> [Entity 'ItemT]
+getActiveActorInventoryList w = getEntityInventoryList (activeActor w) w
+
+getEntityInventoryList :: Entity a -> World -> [Entity 'ItemT]
+getEntityInventoryList entity world =
     case getInventoryId entity of
         Nothing -> []
         Just invId ->
-            Prelude.filter (\item -> getLocation item == invId) $
+            Prelude.filter (\item -> getLocationId item == invId) $
             Map.elems $ items world
 
 -- | Visibility checking
 isItemVisible :: Entity 'ItemT -> Entity 'LocationT -> World -> Bool
 isItemVisible item loc world =
     let locId = getId loc
-        directlyVisible = getLocation item == locId
+        directlyVisible = getLocationId item == locId
         visibleInContainers = Prelude.any visibleInContainer (getContainersAtLoc locId world)
     in directlyVisible || visibleInContainers
     where
@@ -115,9 +118,9 @@ getContainersAtLoc :: EntityId -> World -> [SomeEntity]
 getContainersAtLoc locId world =
     let itemContainers = Prelude.map SomeEntity $
             Prelude.filter hasInventory $
-            Map.elems $ Map.filter (\i -> getLocation i == locId) (items world)
+            Map.elems $ Map.filter (\i -> getLocationId i == locId) (items world)
         actorContainers = Prelude.map SomeEntity $
-            Map.elems $ Map.filter (\a -> getLocation a == locId) (actors world)
+            Map.elems $ Map.filter (\a -> getLocationId a == locId) (actors world)
     in itemContainers ++ actorContainers
 
 -- | Movement operations
@@ -130,7 +133,7 @@ moveItemToContainer item target currentLoc world =
             let containerId = entityId containerInv
                 itemName = getName item
 
-            if getLocation item == containerId
+            if getLocationId item == containerId
                 then Left $ SameContainer itemName
                 else if isItemVisible item currentLoc world
                     then Right $ updateLocation containerId item world
@@ -143,17 +146,17 @@ tryMoveItem itemTag containerTag world =
         (Just (SomeEntity item@Item{}), Just (SomeEntity container)) ->
             case container of
                 Location {} ->
-                    case Map.lookup (getLocation item) (locations world) of
+                    case Map.lookup (getLocationId item) (locations world) of
                         Just loc -> moveItemToContainer item container loc world
                         Nothing -> error "Invalid item location"
                 Actor {} ->
-                    case Map.lookup (getLocation item) (locations world) of
+                    case Map.lookup (getLocationId item) (locations world) of
                         Just loc -> moveItemToContainer item container loc world
                         Nothing -> error "Invalid item location"
                 Item {} ->
-                    case Map.lookup (getLocation item) (locations world) of
+                    case Map.lookup (getLocationId item) (locations world) of
                         Just loc -> moveItemToContainer item container loc world
                         Nothing -> error "Invalid item location"
-        (Nothing, _) -> Left $ InvalidItem itemTag
+        (Nothing, _) -> Left $ InvalidItemTag itemTag
         (_, Nothing) -> Left $ InvalidContainer containerTag
-        _ -> Left $ InvalidItem itemTag
+        _ -> Left $ InvalidItemTag itemTag

@@ -85,7 +85,7 @@ spec = do
                 (_, newState) <- runCommand executeGo expr gw
 
                 verifyStartLocation newState "cave"
-                getLocation (gwActiveActor newState) `shouldBe` testCave
+                getLocationId (gwActiveActor newState) `shouldBe` testCave
 
             it "maintains inventory when moving" $ do
                 let gw = defaultGW  -- Assuming we have items in inventory

@@ -8,28 +8,27 @@ import           Parser.Types
 
 import           Utils
 
-dropObject :: Text -> Maybe Text ->Entity 'LocationT -> World -> GameStateText
-dropObject object dstM actorLoc gw =
-    case findItemByTag object gw of
-        Just item -> do
-            let updatedGW = moveItemLoc item actorLoc gw
-                inv = oxfordEntityNames (getActorInventoryItems updatedGW)
-            modifyWorld (const updatedGW)
-            case dstM of
-                Nothing  -> msg $ DroppedItemWithInventory object inv
-                Just dst -> msg $ DroppedItemSomewhere object dst
-        Nothing -> msg $ YouDoNotHave object
+dropObject :: Text -> Maybe Text -> Text -> World -> GameStateText
+dropObject object dstM actorLoc gw = undefined
+    -- case findEntityById (EntityId object) gw of
+    --     Just item -> do
+    --         let updatedGW = moveItemLoc item actorLoc gw
+    --             inv = oxfordEntityNames (getActorInventoryItems updatedGW)
+    --         modifyWorld (const updatedGW)
+    --         case dstM of
+    --             Nothing  -> msg $ DroppedItemWithInventory object inv
+    --             Just dst -> msg $ DroppedItemSomewhere object dst
+    --     Nothing -> msg $ YouDoNotHave object
 
 executeDrop :: CommandExecutor
 executeDrop expr = do
     gw <- getWorld
-    let acLoc = getActiveActorLoc gw
-        handle = \case
+    let handle = \case
             AtomicExpression _ ->
                 msg DropWhat
             UnaryExpression _ (NounClause object) ->
-                dropObject object Nothing acLoc gw
+                dropObject object Nothing "TBD LOCATION" gw
             BinaryExpression {} ->
                 msg DropWhat
-            ComplexExpression _ (NounClause object) (PrepClause prep) (NounClause dst) -> dropObject object (Just (prep <> " " <> dst)) acLoc gw
+            ComplexExpression _ (NounClause object) (PrepClause prep) (NounClause dst) -> dropObject object (Just (prep <> " " <> dst)) "TBD LOCATION" gw
     handle expr
