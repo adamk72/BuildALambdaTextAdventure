@@ -16,7 +16,7 @@ newtype EntityId = EntityId { unEntityId :: Text }
 
 data EntityBase (a :: EntityType) = EntityBase
     { entityId   :: EntityId
-    , entityTag  :: Text
+    , entityTags  :: [Text]
     , entityName :: Text
     } deriving (Show, Eq)
 
@@ -29,13 +29,13 @@ data Entity (a :: EntityType) where
     Actor ::
         { actorBase      :: EntityBase 'ActorT
         , actorLocation  :: EntityId
-        , actorContents  :: [EntityId]
+        , actorInventory  :: [EntityId]
         } -> Entity 'ActorT
 
     Item ::
         { itemBase      :: EntityBase 'ItemT
         , itemLocation  :: EntityId
-        , itemContents  :: Maybe [EntityId]
+        , itemInventory  :: Maybe [EntityId]
         } -> Entity 'ItemT
 
 {-
@@ -76,7 +76,7 @@ deriving instance Eq (Entity 'ItemT)
 
 class Tagged (a :: EntityType) where
     getId   :: Entity a -> EntityId
-    getTag  :: Entity a -> Text
+    getTags  :: Entity a -> [Text]
     getName :: Entity a -> Text
 
 class Movable (a :: EntityType) where
@@ -88,17 +88,17 @@ class Container (a :: EntityType) where
 
 instance Tagged 'LocationT where
     getId (Location base _) = entityId base
-    getTag (Location base _) = entityTag base
+    getTags (Location base _) = entityTags base
     getName (Location base _) = entityName base
 
 instance Tagged 'ActorT where
     getId (Actor base _ _) = entityId base
-    getTag (Actor base _ _) = entityTag base
+    getTags (Actor base _ _) = entityTags base
     getName (Actor base _ _) = entityName base
 
 instance Tagged 'ItemT where
     getId (Item base _ _) = entityId base
-    getTag (Item base _ _) = entityTag base
+    getTags (Item base _ _) = entityTags base
     getName (Item base _ _) = entityName base
 
 instance Movable 'ActorT where

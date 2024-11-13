@@ -47,8 +47,7 @@ convertToEntityWorld WorldJSON{..} = do
 validateUniqueIds :: [JSON.Location] -> [EntityJSON] -> [EntityJSON] -> Either EntityConversionError ()
 validateUniqueIds locs actors items =
     let allIds = Set.fromList $
-            P.map JSON.locTag locs ++     -- Remove L. qualifier     -- Remove L. qualifier     -- Remove L. qualifier     -- Remove L. qualifier
-                 -- Remove L. qualifier
+            P.map JSON.locTag locs ++
             P.map jTag actors ++
             P.map jTag items
         totalCount = length locs + length actors + length items
@@ -61,7 +60,7 @@ convertLocation loc =
     Location                             -- This Location is from Entity.Entity
         { locationBase = EntityBase
             { entityId = EntityId (JSON.locTag loc)    -- Use qualified access
-            , entityTag = JSON.locTag loc              -- Use qualified access
+            , entityTags = fromMaybe [] (JSON.locTags loc)           -- Use qualified access
             , entityName = JSON.locName loc            -- Use qualified access
             }
         , destinations = P.map EntityId (JSON.destinationTags loc)  -- Use qualified access
@@ -79,17 +78,18 @@ convertActorWithLoc locMap json =
                then Right $ Actor
                     { actorBase = EntityBase
                         { entityId = EntityId (jTag json)
-                        , entityTag = jTag json
+                        , entityTags = fromMaybe [] (jTags json)
                         , entityName = jName json
                         }
                     , actorLocation = locId
-                    , actorContents = []
+                    , actorInventory = []
                     }
                else Left $ InvalidLocationReference locTag
 
 convertItemWithLoc :: Map EntityId (Entity 'LocationT)
                   -> Map EntityId (Entity 'ActorT)
                   -> EntityJSON
+
                   -> Either EntityConversionError (Entity 'ItemT)
 convertItemWithLoc locMap actorMap json =
     case jLocTag json of
@@ -100,11 +100,11 @@ convertItemWithLoc locMap actorMap json =
                then Right $ Item
                     { itemBase = EntityBase
                         { entityId = EntityId (jTag json)
-                        , entityTag = jTag json
+                        , entityTags = fromMaybe [] (jTags json)
                         , entityName = jName json
                         }
                     , itemLocation = containerId
-                    , itemContents = if fromMaybe False (jHasInventorySlot json)
+                    , itemInventory = if fromMaybe False (jHasInventorySlot json)
                                    then Just []
                                    else Nothing
                     }

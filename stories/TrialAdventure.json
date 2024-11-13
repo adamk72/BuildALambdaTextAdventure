@@ -11,16 +11,19 @@
     "characters": [
       {
         "tag": "alice",
+        "tags": ["gritty", "brave", "knight"],
         "name": "Alice the Adventurer",
         "locationTag": "meadow"
       },
       {
         "tag": "bob",
+        "tags": ["paladin", "honorable"],
         "name": "Bob the Brave",
         "locationTag": "cave"
       },
       {
         "tag": "guard",
+        "tags": ["greedy", "tough"],
         "name": "Greg the Guard",
         "locationTag": "castle entry"
       }
@@ -78,6 +81,7 @@
     "locations": [
       {
         "tag": "meadow",
+        "tags": ["idyllic", "green"],
         "name": "A flowery meadow",
         "destinationTags": [
           "cave"
