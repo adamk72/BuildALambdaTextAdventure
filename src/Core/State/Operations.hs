@@ -1,13 +1,11 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE MonoLocalBinds #-}
+{-# LANGUAGE GADTs #-}
 module Core.State.Operations (module Core.State.Operations) where
 
 import           Entity.Entity
-import           Data.Map            (Map)
 import qualified Data.Map            as Map
-import           Data.Maybe          (catMaybes, listToMaybe)
+import           Data.Maybe          (catMaybes)
 import           Data.Text           (Text)
-import           Control.Applicative ((<|>))
 import qualified Data.List           as List
 import           Prelude            hiding (getContents)
 
@@ -23,22 +21,34 @@ updateLocation newLocId entity world =
         Item  {} -> world { items  = Map.adjust (const $ setLocation newLocId entity) (getId entity) (items world) }
         Location {} -> world -- No update, return world unchanged for Location
 
--- | Get all entities at a specific location
-getEntitiesAtLocation :: EntityId -> World -> [AnyMovableEntity]
+getEntitiesAtLocation :: EntityId -> World -> [SomeEntity]
 getEntitiesAtLocation locId world =
-    let itemsAtLoc  = Map.elems $ Map.filter (\item -> itemLocation item == locId) (items world)
-        actorsAtLoc = Map.elems $ Map.filter (\actor -> actorLocation actor == locId) (actors world)
-    in map AnyMovableItem itemsAtLoc ++ map AnyMovableActor actorsAtLoc
+    let itemsAtLoc = map SomeEntity $
+            Map.elems $ Map.filter (\item -> getLocation item == locId) (items world)
+        actorsAtLoc = map SomeEntity $
+            Map.elems $ Map.filter (\actor -> getLocation actor == locId) (actors world)
+    in itemsAtLoc ++ actorsAtLoc
 
--- | Find an entity by its tag
-findEntityById :: EntityId -> World -> Maybe AnyEntity
-findEntityById targetTag world =
-    let findInMap :: Tagged a => Map EntityId (Entity a) -> (Entity a -> AnyEntity) -> Maybe AnyEntity
-        findInMap m wrapper = listToMaybe [wrapper e | e <- Map.elems m, getId e == targetTag]
-        itemMatch  = findInMap (items world) AnyItem
-        actorMatch = findInMap (actors world) AnyActor
-        locationMatch = findInMap (locations world) AnyLocation
-    in itemMatch <|> actorMatch <|> locationMatch
+-- Now we can properly combine lookups from different maps
+findEntityById :: EntityId -> World -> Maybe SomeEntity
+findEntityById targetId world =
+    case Map.lookup targetId (locations world) of
+        Just loc -> Just (SomeEntity loc)
+        Nothing -> case Map.lookup targetId (actors world) of
+            Just actor -> Just (SomeEntity actor)
+            Nothing -> case Map.lookup targetId (items world) of
+                Just item -> Just (SomeEntity item)
+                Nothing -> Nothing
+
+findEntityByTag :: Text -> World -> Maybe SomeEntity
+findEntityByTag t = findEntityById (EntityId t)
+
+-- Helper function to get name from SomeEntity
+getEntityNameById :: EntityId -> World -> Maybe Text
+getEntityNameById eId world =
+    case findEntityById eId world of
+        Just (SomeEntity entity) -> Just (getEntityName entity)
+        Nothing -> Nothing
 
 getActorInventory :: World -> Either Text EntityId
 getActorInventory world =
@@ -59,6 +69,12 @@ moveItemToContainer item container world
         Left $ "The " <> getName container <> " is not a container."
 
 -- | Check if an item exists in a location
+itemTagExistsAtActorLoc :: Text -> World -> Bool
+itemTagExistsAtActorLoc t = itemExistsAtActorLoc (EntityId t)
+
+itemExistsAtActorLoc :: EntityId -> World -> Bool
+itemExistsAtActorLoc itemId w = itemExistsAtLoc itemId (actorLocation (activeActor w)) w True
+
 itemExistsAtLoc :: EntityId -> EntityId -> World -> Bool -> Bool
 itemExistsAtLoc itemTag locId world checkContainers =
     let directItems = Map.filter (\item -> itemLocation item == locId) (items world)

@@ -94,7 +94,7 @@ spec = do
                 (_, finalState) <- runCommand executeGet getExpr setupState
 
                 -- Verify the item is still in the bag after moving it
-                case findItemByTag "bag of holding" finalState >>= getInventory of
+                case findEntityById "bag of holding" finalState >>= getInventory of
                     Just loc ->
                         let itemsInBag = getItemTagsAtLoc loc finalState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
@@ -110,7 +110,7 @@ spec = do
                         checkItemTagInPocket "pearl" newState `shouldBe` True
 
                         -- Verify the item is no longer in the container
-                        case findItemByTag "bag of holding" newState >>= getInventory of
+                        case findEntityById "bag of holding" newState >>= getInventory of
                             Just loc -> do
                                 let itemsInBag = getItemTagsAtLoc loc newState
                                 "pearl" `elem` itemsInBag `shouldBe` False
@@ -145,7 +145,7 @@ spec = do
 
                         -- Verify container is in inventory but pearls remain inside
                         checkItemTagInPocket "bag of holding" newState `shouldBe` True
-                        case findItemByTag "bag of holding" newState >>= getInventory of
+                        case findEntityById "bag of holding" newState >>= getInventory of
                             Just loc -> do
                                 let itemsInBag = getItemTagsAtLoc loc newState
                                 "pearl" `elem` itemsInBag `shouldBe` True

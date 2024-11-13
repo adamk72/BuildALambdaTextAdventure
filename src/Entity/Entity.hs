@@ -1,14 +1,15 @@
 {-# LANGUAGE DataKinds          #-}
 {-# LANGUAGE FlexibleInstances  #-}
 {-# LANGUAGE GADTs              #-}
-{-# LANGUAGE KindSignatures     #-}
-{-# LANGUAGE NamedFieldPuns     #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE KindSignatures     #-}
 module Entity.Entity (module Entity.Entity) where
 
-import           Data.Map
+import           Data.Map as Map
 import           Data.Text
+import Prelude as P
 
+-- Core types
 data EntityType = LocationT | ActorT | ItemT
 
 newtype EntityId = EntityId { unEntityId :: Text }
@@ -16,10 +17,11 @@ newtype EntityId = EntityId { unEntityId :: Text }
 
 data EntityBase (a :: EntityType) = EntityBase
     { entityId   :: EntityId
-    , entityTags  :: [Text]
+    , entityTags :: [Text]
     , entityName :: Text
     } deriving (Show, Eq)
 
+-- The main Entity GADT
 data Entity (a :: EntityType) where
     Location ::
         { locationBase   :: EntityBase 'LocationT
@@ -29,42 +31,14 @@ data Entity (a :: EntityType) where
     Actor ::
         { actorBase      :: EntityBase 'ActorT
         , actorLocation  :: EntityId
-        , actorInventory  :: [EntityId]
+        , actorInventory :: [EntityId]
         } -> Entity 'ActorT
 
     Item ::
         { itemBase      :: EntityBase 'ItemT
         , itemLocation  :: EntityId
-        , itemInventory  :: Maybe [EntityId]
+        , itemInventory :: Maybe [EntityId]
         } -> Entity 'ItemT
-
-{-
-Pattern Matching with Destructuring:
-    We pattern match the entire constructor pattern, including the nested EntityBase pattern.
-    We destructure the EntityBase pattern to extract the entityName field.
-Accessing entityName:
-    We directly access the entityName field from the destructured pattern.
--}
-getEntityName :: Entity a -> Text
-getEntityName entity =
-  case entity of
-    Location { locationBase = EntityBase { entityName } } -> entityName
-    Actor { actorBase = EntityBase { entityName } }       -> entityName
-    Item { itemBase = EntityBase { entityName } }         -> entityName
-
-data AnyEntity where
-    AnyLocation :: Entity 'LocationT -> AnyEntity
-    AnyActor    :: Entity 'ActorT -> AnyEntity
-    AnyItem     :: Entity 'ItemT -> AnyEntity
-
-data AnyMovableEntity where
-    AnyMovableActor    :: Entity 'ActorT -> AnyMovableEntity
-    AnyMovableItem     :: Entity 'ItemT -> AnyMovableEntity
-
-deriving instance Show AnyEntity
-deriving instance Eq AnyEntity
-deriving instance Show AnyMovableEntity
-deriving instance Eq AnyMovableEntity
 
 deriving instance Show (Entity 'LocationT)
 deriving instance Show (Entity 'ActorT)
@@ -74,9 +48,10 @@ deriving instance Eq (Entity 'LocationT)
 deriving instance Eq (Entity 'ActorT)
 deriving instance Eq (Entity 'ItemT)
 
+-- Type classes for entity behaviors
 class Tagged (a :: EntityType) where
     getId   :: Entity a -> EntityId
-    getTags  :: Entity a -> [Text]
+    getTags :: Entity a -> [Text]
     getName :: Entity a -> Text
 
 class Movable (a :: EntityType) where
@@ -86,6 +61,7 @@ class Movable (a :: EntityType) where
 class Container (a :: EntityType) where
     getContents :: Entity a -> [EntityId]
 
+-- Type class instances remain the same
 instance Tagged 'LocationT where
     getId (Location base _) = entityId base
     getTags (Location base _) = entityTags base
@@ -103,13 +79,11 @@ instance Tagged 'ItemT where
 
 instance Movable 'ActorT where
     getLocation (Actor _ loc _) = loc
-    setLocation newLoc (Actor base _ otherFields) = Actor base newLoc otherFields
-
+    setLocation newLoc (Actor base _ inv) = Actor base newLoc inv
 
 instance Movable 'ItemT where
     getLocation (Item _ loc _) = loc
-    setLocation newLoc (Item base _ otherFields) = Item base newLoc otherFields
-
+    setLocation newLoc (Item base _ inv) = Item base newLoc inv
 
 instance Container 'LocationT where
     getContents (Location _ contents) = contents
@@ -121,32 +95,39 @@ instance Container 'ItemT where
     getContents (Item _ _ (Just contents)) = contents
     getContents (Item _ _ Nothing)         = []
 
+
+-- World type that stores all entities
 data World = World
-    { locations     :: Map EntityId (Entity 'LocationT)
-    , actors        :: Map EntityId (Entity 'ActorT)
-    , items         :: Map EntityId (Entity 'ItemT)
+    { locations   :: Map EntityId (Entity 'LocationT)
+    , actors      :: Map EntityId (Entity 'ActorT)
+    , items       :: Map EntityId (Entity 'ItemT)
     , activeActor :: Entity 'ActorT
     }
 
+-- Instead of trying to return a polymorphic Entity a, we'll use a GADT to wrap the different types
+data SomeEntity where
+    SomeEntity :: Entity a -> SomeEntity
 
--- | Get all entities of a specific type from the world
 getAllEntitiesOfType :: World -> (World -> Map EntityId (Entity a)) -> [Entity a]
 getAllEntitiesOfType world getter = elems (getter world)
 
--- | Get all locations in the world
 getAllLocations :: World -> [Entity 'LocationT]
 getAllLocations world = getAllEntitiesOfType world locations
 
--- | Get all actors in the world
 getAllActors :: World -> [Entity 'ActorT]
 getAllActors world = getAllEntitiesOfType world actors
 
--- | Get all items in the world
 getAllItems :: World -> [Entity 'ItemT]
 getAllItems world = getAllEntitiesOfType world items
 
-isContainer :: Entity a -> Bool
-isContainer (Location _ _)      = True
-isContainer (Actor {})          = True
+isContainer ::  Entity a -> Bool
+isContainer (Location {}) = True
+isContainer (Actor {}) = True
 isContainer (Item _ _ (Just _)) = True
-isContainer (Item _ _ Nothing)  = False
+isContainer (Item _ _ Nothing) = False
+
+getEntityName :: Entity a -> Text
+getEntityName entity = case entity of
+    Location base _ -> entityName base
+    Actor base _ _ -> entityName base
+    Item base _ _ -> entityName base

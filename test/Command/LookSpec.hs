@@ -91,7 +91,7 @@ spec = do
                 verifyStartLocation newState "meadow"
 
                 -- Verify pearl is still in the bag
-                case findItemByTag "bag of holding" newState >>= getInventory of
+                case findEntityById "bag of holding" newState >>= getInventory of
                     Just loc -> do
                         let itemsInBag = getItemTagsAtLoc loc newState
                         itemsInBag `shouldContain` ["pearl"]
@@ -117,7 +117,7 @@ spec = do
                 verifyStartLocation finalState "meadow"
 
                 -- Verify both items are still in the bag
-                case findItemByTag "bag of holding" finalState >>= getInventory of
+                case findEntityById "bag of holding" finalState >>= getInventory of
                     Just loc -> do
                         let itemsInBag = getItemTagsAtLoc loc finalState
                         itemsInBag `shouldContain` ["pearl"]
@@ -160,7 +160,7 @@ spec = do
                 let lookExpr = UnaryExpression "look" (NounClause "around")
                 (_, finalState) <- runCommand executeLook lookExpr setupState
 
-                case findItemByTag "bag of holding" finalState >>= getInventory of
+                case findEntityById "bag of holding" finalState >>= getInventory of
                     Just loc ->
                         let itemsInBag = getItemTagsAtLoc loc finalState
                         in "silver coin" `elem` itemsInBag `shouldBe` True

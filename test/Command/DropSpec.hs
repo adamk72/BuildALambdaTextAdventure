@@ -113,7 +113,7 @@ spec = do
                 (_, finalState) <- runCommand executeDrop dropExpr state3
 
                 -- Verify container contents remain intact
-                case findItemByTag "bag of holding" finalState >>= getInventory of
+                case findEntityById "bag of holding" finalState >>= getInventory of
                     Just loc ->
                         let itemsInBag = getItemTagsAtLoc loc finalState
                         in "silver coin" `elem` itemsInBag `shouldBe` True

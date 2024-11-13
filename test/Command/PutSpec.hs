@@ -43,7 +43,7 @@ spec = do
                 (output, newState) <- runCommand executePut expr gw
 
                 output `shouldBe` "silver coin is now in the bag of holding."
-                case findItemByTag "bag of holding" newState >>= getInventory of
+                case findEntityById "bag of holding" newState >>= getInventory of
                     Just loc ->
                         let itemsInBag = getItemTagsAtLoc loc newState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
@@ -57,7 +57,7 @@ spec = do
                 (output, newState) <- runCommand executePut expr gw
 
                 output `shouldBe` "silver coin is now in the bag of holding."
-                case findItemByTag "bag of holding" newState >>= getInventory of
+                case findEntityById "bag of holding" newState >>= getInventory of
                     Just loc ->
                         let itemsInBag = getItemTagsAtLoc loc newState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
@@ -94,7 +94,7 @@ spec = do
                 (_, newState) <- runCommand executePut expr updatedGW
 
                 -- Verify item is in container
-                case findItemByTag "bag of holding" newState >>= getInventory of
+                case findEntityById "bag of holding" newState >>= getInventory of
                     Just loc ->
                         let itemsInBag = getItemTagsAtLoc loc newState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
@@ -117,7 +117,7 @@ spec = do
                 (_, finalState) <- runCommand executePut putExpr midState
 
                 -- Verify item is in container
-                case findItemByTag "bag of holding" finalState >>= getInventory of
+                case findEntityById "bag of holding" finalState >>= getInventory of
                     Just loc ->
                         let itemsInBag = getItemTagsAtLoc loc finalState
                         in "silver coin" `elem` itemsInBag `shouldBe` True
