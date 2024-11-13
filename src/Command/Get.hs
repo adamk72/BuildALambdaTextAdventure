@@ -9,7 +9,7 @@ import           Parser.Types
 import           Parser.Utils
 
 -- | Attempt to take an item from a specific location or container
-getItem :: Text -> Maybe Text -> [Item] -> Actor -> World -> GameStateText
+getItem :: Text -> Maybe Text -> Entity 'ItemT ->Entity 'ActorT -> World -> GameStateText
 getItem itemTag srcM visibleItems actor gw
     | not (tagInItemList itemTag visibleItems) = msg $ InvalidItem itemTag
     | otherwise = case findItemByTag itemTag gw of
@@ -21,7 +21,7 @@ getItem itemTag srcM visibleItems actor gw
             else tryGetItem item acInv srcM
 
   where
-    tryGetItem :: Item -> Location -> Maybe Text -> GameStateText
+    tryGetItem :: Entity 'ItemT -> Entity 'LocationT -> Maybe Text -> GameStateText
     tryGetItem item locOrItem = \case
         Nothing -> moveAndMsg item locOrItem
         Just src -> case findAnyLocationByTag src gw of
@@ -34,7 +34,7 @@ getItem itemTag srcM visibleItems actor gw
                                 else msg $ NotAContainer src
                 Nothing -> msg $ InvalidItem src
 
-    moveAndMsg :: Item -> Location -> GameStateText
+    moveAndMsg :: Entity 'ItemT -> Entity 'LocationT -> GameStateText
     moveAndMsg item dstLoc = do
         let updatedGW = moveItemLoc item dstLoc gw
         modifyWorld (const updatedGW)

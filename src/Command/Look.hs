@@ -25,7 +25,7 @@ lookInContainer containerTag gw =
             else msg $ NotAContainer containerTag
 
 -- | Look at a specific item or entity
-lookAt :: Text -> Location -> World -> GameStateText
+lookAt :: Text ->Entity 'LocationT -> World -> GameStateText
 lookAt eTag loc gw = do
     case findEntityByTagAtLoc eTag loc gw of
         Just entity -> return $ "You see " <> getName entity <> "."
@@ -49,7 +49,7 @@ lookInActorInventory gw =
     "Your inventory has: " <> oxfordEntityNames (getActorInventoryItems gw)
 
 -- | Helper to find all instances of an entity by tag
-findAllInstances :: Text -> World -> [(Location, Entity)]
+findAllInstances :: Text -> World -> [Entity 'LocationT, Entity)]
 findAllInstances targetTag gw =
     [ (loc, e)
     | e <- getEntities gw

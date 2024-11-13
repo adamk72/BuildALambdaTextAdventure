@@ -11,6 +11,10 @@ import           Control.Applicative ((<|>))
 import qualified Data.List           as List
 import           Prelude            hiding (getContents)
 
+maybeToEither :: Text -> Maybe a -> Either Text a
+maybeToEither err Nothing = Left err
+maybeToEither _ (Just x) = Right x
+
 -- | Update an entity's location
 updateLocation :: EntityId -> Entity a -> World -> World
 updateLocation newLocId entity world =
@@ -26,6 +30,9 @@ getEntitiesAtLocation locId world =
         actorsAtLoc = Map.elems $ Map.filter (\actor -> actorLocation actor == locId) (actors world)
     in map AnyMovableItem itemsAtLoc ++ map AnyMovableActor actorsAtLoc
 
+findEntityById :: EntityId -> Text
+findEntityById = unEntityId
+
 -- | Find an entity by its tag
 findEntityByTag :: Text -> World -> Maybe AnyEntity
 findEntityByTag targetTag world =
@@ -35,6 +42,10 @@ findEntityByTag targetTag world =
         actorMatch = findInMap (actors world) AnyActor
         locationMatch = findInMap (locations world) AnyLocation
     in itemMatch <|> actorMatch <|> locationMatch
+
+getActorInventory :: World -> Either Text EntityId
+getActorInventory world =
+    Right $ actorLocation (activeActor world)
 
 -- | Get contents of a container entity
 getContainerContents :: (Container a) => Entity a -> World -> [Entity 'ItemT]

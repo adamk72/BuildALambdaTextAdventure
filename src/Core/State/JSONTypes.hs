@@ -31,10 +31,10 @@ instance FromJSON EntityJSON where
 
 -- | JSON representation of the game world
 data WorldJSON = WorldJSON {
-    jStartingActorTag :: Text,
     jPlayableActors   :: [EntityJSON],
     jLocations        :: [Location],
-    jItems            :: [EntityJSON]
+    jItems            :: [EntityJSON],
+    jStartingActorTag :: Text
 } deriving (Show, Eq, Generic)
 
 instance FromJSON WorldJSON where

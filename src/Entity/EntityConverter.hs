@@ -37,12 +37,18 @@ convertToEntityWorld WorldJSON{..} = do
     itemEntities <- traverse (convertItemWithLoc locMap actorMap) jItems
     let itemMap = Map.fromList [(getId item, item) | item <- itemEntities]
 
-    Right $ World locMap actorMap itemMap
+    let activeActorId = EntityId jStartingActorTag
+    activeActor <- case Map.lookup activeActorId actorMap of
+                     Just actor -> Right actor
+                     Nothing    -> Left $ MissingStartingActor jStartingActorTag
+
+    Right $ World locMap actorMap itemMap activeActor
 
 validateUniqueIds :: [JSON.Location] -> [EntityJSON] -> [EntityJSON] -> Either EntityConversionError ()
 validateUniqueIds locs actors items =
     let allIds = Set.fromList $
-            P.map JSON.locTag locs ++     -- Remove L. qualifier
+            P.map JSON.locTag locs ++     -- Remove L. qualifier     -- Remove L. qualifier     -- Remove L. qualifier     -- Remove L. qualifier
+                 -- Remove L. qualifier
             P.map jTag actors ++
             P.map jTag items
         totalCount = length locs + length actors + length items

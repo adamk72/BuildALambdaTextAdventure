@@ -8,7 +8,7 @@ import           Parser.Types
 
 import           Utils
 
-dropObject :: Text -> Maybe Text -> Location -> World -> GameStateText
+dropObject :: Text -> Maybe Text ->Entity 'LocationT -> World -> GameStateText
 dropObject object dstM actorLoc gw =
     case findItemByTag object gw of
         Just item -> do

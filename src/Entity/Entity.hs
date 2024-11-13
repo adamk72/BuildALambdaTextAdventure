@@ -1,9 +1,9 @@
 {-# LANGUAGE DataKinds          #-}
 {-# LANGUAGE FlexibleInstances  #-}
-{-# LANGUAGE GADTs             #-}
+{-# LANGUAGE GADTs              #-}
 {-# LANGUAGE KindSignatures     #-}
+{-# LANGUAGE NamedFieldPuns     #-}
 {-# LANGUAGE StandaloneDeriving #-}
-{-# LANGUAGE NamedFieldPuns #-}
 module Entity.Entity (module Entity.Entity) where
 
 import           Data.Map
@@ -49,8 +49,8 @@ getEntityName :: Entity a -> Text
 getEntityName entity =
   case entity of
     Location { locationBase = EntityBase { entityName } } -> entityName
-    Actor { actorBase = EntityBase { entityName } } -> entityName
-    Item { itemBase = EntityBase { entityName } } -> entityName
+    Actor { actorBase = EntityBase { entityName } }       -> entityName
+    Item { itemBase = EntityBase { entityName } }         -> entityName
 
 data AnyEntity where
     AnyLocation :: Entity 'LocationT -> AnyEntity
@@ -122,9 +122,10 @@ instance Container 'ItemT where
     getContents (Item _ _ Nothing)         = []
 
 data World = World
-    { locations :: Map EntityId (Entity 'LocationT)
-    , actors    :: Map EntityId (Entity 'ActorT)
-    , items     :: Map EntityId (Entity 'ItemT)
+    { locations     :: Map EntityId (Entity 'LocationT)
+    , actors        :: Map EntityId (Entity 'ActorT)
+    , items         :: Map EntityId (Entity 'ItemT)
+    , activeActor :: Entity 'ActorT
     }
 
 

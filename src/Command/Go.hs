@@ -8,7 +8,7 @@ import           Data.List               (find)
 import           Data.Text               (Text, unpack)
 import           Parser.Types
 
-moveTo :: Actor -> Text -> [Text] -> World -> GameStateText
+moveTo ::Entity 'ActorT -> Text -> [Text] -> World -> GameStateText
 moveTo actor dstTag validDstTags  gw
     | dstTag == locTag (getLocation actor) = msg $ AlreadyAtLocation $ locTag (getLocation actor)
     | dstTag `elem` validDstTags =

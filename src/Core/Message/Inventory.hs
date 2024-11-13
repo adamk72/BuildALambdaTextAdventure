@@ -1,16 +1,16 @@
 module Core.Message.Inventory (InventoryMessage (..)) where
 
 import           Core.Message.Common (MessageRenderer (..))
-import           Core.State          (Item)
 import           Data.Text           (Text)
 import           Utils               (oxfordEntityNames)
+import Entity.Entity
 
 data InventoryMessage
     = PickedUp Text Text
     | DroppedItem Text
     | DroppedItemWithInventory Text Text
     | YouDoNotHave Text
-    | LookAround [Item]
+    | LookAround [Entity 'ItemT]
     | AlreadyHaveItem Text
     | NotFoundIn Text Text         -- item, container/location
     | NotAContainer Text           -- container name

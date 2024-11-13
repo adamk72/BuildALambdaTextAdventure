@@ -5,42 +5,42 @@ import           Data.Maybe
 import           Test.Hspec ()
 
 -- Common test gwLocations
-testCave :: Location
-testCave = Location
+testCave ::Entity 'LocationT
+testCave =Entity 'LocationT
     { locTag = "cave"
     , locName = "A dark cave"
     , destinationTags = ["meadow", "forest"]
     }
 
-testMeadow :: Location
-testMeadow = Location
+testMeadow ::Entity 'LocationT
+testMeadow =Entity 'LocationT
     { locTag = "meadow"
     , locName = "A flowery meadow"
     , destinationTags = ["cave", "narnia"]
     }
 
-testForest :: Location
-testForest = Location
+testForest ::Entity 'LocationT
+testForest =Entity 'LocationT
     { locTag = "forest"
     , locName = "A dense forest"
     , destinationTags = ["cave"]
     }
 
 -- Common test characters
-testAlice :: Location -> Actor
+testAlice ::Entity 'LocationT ->Entity 'ActorT
 testAlice loc = mkActor TaggedEntity
     { tag = "alice"
     , name = "Alice the Adventurer"
     , location = loc
-    , inventory = Just Location { locTag = "alice", locName = "your pockets", destinationTags = [] }
+    , inventory = JustEntity 'LocationT { locTag = "alice", locName = "your pockets", destinationTags = [] }
     }
 
-testBob :: Location -> Actor
+testBob ::Entity 'LocationT ->Entity 'ActorT
 testBob loc = mkActor TaggedEntity
     { tag = "bob"
     , name = "Bob the Brave"
     , location = loc
-    , inventory = Just Location { locTag = "bob", locName = "your pockets", destinationTags = [] }
+    , inventory = JustEntity 'LocationT { locTag = "bob", locName = "your pockets", destinationTags = [] }
     }
 
 testBagOfHolding :: Item
@@ -48,7 +48,7 @@ testBagOfHolding = mkItem TaggedEntity
     { tag = "bag of holding"
     , name = "a bag of holding"
     , location = testMeadow
-    , inventory = Just Location { locTag = "bag of holding", locName = "inside bag", destinationTags = [] }
+    , inventory = JustEntity 'LocationT { locTag = "bag of holding", locName = "inside bag", destinationTags = [] }
     }
 
 testPearl :: Item
@@ -72,7 +72,7 @@ testBag = mkItem TaggedEntity
     { tag = "bag"
     , name = "a simple bag"
     , location = testMeadow
-    , inventory = Just Location { locTag = "bag", locName = "inside bag", destinationTags = [] }
+    , inventory = JustEntity 'LocationT { locTag = "bag", locName = "inside bag", destinationTags = [] }
     }
 
 testBauble :: Item
@@ -83,7 +83,7 @@ testBauble = mkItem TaggedEntity
     , inventory = Nothing
     }
 
-testItemsForDefaultGw :: [Item]
+testItemsForDefaultGw :: Entity 'ItemT
 testItemsForDefaultGw =
     [ testCoin, testEightBall, testBat, testBagOfHolding, testBag, testBauble, testPearl, testAnotherPearl ]
 
@@ -112,7 +112,7 @@ testBat = mkItem TaggedEntity
         }
 
 -- World builders
-makeTestWorld :: Actor -> [Actor] -> [Location] -> [Item] -> World
+makeTestWorld ::Entity 'ActorT -> Entity 'ActorT] -> Entity 'LocationT] -> Entity 'ItemT -> World
 makeTestWorld active playable locs inters = World
     { gwActiveActor = active
     , gwPlayableActors = playable
@@ -129,12 +129,12 @@ defaultGW = makeTestWorld
     testItemsForDefaultGw
 
 -- Helper functions for common test operations
-withActorAt :: World -> Location -> World
+withActorAt :: World ->Entity 'LocationT -> World
 withActorAt w newLoc = w
     { gwActiveActor = setActorLoc newLoc (gwActiveActor w) }
 
-withLocations :: World -> [Location] -> World
+withLocations :: World -> Entity 'LocationT] -> World
 withLocations w locs = w { gwLocations = locs }
 
--- withPlayableActors :: World -> [Actor] -> World
+-- withPlayableActors :: World -> Entity 'ActorT] -> World
 -- withPlayableActors world actors = world { gwPlayableActors = actors }
