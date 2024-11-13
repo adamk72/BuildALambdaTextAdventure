@@ -1,15 +1,15 @@
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DataKinds      #-}
+{-# LANGUAGE GADTs          #-}
 {-# LANGUAGE KindSignatures #-}
 module Entity.EntityConverter (convertToEntityWorld) where
 
 import           Core.State.JSONTypes (EntityJSON (..), WorldJSON (..))
-import qualified Core.State.JSONTypes as JSON (Location(..))  -- Qualified import
+import qualified Core.State.JSONTypes as JSON (Location (..))
 import           Data.Map             as Map
 import qualified Data.Set             as Set
 import           Data.Text            (Text)
 import           Entity.Entity
-import Prelude as P
+import           Prelude              as P
 
 
 type EntityConversionError = Text
@@ -24,18 +24,28 @@ convertToEntityWorld WorldJSON{..} = do
     let locEntities = P.map convertLocation jLocations
         locMap = Map.fromList [(getId loc, loc) | loc <- locEntities]
 
-    -- Convert actors, referencing the new location IDs
+    -- Convert actors, referencing the location IDs
     actorEntities <- traverse (convertActorWithLoc locMap) jPlayableActors
     let actorMap = Map.fromList [(getId act, act) | act <- actorEntities]
 
-    -- Convert items, handling container references
-    itemEntities <- traverse (convertItemWithLoc locMap actorMap) jItems
-    let itemMap = Map.fromList [(getId item, item) | item <- itemEntities]
+    -- First convert container items (those with hasInventorySlot = True)
+    let containerItems = P.filter (\item -> fromMaybe False (jHasInventorySlot item)) jItems
+        contentItems = P.filter (\item -> not $ fromMaybe False (jHasInventorySlot item)) jItems
+
+    -- Convert containers first
+    containerEntities <- traverse (convertItemWithLoc locMap actorMap Map.empty) containerItems
+    let containerMap = Map.fromList [(getId item, item) | item <- containerEntities]
+
+    -- Then convert contents, with access to the container map
+    contentEntities <- traverse (convertItemWithLoc locMap actorMap containerMap) contentItems
+
+    -- Combine all items into final map
+    let itemMap = Map.fromList $ [(getId item, item) | item <- containerEntities ++ contentEntities]
 
     let activeActorId = EntityId jStartingActorTag
     activeActor <- case Map.lookup activeActorId actorMap of
                      Just actor -> Right actor
-                     Nothing    -> Left $ "Missing staring actor for this tag: " <> jStartingActorTag
+                     Nothing    -> Left $ "Missing starting actor for this tag: " <> jStartingActorTag
 
     Right $ World locMap actorMap itemMap activeActor
 
@@ -87,14 +97,19 @@ convertActorWithLoc locMap json =
 
 convertItemWithLoc :: Map EntityId (Entity 'LocationT)
                   -> Map EntityId (Entity 'ActorT)
+                  -> Map EntityId (Entity 'ItemT)  -- Add itemMap
                   -> EntityJSON
                   -> Either EntityConversionError (Entity 'ItemT)
-convertItemWithLoc locMap actorMap json =
+convertItemWithLoc locMap actorMap itemMap json =
     case jLocTag json of
         Nothing -> Left $ "Invalid location reference from item list: " <> jTag json
         Just locTag ->
             let containerId = EntityId locTag
-            in if containerId `Map.member` locMap || containerId `Map.member` actorMap
+                -- Check if container exists in any of our entity maps
+                containerExists = containerId `Map.member` locMap ||
+                                containerId `Map.member` actorMap ||
+                                containerId `Map.member` itemMap
+            in if containerExists
                then Right $ Item
                     { itemBase = EntityBase
                         { entityId = EntityId (jTag json)
@@ -110,7 +125,7 @@ convertItemWithLoc locMap actorMap json =
                                         }
                                    else Nothing
                     }
-               else Left $ "Location tag: "  <> locTag <> " is invalid reference for to apply to item."
+               else Left $ "Location tag: "  <> locTag <> " is not a valid container in this world."
 
 fromMaybe :: a -> Maybe a -> a
 fromMaybe def Nothing = def

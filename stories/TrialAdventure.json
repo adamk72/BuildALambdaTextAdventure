@@ -35,12 +35,6 @@
         "locationTag": "cave"
       },
       {
-        "tag": "bag",
-        "name": "a simple bag",
-        "locationTag": "meadow",
-        "hasInventorySlot": true
-      },
-      {
         "tag": "bauble",
         "name": "a shiny bauble",
         "locationTag": "meadow"
