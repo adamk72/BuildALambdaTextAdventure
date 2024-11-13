@@ -43,7 +43,7 @@ getItem itemTag srcM visibleItems actor gw
 executeGet :: CommandExecutor
 executeGet expr = do
     gw <- getWorld
-    let ac = gwActiveActor gw
+    let ac = activeActor gw
         acLoc = getActiveActorLoc gw
         visibleItems = getItemsAtLocDeep acLoc gw True
         handle = \case

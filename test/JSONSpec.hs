@@ -150,9 +150,9 @@ spec = describe "World JSON Parsing" $ do
             let Right gameEnvJSON = eitherDecode validJson
             case world (unGameEnvironment gameEnvJSON) of
                 Just gw -> do
-                    let startingActorTag = getTag (gwActiveActor gw)
+                    let startingActorTag = getId (gwActiveActor gw)
                     let playableActors = gwPlayableActors gw
-                    let foundActor = any (\actor -> getTag actor == startingActorTag) playableActors
+                    let foundActor = any (\actor -> getId actor == startingActorTag) playableActors
                     foundActor `shouldBe` True
                 Nothing -> expectationFailure "Expected World to be present"
 

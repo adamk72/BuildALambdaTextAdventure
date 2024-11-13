@@ -12,8 +12,8 @@ executeInventory _ = do
   case getActorInventory gw of
     Left _ -> pure "Your inventory is empty."
     Right eId -> do
-      let invIdM = findEntityById eId
-      case findEntityByTag invIdM gw of
+      let invIdM = findEntityById eId gw
+      case invIdM of
         Just invM -> case invM of
           AnyActor inv -> pure $ "Your inventory is: " <> oxfordEntityNames (getContainerContents inv gw)
           _ -> pure "Your inventory is empty."
@@ -30,7 +30,7 @@ executeInventory _ = do
           Left _ -> "empty"
           Right eId -> do
             let invIdM = findEntityById eId
-            case findEntityByTag invIdM gw of
+            case findEntityById invIdM gw of
                 Just invM -> case invM of
                   AnyActor inv -> oxfordEntityNames (getContainerContents inv gw)
                   _ -> "empty"

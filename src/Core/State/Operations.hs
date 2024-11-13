@@ -30,14 +30,11 @@ getEntitiesAtLocation locId world =
         actorsAtLoc = Map.elems $ Map.filter (\actor -> actorLocation actor == locId) (actors world)
     in map AnyMovableItem itemsAtLoc ++ map AnyMovableActor actorsAtLoc
 
-findEntityById :: EntityId -> Text
-findEntityById = unEntityId
-
 -- | Find an entity by its tag
-findEntityByTag :: Text -> World -> Maybe AnyEntity
-findEntityByTag targetTag world =
+findEntityById :: EntityId -> World -> Maybe AnyEntity
+findEntityById targetTag world =
     let findInMap :: Tagged a => Map EntityId (Entity a) -> (Entity a -> AnyEntity) -> Maybe AnyEntity
-        findInMap m wrapper = listToMaybe [wrapper e | e <- Map.elems m, getTag e == targetTag]
+        findInMap m wrapper = listToMaybe [wrapper e | e <- Map.elems m, getId e == targetTag]
         itemMatch  = findInMap (items world) AnyItem
         actorMatch = findInMap (actors world) AnyActor
         locationMatch = findInMap (locations world) AnyLocation
@@ -62,15 +59,15 @@ moveItemToContainer item container world
         Left $ "The " <> getName container <> " is not a container."
 
 -- | Check if an item exists in a location
-itemExistsAtLoc :: Text -> EntityId -> World -> Bool -> Bool
+itemExistsAtLoc :: EntityId -> EntityId -> World -> Bool -> Bool
 itemExistsAtLoc itemTag locId world checkContainers =
     let directItems = Map.filter (\item -> itemLocation item == locId) (items world)
-        hasDirectItem = any (\item -> getTag item == itemTag) (Map.elems directItems)
+        hasDirectItem = any (\item -> getId item == itemTag) (Map.elems directItems)
         containerItems = if checkContainers
                         then concatMap (`getContainerContents` world) $
                              List.filter isContainer $ Map.elems directItems
                         else []
-        hasContainerItem = any (\item -> getTag item == itemTag) containerItems
+        hasContainerItem = any (\item -> getId item == itemTag) containerItems
     in hasDirectItem || hasContainerItem
 
 -- | Get all items in a location including those in containers
