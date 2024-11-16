@@ -7,7 +7,7 @@ import           Command.TestUtils
 import           Control.Monad.State
 import           Core.State.GameState
 import           Data.Text               (Text, isPrefixOf)
-import           Mock.GameEnvironment
+import Mock.TestWorld
 import           Repl.Interpreter
 import           Test.Hspec
 

@@ -6,7 +6,7 @@ import           Command.TestUtils
 import           Core.Message
 import           Core.State
 import           Data.Maybe
-import           Mock.GameEnvironment
+import Mock.TestWorld
 import           Parser.Types
 import           Test.Hspec
 

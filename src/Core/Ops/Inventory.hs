@@ -19,6 +19,7 @@ data InventoryError
 
 type InventoryResult = Either InventoryError World
 
+
 -- | Core inventory access
 getActiveActorInventoryID :: World -> EntityId
 getActiveActorInventoryID w = entityId (actorInventory (activeActor w))
@@ -86,6 +87,16 @@ makeActorContainer actor world =
     in (updatedActor, world { actors = Map.insert (getId actor) updatedActor (actors world) })
 
 -- | Query operations
+checkItemTagInPocket :: Text -> World -> Bool
+checkItemTagInPocket itemTag gw = do
+  let actorInventoryList = getActiveActorInventoryList gw
+  case findEntityByTag itemTag gw of
+    Just (SomeEntity someItem) -> do
+        case someItem of
+            thing@Item{} -> thing `elem` actorInventoryList
+            _ -> False
+    Nothing -> False
+
 isInInventoryOf :: (Movable a) => Entity a -> Entity b -> Bool
 isInInventoryOf movable container =
     case getInventoryId container of

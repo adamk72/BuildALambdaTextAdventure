@@ -4,12 +4,13 @@ module Command.TestUtils (module Command.TestUtils) where
 import           Command.CommandExecutor
 import           Control.Monad.State
 import           Core.State
-import           Data.Text              (Text)
+import           Data.Text              (Text, isInfixOf)
 import           Logger                 (initGameHistory)
 import           Parser.Types           (Expression)
 import           System.Directory       (getTemporaryDirectory)
 import           System.FilePath        ((</>))
 import           Test.Hspec
+import           Entity.Entity
 
 -- | Create a test GameState with temporary log files
 initTestState :: World -> IO GameState
@@ -27,8 +28,12 @@ runCommand executor expr initialWorld = do
     (result, finalState) <- runStateT (executor expr) st
     return (result, gsWorld finalState)
 
--- Common test context helpers
+-- | Common test context helpers
 verifyStartLocation :: World -> Text -> Expectation
-verifyStartLocation gw expectedLoc = do
-    let acLoc = locTag $ getActiveActorLoc gw
-    acLoc `shouldBe` expectedLoc
+verifyStartLocation world expectedLoc =
+    getLocationId (activeActor world) `shouldBe` EntityId expectedLoc
+
+-- | Helper for checking expected text in output
+outputShouldContain :: Text -> Text -> Expectation
+outputShouldContain output expected =
+    output `shouldSatisfy` (\t -> expected `Data.Text.isInfixOf` t)

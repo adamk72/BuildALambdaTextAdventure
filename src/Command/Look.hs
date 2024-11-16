@@ -53,10 +53,11 @@ executeLook expr = do
     gw <- getWorld
     case expr of
         AtomicExpression {} ->
-            msg $ YouSeeGeneral "A general view of the space and possibly some items"
+            msg $ YouSeeGeneral "A general view of the space and possibly some items."
 
-        UnaryExpression _ (NounClause "around") ->
-            msg (YouAreIn $ getActiveActorLocation gw) -- (LookAround getActorVisibleEntitiesAtLoc gw)
+        UnaryExpression _ (NounClause "around") -> do
+            let surroundings = oxfordSomeEntityNames (getActorVisibleEntitiesAtLoc gw)
+            msg2 (YouAreIn $ getActiveActorLocation gw) (LookAround surroundings)
 
         UnaryExpression _ (NounClause invClause)
             | "inventory" `isSuffixOf` invClause ->

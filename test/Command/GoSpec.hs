@@ -7,7 +7,7 @@ import           Control.Exception    (evaluate)
 import           Core.Message
 import           Core.State
 import           Data.Text            (unpack)
-import           Mock.GameEnvironment
+import           Mock.TestWorld
 import           Parser.Types
 import           Test.Hspec
 

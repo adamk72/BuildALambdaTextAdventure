@@ -127,9 +127,8 @@ test-suite TextAdventure-test
       Command.LookSpec
       Command.PutSpec
       Command.TestUtils
-      JSONSpec
       MainSpec
-      Mock.GameEnvironment
+      Mock.TestWorld
       Parser.ParserSpec
       Repl.InterpreterSpec
       Paths_TextAdventure
@@ -149,6 +148,7 @@ test-suite TextAdventure-test
     , aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
     , directory
     , filepath
     , hspec

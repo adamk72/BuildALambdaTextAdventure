@@ -82,6 +82,7 @@ tests:
     - TextAdventure
     - QuickCheck
     - aeson
+    - containers
     - directory
     - filepath
     - bytestring
