@@ -2036,3 +2036,85 @@
 
 2024-11-14 02:13:05.513157 UTC Info  Game ended normally 
 
+2024-11-17 18:08:09.385505 UTC Info  Initializing new game state 
+2024-11-17 18:08:09.386203 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:09.386246 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:09.386389 UTC Info  Player requested game exit 
+2024-11-17 18:08:09.385505 UTC Info  Initializing new game state 
+
+2024-11-17 18:08:09.386203 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-17 18:08:09.386246 UTC Debug  Starting new game loop iteration 
+
+2024-11-17 18:08:09.386389 UTC Info  Player requested game exit 
+
+2024-11-17 18:08:09.386667 UTC Info  Game ended normally 
+2024-11-17 18:08:09.385505 UTC Info  Initializing new game state 
+
+2024-11-17 18:08:09.386203 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+
+2024-11-17 18:08:09.386667 UTC Info  Game ended normally 
+
+2024-11-17 18:08:09.825389 UTC Info  Initializing new game state 
+2024-11-17 18:08:09.825548 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:09.825953 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:09.826069 UTC Error  Command error: Unknown command 
+2024-11-17 18:08:09.826123 UTC Info  Command completed 
+2024-11-17 18:08:09.826189 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:10.230394 UTC Info  Initializing new game state 
+2024-11-17 18:08:10.23056 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:10.230599 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:10.230745 UTC Info  Executing command: look 
+2024-11-17 18:08:10.230799 UTC Info  Command result: A general view of the space and possibly some items. 
+2024-11-17 18:08:10.230859 UTC Info  Command completed 
+2024-11-17 18:08:10.230919 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:10.631058 UTC Info  Initializing new game state 
+2024-11-17 18:08:10.631235 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:10.631652 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:10.631755 UTC Info  Executing command: look around 
+2024-11-17 18:08:10.631801 UTC Info  Command result: You are in a flowery meadow. You look around and see just a plain old bag, a satchel that is inky black on the inside, a shiny bauble, a large blue phone booth, and alice the adventurer. 
+2024-11-17 18:08:10.63192 UTC Info  Command completed 
+2024-11-17 18:08:10.631955 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:11.031887 UTC Info  Initializing new game state 
+2024-11-17 18:08:11.032048 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:11.032112 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:11.032211 UTC Info  Executing command: go cave 
+2024-11-17 18:08:11.437134 UTC Info  Initializing new game state 
+2024-11-17 18:08:11.437292 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:11.437715 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:11.437831 UTC Info  Executing command: go narnia 
+2024-11-17 18:08:11.851039 UTC Info  Initializing new game state 
+2024-11-17 18:08:11.851219 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:11.851603 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:11.851687 UTC Info  Executing command: inventory 
+2024-11-17 18:08:12.24709 UTC Info  Initializing new game state 
+2024-11-17 18:08:12.247246 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:12.247644 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:12.247741 UTC Info  Executing command: get bauble 
+2024-11-17 18:08:12.653027 UTC Info  Initializing new game state 
+2024-11-17 18:08:12.653184 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:12.653592 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:12.653682 UTC Info  Executing command: get bauble 
+2024-11-17 18:08:13.04693 UTC Info  Initializing new game state 
+2024-11-17 18:08:13.047086 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:13.047464 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:13.047585 UTC Info  Executing command: get unicorn 
+2024-11-17 18:08:13.458976 UTC Info  Initializing new game state 
+2024-11-17 18:08:13.459135 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:13.459545 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:13.459627 UTC Info  Executing command: drop unicorn 
+2024-11-17 18:08:13.864752 UTC Info  Initializing new game state 
+2024-11-17 18:08:13.864898 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:13.864986 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:13.865114 UTC Info  Executing command: get bauble 
+2024-11-17 18:08:14.278836 UTC Info  Initializing new game state 
+2024-11-17 18:08:14.279089 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:14.279462 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:14.279548 UTC Info  Executing command: get bauble 
+2024-11-17 18:08:14.685608 UTC Info  Initializing new game state 
+2024-11-17 18:08:14.685767 UTC Info  Game loaded successfully from: stories/TrialAdventure.json 
+2024-11-17 18:08:14.686184 UTC Debug  Starting new game loop iteration 
+2024-11-17 18:08:14.686286 UTC Info  Executing command: put bauble somewhere 
+2024-11-17 18:08:14.686346 UTC Info  Command result: Put bauble somewhere where? 
+2024-11-17 18:08:14.686401 UTC Info  Command completed 
+2024-11-17 18:08:14.686527 UTC Debug  Starting new game loop iteration 

@@ -86,7 +86,9 @@ makeActorContainer actor world =
         updatedActor = setActorInventory newInv actor
     in (updatedActor, world { actors = Map.insert (getId actor) updatedActor (actors world) })
 
--- | Query operations
+-- | LEGACY OPERATIONS
+-- | For supporting refactor process
+
 checkItemTagInPocket :: Text -> World -> Bool
 checkItemTagInPocket itemTag gw = do
   let actorInventoryList = getActiveActorInventoryList gw

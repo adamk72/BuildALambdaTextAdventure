@@ -6,7 +6,7 @@ module Command.Look (executeLook, renderMessage) where
 import           Command.CommandExecutor
 import           Core.Message
 import           Core.State
-import           Data.Text                  (Text, isSuffixOf, toLower)
+import           Data.Text                  (Text, isSuffixOf)
 import           Parser.Types
 import           Parser.Utils
 import           Utils
@@ -19,7 +19,7 @@ lookInContainer containerTag gw = undefined
     --     Just container ->
     --         if isContainer container
     --         then do
-    --             let items = getinventory container gw
+    --             let items = getInventory container gw
     --             msg $ LookIn containerTag (oxfordEntityNames items)
     --         else msg $ NotAContainer containerTag
 

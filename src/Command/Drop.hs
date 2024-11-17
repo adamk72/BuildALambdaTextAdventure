@@ -6,7 +6,6 @@ import           Core.State
 import           Data.Text
 import           Parser.Types
 
-import           Utils
 
 dropObject :: Text -> Maybe Text -> Text -> World -> GameStateText
 dropObject object dstM actorLoc gw = undefined

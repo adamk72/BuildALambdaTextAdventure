@@ -53,7 +53,7 @@ data World = World
     , actors      :: Map EntityId (Entity 'ActorT)
     , items       :: Map EntityId (Entity 'ItemT)
     , activeActor :: Entity 'ActorT
-    }
+    } deriving (Show, Eq)
 
 -- Instead of trying to return a polymorphic Entity a, we'll use a GADT to wrap the different types
 data SomeEntity where
