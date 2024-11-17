@@ -56,8 +56,8 @@ executeLook expr = do
             msg $ YouSeeGeneral "A general view of the space and possibly some items."
 
         UnaryExpression _ (NounClause "around") -> do
-            let surroundings = oxfordSomeEntityNames (getActorVisibleEntitiesAtLoc gw)
-            msg2 (YouAreIn $ getActiveActorLocation gw) (LookAround surroundings)
+            let surroundings = getActorVisibleEntitiesAtLoc gw
+            msg2 (YouAreIn $ getActiveActorLocation gw ) (LookAround (oxfordComma surroundings))
 
         UnaryExpression _ (NounClause invClause)
             | "inventory" `isSuffixOf` invClause ->

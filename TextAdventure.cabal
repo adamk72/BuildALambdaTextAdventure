@@ -48,7 +48,6 @@ library
       Core.Message.Look
       Core.Message.Utils
       Core.Operations
-      Core.Ops.EntityInfo
       Core.Ops.Inventory
       Core.Ops.Location
       Core.State

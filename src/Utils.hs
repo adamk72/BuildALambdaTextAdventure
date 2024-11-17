@@ -5,12 +5,7 @@ module Utils (module Utils) where
 
 import           Data.Text     (Text, intercalate, toLower)
 import qualified Data.Text     as T
-import           Entity.Entity (getEntityName, SomeEntity(..), Entity(..))
-
-oxfordSomeEntityNames :: [SomeEntity] -> Text
-oxfordSomeEntityNames ses = do
-    let names = map (\(SomeEntity e) -> toLower (getEntityName e)) ses
-    oxfordComma names
+import           Entity.Entity (getEntityName, Entity(..))
 
 oxfordEntityNames :: [Entity a] -> Text
 oxfordEntityNames = oxfordComma . map (toLower . getEntityName)

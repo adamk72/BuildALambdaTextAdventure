@@ -3,10 +3,8 @@
 module Core.Operations
     ( module Core.Ops.Inventory
     , module Core.Ops.Location
-    , module Core.Ops.EntityInfo
     ) where
 
-import           Core.Ops.EntityInfo
 import           Core.Ops.Inventory
 import           Core.Ops.Location
 

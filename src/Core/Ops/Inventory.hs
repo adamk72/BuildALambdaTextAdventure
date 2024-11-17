@@ -2,7 +2,6 @@
 module Core.Ops.Inventory (module Core.Ops.Inventory) where
 
 import Entity.Entity
-import Core.Ops.EntityInfo
 import Data.Text (Text)
 import Data.Map as Map
 import Data.Maybe (isJust)
@@ -19,7 +18,6 @@ data InventoryError
 
 type InventoryResult = Either InventoryError World
 
-
 -- | Core inventory access
 getActiveActorInventoryID :: World -> EntityId
 getActiveActorInventoryID w = entityId (actorInventory (activeActor w))
@@ -33,13 +31,6 @@ getInventory entity = case entity of
 hasInventory :: Entity a -> Bool
 hasInventory = isJust . getInventory
 
--- | Helper to check if a SomeEntity has inventory
-hasSomeInventory :: SomeEntity -> Bool
-hasSomeInventory (SomeEntity e) = hasInventory e
-
--- | Helper to get inventory from a SomeEntity
-getSomeInventory :: SomeEntity -> Maybe (EntityBase 'LocationT)
-getSomeInventory (SomeEntity e) = getInventory e
 
 getInventoryId :: Entity a -> Maybe EntityId
 getInventoryId entity = entityId <$> getInventory entity
@@ -89,15 +80,6 @@ makeActorContainer actor world =
 -- | LEGACY OPERATIONS
 -- | For supporting refactor process
 
-checkItemTagInPocket :: Text -> World -> Bool
-checkItemTagInPocket itemTag gw = do
-  let actorInventoryList = getActiveActorInventoryList gw
-  case findEntityByTag itemTag gw of
-    Just (SomeEntity someItem) -> do
-        case someItem of
-            thing@Item{} -> thing `elem` actorInventoryList
-            _ -> False
-    Nothing -> False
 
 isInInventoryOf :: (Movable a) => Entity a -> Entity b -> Bool
 isInInventoryOf movable container =
@@ -116,28 +98,8 @@ getEntityInventoryList entity world =
             Prelude.filter (\item -> getLocationId item == invId) $
             Map.elems $ items world
 
--- | Visibility checking
-isItemVisible :: Entity 'ItemT -> Entity 'LocationT -> World -> Bool
-isItemVisible item loc world =
-    let locId = getId loc
-        directlyVisible = getLocationId item == locId
-        visibleInContainers = Prelude.any visibleInContainer (getContainersAtLoc locId world)
-    in directlyVisible || visibleInContainers
-    where
-        visibleInContainer :: SomeEntity -> Bool
-        visibleInContainer (SomeEntity container) = isInInventoryOf item container
-
-getContainersAtLoc :: EntityId -> World -> [SomeEntity]
-getContainersAtLoc locId world =
-    let itemContainers = Prelude.map SomeEntity $
-            Prelude.filter hasInventory $
-            Map.elems $ Map.filter (\i -> getLocationId i == locId) (items world)
-        actorContainers = Prelude.map SomeEntity $
-            Map.elems $ Map.filter (\a -> getLocationId a == locId) (actors world)
-    in itemContainers ++ actorContainers
-
 -- | Movement operations
-moveItemToContainer :: Tagged a => Entity 'ItemT -> Entity a -> Entity 'LocationT -> World -> InventoryResult
+moveItemToContainer :: HasEntityBase a => Entity 'ItemT -> Entity a -> Entity 'LocationT -> World -> InventoryResult
 moveItemToContainer item target currentLoc world =
     case getInventory target of
         Nothing ->
@@ -148,28 +110,4 @@ moveItemToContainer item target currentLoc world =
 
             if getLocationId item == containerId
                 then Left $ SameContainer itemName
-                else if isItemVisible item currentLoc world
-                    then Right $ updateLocation containerId item world
-                    else Left $ ItemNotVisible itemName (getName currentLoc)
-
--- Todo: Clean this up later; this is a work around for a problem with Tagged.
-tryMoveItem :: Text -> Text -> World -> InventoryResult
-tryMoveItem itemTag containerTag world =
-    case (findEntityByTag itemTag world, findEntityByTag containerTag world) of
-        (Just (SomeEntity item@Item{}), Just (SomeEntity container)) ->
-            case container of
-                Location {} ->
-                    case Map.lookup (getLocationId item) (locations world) of
-                        Just loc -> moveItemToContainer item container loc world
-                        Nothing -> error "Invalid item location"
-                Actor {} ->
-                    case Map.lookup (getLocationId item) (locations world) of
-                        Just loc -> moveItemToContainer item container loc world
-                        Nothing -> error "Invalid item location"
-                Item {} ->
-                    case Map.lookup (getLocationId item) (locations world) of
-                        Just loc -> moveItemToContainer item container loc world
-                        Nothing -> error "Invalid item location"
-        (Nothing, _) -> Left $ InvalidItemTag itemTag
-        (_, Nothing) -> Left $ InvalidContainer containerTag
-        _ -> Left $ InvalidItemTag itemTag
+                else Right $ updateLocation containerId item world -- Todo: Check for visibility later
