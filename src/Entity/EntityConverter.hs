@@ -86,7 +86,7 @@ convertActorWithLoc locMap json =
                         , entityTags = jTags json
                         , entityName = jName json
                         }
-                    , actorLocation = locId
+                    , actorLocationId = locId
                     , actorInventory =  EntityBase
                         { entityId = EntityId (jTag json)
                         , entityTags = Nothing
@@ -116,7 +116,7 @@ convertItemWithLoc locMap actorMap itemMap json =
                         , entityTags = jTags json
                         , entityName = jName json
                         }
-                    , itemLocation = containerId
+                    , itemLocationId = containerId
                     , itemInventory = if fromMaybe False (jHasInventorySlot json)
                                    then Just EntityBase
                                         { entityId = EntityId (jTag json)

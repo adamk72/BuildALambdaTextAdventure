@@ -7,6 +7,7 @@ import qualified Data.Map as Map
 import Data.Text
 import Prelude as P
 import Utils
+import Data.Maybe
 
 
 -- | Update an entity's location
@@ -20,40 +21,44 @@ updateLocation newLocId entity world =
 getActorVisibleEntitiesAtLoc :: World -> [Text]
 getActorVisibleEntitiesAtLoc w =
     let acLocId = getLocationId (activeActor w)
-        EntitiesAtLocation{locationItems = items, locationActors = actors} = getEntitiesAtLocation acLocId w
+        MovablesAtLocation{locationItems = items, locationActors = actors} = getMovablesAtLocationId acLocId w
     in P.map getName items ++ P.map getName actors
 
-data EntitiesAtLocation = EntitiesAtLocation
+data MovablesAtLocation = MovablesAtLocation
     { locationItems :: [Entity 'ItemT]
     , locationActors :: [Entity 'ActorT]
     }
 
-getEntitiesAtLocation :: EntityId -> World -> EntitiesAtLocation
-getEntitiesAtLocation locId world = EntitiesAtLocation
+getMovablesAtLocationId :: EntityId -> World -> MovablesAtLocation
+getMovablesAtLocationId locId world = MovablesAtLocation
     { locationItems = Map.elems $ Map.filter (\item -> getLocationId item == locId) (items world)
     , locationActors = Map.elems $ Map.filter (\actor -> getLocationId actor == locId) (actors world)
     }
 
-getActiveActorLocation :: World -> Text
+getActiveActorLocation :: World -> Entity 'LocationT
 getActiveActorLocation w =
     let actorLocId = getLocationId (activeActor w)
-    in case findLocationById actorLocId w of
-        Just loc -> getName loc
-        Nothing -> "Location " <> unEntityId actorLocId <> " not found"
+    in fromJust (findLocationById actorLocId w)
+
+getActiveActorLocationName :: World -> Text
+getActiveActorLocationName w = getName (getActiveActorLocation w)
+
+getActiveActorLocationId :: World -> EntityId
+getActiveActorLocationId w = getEntityId (getActiveActorLocation w)
 
 getActorsAtLocation :: EntityId -> World -> [Entity 'ActorT]
-getActorsAtLocation locId world = locationActors $ getEntitiesAtLocation locId world
+getActorsAtLocation locId world = locationActors $ getMovablesAtLocationId locId world
 
 -- If you need to format actor names at a location
 getActorNamesAtLocation :: EntityId -> World -> [Text]
 getActorNamesAtLocation locId world =
-    P.map getName $ locationActors $ getEntitiesAtLocation locId world
+    P.map getName $ locationActors $ getMovablesAtLocationId locId world
 
 -- If you need both items and actors but want to process them separately
 processLocationContents :: EntityId -> World -> Text
 processLocationContents locId world =
-    let EntitiesAtLocation{locationItems = items, locationActors = actors} =
-            getEntitiesAtLocation locId world
+    let MovablesAtLocation{locationItems = items, locationActors = actors} =
+            getMovablesAtLocationId locId world
     in "You see " <> formatActors actors <> " and " <> formatItems items
   where
     formatActors [] = "no one here"

@@ -28,13 +28,13 @@ data Entity (a :: EntityType) where
 
     Actor ::
         { actorBase      :: EntityBase 'ActorT
-        , actorLocation  :: EntityId
+        , actorLocationId  :: EntityId
         , actorInventory :: EntityBase 'LocationT
         } -> Entity 'ActorT
 
     Item ::
         { itemBase      :: EntityBase 'ItemT
-        , itemLocation  :: EntityId
+        , itemLocationId  :: EntityId
         , itemInventory :: Maybe (EntityBase 'LocationT)
         } -> Entity 'ItemT
 
@@ -92,14 +92,6 @@ findActorById targetId = Map.lookup targetId . actors
 findItemById :: EntityId -> World -> Maybe (Entity 'ItemT)
 findItemById targetId = Map.lookup targetId . items
 
-findEntityById :: EntityId -> World -> Either Text (Either (Entity 'LocationT) (Either (Entity 'ActorT) (Entity 'ItemT)))
-findEntityById targetId world =
-    case (findLocationById targetId world, findActorById targetId world, findItemById targetId world) of
-        (Just loc, _, _)   -> Right (Left loc)
-        (_, Just actor, _) -> Right (Right (Left actor))
-        (_, _, Just item)  -> Right (Right (Right item))
-        _                  -> Left $ "Entity not found: " <> unEntityId targetId
-
 isContainer :: Entity a -> Bool
 isContainer (Location {})       = True
 isContainer (Actor {})          = True
@@ -111,3 +103,57 @@ getEntityName entity = case entity of
     Location base _ -> entityName base
     Actor base _ _  -> entityName base
     Item base _ _   -> entityName base
+
+getEntityId :: Entity a -> EntityId
+getEntityId entity = case entity of
+    Location base _ -> entityId base
+    Actor base _ _  -> entityId base
+    Item base _ _   -> entityId base
+
+-- | EntityResult
+{- Example usage:
+case findEntityById targetId world of
+    Nothing -> handleNotFound targetId
+    Just (LocResult loc) -> handleLocation loc
+    Just (ActorResult actor) -> handleActor actor
+    Just (ItemResult item) -> handleItem item
+-}
+data EntityResult =
+    LocResult (Entity 'LocationT) |
+    ActorResult (Entity 'ActorT) |
+    ItemResult (Entity 'ItemT)
+
+findEntityById :: EntityId -> World -> Maybe EntityResult
+findEntityById targetId world =
+    case Map.lookup targetId (locations world) of
+        Just loc -> Just (LocResult loc)
+        Nothing -> case Map.lookup targetId (actors world) of
+            Just actor -> Just (ActorResult actor)
+            Nothing -> case Map.lookup targetId (items world) of
+                Just item -> Just (ItemResult item)
+                Nothing -> Nothing
+
+-- Helper functions if needed
+isLocation :: Maybe EntityResult -> Bool
+isLocation (Just (LocResult _)) = True
+isLocation _ = False
+
+isActor :: Maybe EntityResult -> Bool
+isActor (Just (ActorResult _)) = True
+isActor _ = False
+
+isItem :: Maybe EntityResult -> Bool
+isItem (Just (ItemResult _)) = True
+isItem _ = False
+
+getLocation :: Maybe EntityResult -> Maybe (Entity 'LocationT)
+getLocation (Just (LocResult loc)) = Just loc
+getLocation _ = Nothing
+
+getActor :: Maybe EntityResult -> Maybe (Entity 'ActorT)
+getActor (Just (ActorResult actor)) = Just actor
+getActor _ = Nothing
+
+getItem :: Maybe EntityResult -> Maybe (Entity 'ItemT)
+getItem (Just (ItemResult item)) = Just item
+getItem _ = Nothing

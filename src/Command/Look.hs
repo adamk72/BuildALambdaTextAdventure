@@ -10,6 +10,8 @@ import           Data.Text                  (Text, isSuffixOf)
 import           Parser.Types
 import           Parser.Utils
 import           Utils
+import Entity.Entity
+import Data.Maybe
 
 -- | Look inside a container
 lookInContainer :: Text -> World -> GameStateText
@@ -24,8 +26,17 @@ lookInContainer containerTag gw = undefined
     --         else msg $ NotAContainer containerTag
 
 -- | Look at a specific item or entity
-lookAt :: Text -> Text -> World -> GameStateText
-lookAt eTag loc gw = undefined
+lookAt :: Text -> World -> GameStateText
+lookAt eTag gw = do
+    let locId  =  getActiveActorLocationId gw
+    -- Todo: look only specific items in location
+    case findEntityById (EntityId eTag) gw of
+        Nothing -> return $ "Don't see a " <> eTag <> " to look at."
+        Just (LocResult loc) -> return $ "You're looking at " <> getName loc
+        Just (ActorResult actor) -> return $ "You're looking at " <> getName actor
+        Just (ItemResult item) -> return $ "You're looking at " <> getName item
+
+
     -- do
     -- case findEntityByTagAtLoc eTag loc gw of
     --     Just entity -> return $ "You see " <> getName entity <> "."
@@ -57,19 +68,21 @@ executeLook expr = do
 
         UnaryExpression _ (NounClause "around") -> do
             let surroundings = getActorVisibleEntitiesAtLoc gw
-            msg2 (YouAreIn $ getActiveActorLocation gw ) (LookAround (oxfordComma surroundings))
+            msg2 (YouAreIn $ getActiveActorLocationName gw ) (LookAround (oxfordComma surroundings))
 
         UnaryExpression _ (NounClause invClause)
             | "inventory" `isSuffixOf` invClause ->
                 return $ lookInActorInventory gw
             | otherwise ->
-                lookAt invClause "TBD" gw
+                lookAt invClause gw
 
         BinaryExpression _ (PrepClause prep) (NounClause target)
-            | prep `isPrepVariantOf` "at" || prep `isPrepVariantOf` "toward" ->
-                lookAt target "TBD" gw
+            | prep `isPrepVariantOf` "in" && target == "inventory" ->
+                return $ lookInActorInventory gw
             | prep `isPrepVariantOf` "in" ->
                 lookInContainer target gw
+            | prep `isPrepVariantOf` "at" || prep `isPrepVariantOf` "toward" ->
+                lookAt target gw
             | otherwise ->
                 return "TBD"
 

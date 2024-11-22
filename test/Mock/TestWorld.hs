@@ -43,7 +43,7 @@ testAlice = Actor
         , entityTags = Nothing
         , entityName = "Alice the Adventurer"
         }
-    , actorLocation = EntityId "meadow"
+    , actorLocationId = EntityId "meadow"
     , actorInventory = EntityBase
         { entityId = EntityId "alice-inventory"
         , entityTags = Nothing
@@ -58,7 +58,7 @@ testBob = Actor
         , entityTags = Nothing
         , entityName = "Bob the Brave"
         }
-    , actorLocation = EntityId "meadow"
+    , actorLocationId = EntityId "meadow"
     , actorInventory = EntityBase
         { entityId = EntityId "bob-inventory"
         , entityTags = Nothing
@@ -74,7 +74,7 @@ testBagOfHolding = Item
         , entityTags = Nothing
         , entityName = "a bag of holding"
         }
-    , itemLocation = EntityId "meadow"
+    , itemLocationId = EntityId "meadow"
     , itemInventory = Just EntityBase
         { entityId = EntityId "bag-of-holding-inventory"
         , entityTags = Nothing
@@ -89,7 +89,7 @@ testPearl = Item
         , entityTags = Nothing
         , entityName = "a pearl of unique luster"
         }
-    , itemLocation = EntityId "bag-of-holding-inventory"
+    , itemLocationId = EntityId "bag-of-holding-inventory"
     , itemInventory = Nothing
     }
 
@@ -100,7 +100,7 @@ testAnotherPearl = Item
         , entityTags = Nothing
         , entityName = "another pearl of unique luster"
         }
-    , itemLocation = EntityId "bag-of-holding-inventory"
+    , itemLocationId = EntityId "bag-of-holding-inventory"
     , itemInventory = Nothing
     }
 
@@ -111,7 +111,7 @@ testBag = Item
         , entityTags = Nothing
         , entityName = "a simple bag"
         }
-    , itemLocation = EntityId "meadow"
+    , itemLocationId = EntityId "meadow"
     , itemInventory = Just EntityBase
         { entityId = EntityId "bag-inventory"
         , entityTags = Nothing
@@ -126,7 +126,7 @@ testBauble = Item
         , entityTags = Nothing
         , entityName = "a shiny bauble"
         }
-    , itemLocation = EntityId "meadow"
+    , itemLocationId = EntityId "meadow"
     , itemInventory = Nothing
     }
 
@@ -137,7 +137,7 @@ testCoin = Item
         , entityTags = Nothing
         , entityName = "a silver coin"
         }
-    , itemLocation = EntityId "meadow"
+    , itemLocationId = EntityId "meadow"
     , itemInventory = Nothing
     }
 
@@ -148,7 +148,7 @@ testEightBall = Item
         , entityTags = Nothing
         , entityName = "a magic eight ball"
         }
-    , itemLocation = EntityId "forest"
+    , itemLocationId = EntityId "forest"
     , itemInventory = Nothing
     }
 
@@ -159,7 +159,7 @@ testBat = Item
         , entityTags = Nothing
         , entityName = "a cute bat"
         }
-    , itemLocation = EntityId "cave"
+    , itemLocationId = EntityId "cave"
     , itemInventory = Nothing
     }
 
