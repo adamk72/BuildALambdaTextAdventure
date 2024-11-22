@@ -1,5 +1,7 @@
 tmp
-tmptmp
+game.log
+
+# Main Haskell ignore
 .DS_Store
 .stack-work/
 *~dist
