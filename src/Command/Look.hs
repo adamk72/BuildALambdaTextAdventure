@@ -15,15 +15,16 @@ import Data.Maybe
 
 -- | Look inside a container
 lookInContainer :: Text -> World -> GameStateText
-lookInContainer containerTag gw = undefined
-    -- case findEntityById containerTag gw of
-    --     Nothing -> msg $ ItemDoesNotExist containerTag
-    --     Just container ->
-    --         if isContainer container
-    --         then do
-    --             let items = getInventory container gw
-    --             msg $ LookIn containerTag (oxfordEntityNames items)
-    --         else msg $ NotAContainer containerTag
+lookInContainer containerTag gw = do
+    case findItemIdAtActorLoc (EntityId containerTag) gw of
+        Nothing -> return $ "Don't see a " <> containerTag <> " to look into." -- Todo: make this smarter for looking "in" a location.
+        Just itemId -> case findItemById itemId gw of
+            Nothing -> return $ "Don't see a " <> containerTag <> " to look into."
+            Just item -> if isContainer item
+                            then do
+                                let items = getEntityInventoryList item gw
+                                msg $ LookIn containerTag (oxfordEntityNames  items)
+                            else msg $ NotAContainer containerTag
 
 -- | Look at a specific item or entity
 lookAt :: Text -> World -> GameStateText

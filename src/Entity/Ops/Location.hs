@@ -21,6 +21,12 @@ updateLocation newLocId entity world =
         Item  {} -> world { items  = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (items world) }
         Location {} -> world -- No update, return world unchanged for Location
 
+findItemIdAtActorLoc :: ItemId -> World -> Maybe ItemId
+findItemIdAtActorLoc iId w =
+    let acLocId = getLocationId (activeActor w)
+        itemIds = P.map getId $ Map.elems $ Map.filter (\loc -> getLocationId loc == acLocId) (items w)
+    in List.find (== iId) itemIds
+
 findEntityIdAtActorLoc :: EntityId -> World -> Maybe EntityId
 findEntityIdAtActorLoc eId w =
     let movableIds = getMovableIdsAtActorLoc w

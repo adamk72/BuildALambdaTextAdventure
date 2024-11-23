@@ -31,21 +31,20 @@ getInventory entity = case entity of
 hasInventory :: Entity a -> Bool
 hasInventory = isJust . getInventory
 
-
 getInventoryId :: Entity a -> Maybe InventoryId
 getInventoryId entity = entityId <$> getInventory entity
 
 -- | Inventory creation
-createActorInventory :: LocationId -> Text -> EntityBase 'LocationT
+createActorInventory :: EntityId -> Text -> EntityBase 'LocationT
 createActorInventory ownerId name = EntityBase
     { entityId = EntityId (unEntityId ownerId <> "-inventory")
     , entityTags = Nothing
     , entityName = name <> "'s inventory"
     }
 
-createItemInventory :: LocationId -> Text -> EntityBase 'LocationT
+createItemInventory :: EntityId -> Text -> EntityBase 'LocationT
 createItemInventory containerId name = EntityBase
-    { entityId = EntityId (unEntityId containerId <> "-contents")
+    { entityId = EntityId (unEntityId containerId <> "-inventory")
     , entityTags = Nothing
     , entityName = "inside " <> name
     }

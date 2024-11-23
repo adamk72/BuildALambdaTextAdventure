@@ -35,6 +35,12 @@
         "locationTag": "cave"
       },
       {
+        "tag": "box",
+        "name": "an old box",
+        "locationTag": "cave",
+        "hasInventorySlot": true
+      },
+      {
         "tag": "bauble",
         "name": "a shiny bauble",
         "locationTag": "meadow"
@@ -42,7 +48,8 @@
       {
         "tag": "tardis",
         "name": "A large blue phone booth",
-        "locationTag": "meadow"
+        "locationTag": "meadow",
+        "hasInventorySlot": true
       },
       {
         "tag": "magic globe",
