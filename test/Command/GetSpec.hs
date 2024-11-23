@@ -3,7 +3,7 @@ module Command.GetSpec (spec) where
 
 import           Command.Commands
 import           Command.TestUtils
-import           Core.Message
+import           Command.Message
 import           Core.State
 import           Data.Maybe
 import Mock.TestWorld

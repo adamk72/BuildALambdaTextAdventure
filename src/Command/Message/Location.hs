@@ -1,6 +1,6 @@
-module Core.Message.Location (LocationMessage (..)) where
+module Command.Message.Location (LocationMessage (..)) where
 
-import           Core.Message.Common (MessageRenderer (..))
+import           Command.Message.Common (MessageRenderer (..))
 import           Data.Text           (Text, toLower)
 
 data LocationMessage

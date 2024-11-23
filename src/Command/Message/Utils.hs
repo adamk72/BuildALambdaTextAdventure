@@ -1,6 +1,6 @@
-module Core.Message.Utils (msg, msg2, msgGameWordError, msgs) where
+module Command.Message.Utils (msg, msg2, msgGameWordError, msgs) where
 
-import           Core.Message.Common  (MessageRenderer (..))
+import           Command.Message.Common  (MessageRenderer (..))
 import           Core.State.GameState
 import           Data.Text            (Text, intercalate, unpack)
 

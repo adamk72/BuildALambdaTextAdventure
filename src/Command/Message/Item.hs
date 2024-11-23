@@ -1,6 +1,6 @@
-module Core.Message.Item (ItemMessage (..)) where
+module Command.Message.Item (ItemMessage (..)) where
 
-import           Core.Message.Common (MessageRenderer (..))
+import           Command.Message.Common (MessageRenderer (..))
 import           Data.Text           (Text)
 
 data ItemMessage

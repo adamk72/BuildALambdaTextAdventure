@@ -1,6 +1,6 @@
-module Core.Message.Look (LookMessage (..)) where
+module Command.Message.Look (LookMessage (..)) where
 
-import           Core.Message.Common (MessageRenderer (..))
+import           Command.Message.Common (MessageRenderer (..))
 import           Data.Text           (Text)
 import qualified Data.Text           as T
 

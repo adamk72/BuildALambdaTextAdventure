@@ -1,6 +1,6 @@
-module Core.Message.Container (ContainerMessage (..)) where
+module Command.Message.Container (ContainerMessage (..)) where
 
-import           Core.Message.Common (MessageRenderer (..))
+import           Command.Message.Common (MessageRenderer (..))
 import           Data.Text           (Text)
 
 data ContainerMessage

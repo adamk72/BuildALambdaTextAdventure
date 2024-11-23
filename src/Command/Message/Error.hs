@@ -1,6 +1,6 @@
-module Core.Message.Error (ErrorMessage (..)) where
+module Command.Message.Error (ErrorMessage (..)) where
 
-import           Core.Message.Common (MessageRenderer (..))
+import           Command.Message.Common (MessageRenderer (..))
 import           Data.Text           (Text)
 
 data ErrorMessage

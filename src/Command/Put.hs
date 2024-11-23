@@ -2,7 +2,7 @@ module Command.Put (module Command.Put) where
 
 import           Command.CommandExecutor
 import           Core.GameMonad
-import           Core.Message
+import           Command.Message
 import           Core.State
 import           Data.Text               (Text)
 import           Parser.Types
@@ -20,7 +20,7 @@ putItemInContainer itemTag containerTag gw = undefined
     --                             modifyWorld (const newGW)
     --                             msg $ PutItemIn itemTag containerTag
     --                         Left err -> return err
-    --                 else msg $ Core.Message.NotAContainer containerTag
+    --                 else msg $ Command.Message.NotAContainer containerTag
     --         | itemTagExistsAtActorLoc itemTag gw ->
     --             msg $ NoContainerForItem itemTag containerTag
     --         | itemTagExistsAtActorLoc containerTag gw ->

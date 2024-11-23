@@ -4,7 +4,7 @@ module Command.GoSpec (spec) where
 import           Command.Commands
 import           Command.TestUtils
 import           Control.Exception    (evaluate)
-import           Core.Message
+import           Command.Message
 import           Core.State
 import           Data.Text            (unpack)
 import           Mock.TestWorld

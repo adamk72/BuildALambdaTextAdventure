@@ -11,7 +11,7 @@ import           Test.Hspec
 import           Entity.Entity
 import           Data.Text            (Text, isInfixOf)
 import qualified Data.Map            as Map
-import           Core.Message
+import           Command.Message
 
 spec :: Spec
 spec = do

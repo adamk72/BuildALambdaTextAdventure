@@ -1,6 +1,6 @@
-module Core.Message.Inventory (InventoryMessage (..)) where
+module Command.Message.Inventory (InventoryMessage (..)) where
 
-import           Core.Message.Common (MessageRenderer (..))
+import           Command.Message.Common (MessageRenderer (..))
 import           Data.Text           (Text)
 
 data InventoryMessage

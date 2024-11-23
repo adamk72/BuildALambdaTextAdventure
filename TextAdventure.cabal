@@ -33,20 +33,20 @@ library
       Command.Get
       Command.Go
       Command.Look
+      Command.Message
+      Command.Message.Command
+      Command.Message.Common
+      Command.Message.Container
+      Command.Message.Error
+      Command.Message.Inventory
+      Command.Message.Item
+      Command.Message.Location
+      Command.Message.Look
+      Command.Message.Utils
       Command.Put
       Core.Config
       Core.GameMonad
       Core.Launch
-      Core.Message
-      Core.Message.Command
-      Core.Message.Common
-      Core.Message.Container
-      Core.Message.Error
-      Core.Message.Inventory
-      Core.Message.Item
-      Core.Message.Location
-      Core.Message.Look
-      Core.Message.Utils
       Core.Operations
       Core.State
       Core.State.GameState

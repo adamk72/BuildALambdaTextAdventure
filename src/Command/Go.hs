@@ -2,7 +2,7 @@ module Command.Go (module Command.Go) where
 
 import           Command.CommandExecutor
 import           Core.GameMonad
-import           Core.Message
+import           Command.Message
 import           Core.State.GameState
 import           Entity.Entity
 import           Data.Text               (Text)

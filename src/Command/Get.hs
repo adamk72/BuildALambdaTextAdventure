@@ -2,7 +2,7 @@ module Command.Get (module Command.Get) where
 
 import           Command.CommandExecutor
 import           Core.GameMonad
-import           Core.Message
+import           Command.Message
 import           Core.State
 import           Data.Text               (Text)
 import           Parser.Types

@@ -1,7 +1,7 @@
 module Command.Drop (module Command.Drop) where
 import           Command.CommandExecutor
 import           Core.GameMonad
-import           Core.Message
+import           Command.Message
 import           Core.State
 import           Data.Text
 import           Parser.Types

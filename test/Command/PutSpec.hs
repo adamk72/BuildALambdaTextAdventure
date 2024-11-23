@@ -3,7 +3,7 @@ module Command.PutSpec (spec) where
 
 import           Command.Commands
 import           Command.TestUtils
-import           Core.Message
+import           Command.Message
 import           Core.State
 import Mock.TestWorld
 import           Parser.Types

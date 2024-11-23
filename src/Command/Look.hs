@@ -4,7 +4,7 @@
 module Command.Look (executeLook, renderMessage) where
 
 import           Command.CommandExecutor
-import           Core.Message
+import           Command.Message
 import           Core.State
 import           Data.Text                  (Text, isSuffixOf)
 import           Parser.Types

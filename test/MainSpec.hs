@@ -1,7 +1,7 @@
 module MainSpec (spec) where
 
 import           Control.Exception.Base (finally)
-import           Core.Message
+import           Command.Message
 import           Data.Text
 import           Prelude                hiding (sin)
 import           System.Exit

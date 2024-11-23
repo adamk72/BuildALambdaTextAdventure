@@ -1,4 +1,4 @@
-module Core.Message.Common (CommonMessage (..), MessageRenderer (..)) where
+module Command.Message.Common (CommonMessage (..), MessageRenderer (..)) where
 
 import           Data.Text (Text)
 
