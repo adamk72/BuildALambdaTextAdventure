@@ -71,9 +71,7 @@ convertLocation loc =
         , destinations = P.map EntityId (JSON.destinationTags loc)  -- Use qualified access
         }
 
-convertActorWithLoc :: Map EntityId (Entity 'LocationT)
-                   -> EntityJSON
-                   -> Either EntityConversionError (Entity 'ActorT)
+convertActorWithLoc :: Map LocationId (Entity 'LocationT) -> EntityJSON -> Either EntityConversionError (Entity 'ActorT)
 convertActorWithLoc locMap json =
     case jLocTag json of
         Nothing -> Left $ "Invalid location reference from character list: " <> jTag json
@@ -95,9 +93,9 @@ convertActorWithLoc locMap json =
                     }
                else Left $ "Location tag: "  <> locTag <> " is invalid reference for a character."
 
-convertItemWithLoc :: Map EntityId (Entity 'LocationT)
-                  -> Map EntityId (Entity 'ActorT)
-                  -> Map EntityId (Entity 'ItemT)  -- Add itemMap
+convertItemWithLoc :: Map LocationId (Entity 'LocationT)
+                  -> Map ActorId (Entity 'ActorT)
+                  -> Map ItemId (Entity 'ItemT)  -- Add itemMap
                   -> EntityJSON
                   -> Either EntityConversionError (Entity 'ItemT)
 convertItemWithLoc locMap actorMap itemMap json =

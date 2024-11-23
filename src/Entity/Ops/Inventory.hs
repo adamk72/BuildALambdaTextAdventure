@@ -19,7 +19,7 @@ data InventoryError
 type InventoryResult = Either InventoryError World
 
 -- | Core inventory access
-getActiveActorInventoryID :: World -> EntityId
+getActiveActorInventoryID :: World -> InventoryId
 getActiveActorInventoryID w = entityId (actorInventory (activeActor w))
 
 getInventory :: Entity a -> Maybe (EntityBase 'LocationT)
@@ -32,7 +32,7 @@ hasInventory :: Entity a -> Bool
 hasInventory = isJust . getInventory
 
 
-getInventoryId :: Entity a -> Maybe EntityId
+getInventoryId :: Entity a -> Maybe InventoryId
 getInventoryId entity = entityId <$> getInventory entity
 
 -- | Inventory creation

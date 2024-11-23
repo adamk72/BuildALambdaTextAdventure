@@ -13,6 +13,11 @@ data EntityType = LocationT | ActorT | ItemT
 newtype EntityId = EntityId { unEntityId :: Text }
     deriving (Show, Eq, Ord)
 
+type LocationId = EntityId
+type ActorId = EntityId
+type ItemId = EntityId
+type InventoryId = EntityId
+
 data EntityBase (a :: EntityType) = EntityBase
     { entityId   :: EntityId
     , entityTags :: Maybe [Text]
@@ -23,18 +28,18 @@ data EntityBase (a :: EntityType) = EntityBase
 data Entity (a :: EntityType) where
     Location ::
         { locationBase   :: EntityBase 'LocationT
-        , destinations   :: [EntityId]
+        , destinations   :: [LocationId]
         } -> Entity 'LocationT
 
     Actor ::
         { actorBase      :: EntityBase 'ActorT
-        , actorLocationId  :: EntityId
+        , actorLocationId  :: LocationId
         , actorInventory :: EntityBase 'LocationT
         } -> Entity 'ActorT
 
     Item ::
         { itemBase      :: EntityBase 'ItemT
-        , itemLocationId  :: EntityId
+        , itemLocationId  :: LocationId
         , itemInventory :: Maybe (EntityBase 'LocationT)
         } -> Entity 'ItemT
 
@@ -43,9 +48,9 @@ deriving instance Eq (Entity a)
 
 -- World type stays mostly the same
 data World = World
-    { locations   :: Map EntityId (Entity 'LocationT)
-    , actors      :: Map EntityId (Entity 'ActorT)
-    , items       :: Map EntityId (Entity 'ItemT)
+    { locations   :: Map LocationId (Entity 'LocationT)
+    , actors      :: Map ActorId (Entity 'ActorT)
+    , items       :: Map InventoryId (Entity 'ItemT)
     , activeActor :: Entity 'ActorT
     } deriving (Show, Eq)
 
@@ -73,7 +78,7 @@ getName = entityName . getBase
 
 class Movable (a :: EntityType) where
     getLocationId :: Entity a -> EntityId
-    setLocationId :: EntityId -> Entity a -> Entity a
+    setLocationId :: LocationId -> Entity a -> Entity a
 
 instance Movable 'ActorT where
     getLocationId (Actor _ loc _) = loc
@@ -83,13 +88,13 @@ instance Movable 'ItemT where
     getLocationId (Item _ loc _) = loc
     setLocationId newLoc (Item base _ inv) = Item base newLoc inv
 
-findLocationById :: EntityId -> World -> Maybe (Entity 'LocationT)
+findLocationById :: LocationId -> World -> Maybe (Entity 'LocationT)
 findLocationById targetId = Map.lookup targetId . locations
 
-findActorById :: EntityId -> World -> Maybe (Entity 'ActorT)
+findActorById :: ActorId -> World -> Maybe (Entity 'ActorT)
 findActorById targetId = Map.lookup targetId . actors
 
-findItemById :: EntityId -> World -> Maybe (Entity 'ItemT)
+findItemById :: ItemId -> World -> Maybe (Entity 'ItemT)
 findItemById targetId = Map.lookup targetId . items
 
 isContainer :: Entity a -> Bool

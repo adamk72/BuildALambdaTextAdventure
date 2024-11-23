@@ -9,9 +9,8 @@ import Prelude as P
 import Utils
 import Data.Maybe
 
-
 -- | Update an entity's location
-updateLocation :: EntityId -> Entity a -> World -> World
+updateLocation :: LocationId -> Entity a -> World -> World
 updateLocation newLocId entity world =
     case entity of
         Actor {} -> world { actors = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (actors world) }
@@ -29,7 +28,7 @@ data MovablesAtLocation = MovablesAtLocation
     , locationActors :: [Entity 'ActorT]
     }
 
-getMovablesAtLocationId :: EntityId -> World -> MovablesAtLocation
+getMovablesAtLocationId :: LocationId -> World -> MovablesAtLocation
 getMovablesAtLocationId locId world = MovablesAtLocation
     { locationItems = Map.elems $ Map.filter (\item -> getLocationId item == locId) (items world)
     , locationActors = Map.elems $ Map.filter (\actor -> getLocationId actor == locId) (actors world)
@@ -43,19 +42,19 @@ getActiveActorLocation w =
 getActiveActorLocationName :: World -> Text
 getActiveActorLocationName w = getName (getActiveActorLocation w)
 
-getActiveActorLocationId :: World -> EntityId
+getActiveActorLocationId :: World -> LocationId
 getActiveActorLocationId w = getEntityId (getActiveActorLocation w)
 
-getActorsAtLocation :: EntityId -> World -> [Entity 'ActorT]
+getActorsAtLocation :: LocationId -> World -> [Entity 'ActorT]
 getActorsAtLocation locId world = locationActors $ getMovablesAtLocationId locId world
 
 -- If you need to format actor names at a location
-getActorNamesAtLocation :: EntityId -> World -> [Text]
+getActorNamesAtLocation :: LocationId -> World -> [Text]
 getActorNamesAtLocation locId world =
     P.map getName $ locationActors $ getMovablesAtLocationId locId world
 
 -- If you need both items and actors but want to process them separately
-processLocationContents :: EntityId -> World -> Text
+processLocationContents :: LocationId -> World -> Text
 processLocationContents locId world =
     let MovablesAtLocation{locationItems = items, locationActors = actors} =
             getMovablesAtLocationId locId world
