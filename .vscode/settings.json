@@ -9,6 +9,7 @@
     "metavar",
     "prettyprinter",
     "sout",
+    "visibles",
     "wrld"
   ]
 }

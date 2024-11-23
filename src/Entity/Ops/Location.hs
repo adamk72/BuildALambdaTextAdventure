@@ -1,7 +1,11 @@
 {-# LANGUAGE GADTs #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use newtype instead of data" #-}
+{-# HLINT ignore "Replace case with fromMaybe" #-}
+{-# HLINT ignore "Use join" #-}
+{-# HLINT ignore "Avoid lambda using `infix`" #-}
 module Entity.Ops.Location (module Entity.Ops.Location) where
+import           Data.List     as List (find)
 import qualified Data.Map      as Map
 import           Data.Maybe
 import           Data.Text
@@ -17,10 +21,24 @@ updateLocation newLocId entity world =
         Item  {} -> world { items  = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (items world) }
         Location {} -> world -- No update, return world unchanged for Location
 
-getActorVisibleMovablesAtLoc :: World -> [Text]
-getActorVisibleMovablesAtLoc w =
+findEntityIdAtActorLoc :: EntityId -> World -> Maybe EntityId
+findEntityIdAtActorLoc eId w =
+    let movableIds = getMovableIdsAtActorLoc w
+        acLocId = getLocationId (activeActor w)
+        locationIds = P.map getId $ Map.elems $ Map.filter (\loc -> getId loc == acLocId) (locations w)
+        allVisibleIds = movableIds ++ locationIds
+    in List.find (== eId) allVisibleIds
+
+getMovableIdsAtActorLoc :: World -> [EntityId]
+getMovableIdsAtActorLoc w =
     let acLocId = getLocationId (activeActor w)
-        MovablesRecord{movableItems = items, movableActors = actors} = getMovablesRecordByLocId acLocId w
+        MovablesRecord {movableItems = items, movableActors = actors} = getMovablesRecordByLocId acLocId w
+    in P.map getId items ++ P.map getId actors
+
+getMovableNamesAtActorLoc :: World -> [Text]
+getMovableNamesAtActorLoc w =
+    let acLocId = getLocationId (activeActor w)
+        MovablesRecord {movableItems = items, movableActors = actors} = getMovablesRecordByLocId acLocId w
     in P.map getName items ++ P.map getName actors
 
 getMovablesRecordByLocId :: LocationId -> World -> MovablesRecord
@@ -51,7 +69,7 @@ getActorNamesAtLocation locId world =
 -- If you need both items and actors but want to process them separately
 processLocationContents :: LocationId -> World -> Text
 processLocationContents locId world =
-    let MovablesRecord{movableItems = items, movableActors = actors} =
+    let MovablesRecord {movableItems = items, movableActors = actors} =
             getMovablesRecordByLocId locId world
     in "You see " <> formatActors actors <> " and " <> formatItems items
   where

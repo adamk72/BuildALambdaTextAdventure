@@ -32,15 +32,15 @@ data Entity (a :: EntityType) where
         } -> Entity 'LocationT
 
     Actor ::
-        { actorBase      :: EntityBase 'ActorT
+        { actorBase        :: EntityBase 'ActorT
         , actorLocationId  :: LocationId
-        , actorInventory :: EntityBase 'LocationT
+        , actorInventory   :: EntityBase 'LocationT
         } -> Entity 'ActorT
 
     Item ::
-        { itemBase      :: EntityBase 'ItemT
+        { itemBase        :: EntityBase 'ItemT
         , itemLocationId  :: LocationId
-        , itemInventory :: Maybe (EntityBase 'LocationT)
+        , itemInventory   :: Maybe (EntityBase 'LocationT)
         } -> Entity 'ItemT
 
 deriving instance Show (Entity a)
