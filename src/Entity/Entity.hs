@@ -88,6 +88,11 @@ instance Movable 'ItemT where
     getLocationId (Item _ loc _) = loc
     setLocationId newLoc (Item base _ inv) = Item base newLoc inv
 
+data MovablesRecord = MovablesRecord
+    { movableItems  :: [Entity 'ItemT]
+    , movableActors :: [Entity 'ActorT]
+    }
+
 findLocationById :: LocationId -> World -> Maybe (Entity 'LocationT)
 findLocationById targetId = Map.lookup targetId . locations
 
@@ -136,29 +141,29 @@ findEntityById targetId world =
             Just actor -> Just (ActorResult actor)
             Nothing -> case Map.lookup targetId (items world) of
                 Just item -> Just (ItemResult item)
-                Nothing -> Nothing
+                Nothing   -> Nothing
 
 -- Helper functions if needed
 isLocation :: Maybe EntityResult -> Bool
 isLocation (Just (LocResult _)) = True
-isLocation _ = False
+isLocation _                    = False
 
 isActor :: Maybe EntityResult -> Bool
 isActor (Just (ActorResult _)) = True
-isActor _ = False
+isActor _                      = False
 
 isItem :: Maybe EntityResult -> Bool
 isItem (Just (ItemResult _)) = True
-isItem _ = False
+isItem _                     = False
 
 getLocation :: Maybe EntityResult -> Maybe (Entity 'LocationT)
 getLocation (Just (LocResult loc)) = Just loc
-getLocation _ = Nothing
+getLocation _                      = Nothing
 
 getActor :: Maybe EntityResult -> Maybe (Entity 'ActorT)
 getActor (Just (ActorResult actor)) = Just actor
-getActor _ = Nothing
+getActor _                          = Nothing
 
 getItem :: Maybe EntityResult -> Maybe (Entity 'ItemT)
 getItem (Just (ItemResult item)) = Just item
-getItem _ = Nothing
+getItem _                        = Nothing

@@ -67,7 +67,7 @@ executeLook expr = do
             msg $ YouSeeGeneral "A general view of the space and possibly some items."
 
         UnaryExpression _ (NounClause "around") -> do
-            let surroundings = getActorVisibleEntitiesAtLoc gw
+            let surroundings = getActorVisibleMovablesAtLoc gw
             msg2 (YouAreIn $ getActiveActorLocationName gw ) (LookAround (oxfordComma surroundings))
 
         UnaryExpression _ (NounClause invClause)
