@@ -1,12 +1,12 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE GADTs     #-}
 module Core.Operations
-    ( module Core.Ops.Inventory
-    , module Core.Ops.Location
+    ( module Entity.Ops.Inventory
+    , module Entity.Ops.Location
     ) where
 
-import           Core.Ops.Inventory
-import           Core.Ops.Location
+import           Entity.Ops.Inventory
+import           Entity.Ops.Location
 
 -- | Helper function to remove duplicates while preserving order
 -- nub :: Eq a => [a] -> [a]

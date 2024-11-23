@@ -1,11 +1,11 @@
 {-# LANGUAGE GADTs #-}
-module Core.Ops.Inventory (module Core.Ops.Inventory) where
+module Entity.Ops.Inventory (module Entity.Ops.Inventory) where
 
 import Entity.Entity
 import Data.Text (Text)
 import Data.Map as Map
 import Data.Maybe (isJust)
-import Core.Ops.Location
+import Entity.Ops.Location
 
 -- | Types and basic definitions
 data InventoryError

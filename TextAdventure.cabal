@@ -48,14 +48,14 @@ library
       Core.Message.Look
       Core.Message.Utils
       Core.Operations
-      Core.Ops.Inventory
-      Core.Ops.Location
       Core.State
       Core.State.GameState
       Core.State.JSON
       Core.State.JSONTypes
       Entity.Entity
       Entity.EntityConverter
+      Entity.Ops.Inventory
+      Entity.Ops.Location
       Logger
       Parser.Parser
       Parser.Types

@@ -1,7 +1,7 @@
 {-# LANGUAGE GADTs #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use newtype instead of data" #-}
-module Core.Ops.Location (module Core.Ops.Location) where
+module Entity.Ops.Location (module Entity.Ops.Location) where
 import Entity.Entity
 import qualified Data.Map as Map
 import Data.Text
