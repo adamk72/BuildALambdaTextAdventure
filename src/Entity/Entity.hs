@@ -16,6 +16,7 @@ newtype EntityId = EntityId { unEntityId :: Text }
 type LocationId = EntityId
 type ActorId = EntityId
 type ItemId = EntityId
+type MovableId = EntityId
 type InventoryId = EntityId
 
 data EntityBase (a :: EntityType) = EntityBase
@@ -77,7 +78,7 @@ getName :: HasEntityBase a => Entity a -> Text
 getName = entityName . getBase
 
 class Movable (a :: EntityType) where
-    getLocationId :: Entity a -> EntityId
+    getLocationId :: Entity a -> MovableId
     setLocationId :: LocationId -> Entity a -> Entity a
 
 instance Movable 'ActorT where

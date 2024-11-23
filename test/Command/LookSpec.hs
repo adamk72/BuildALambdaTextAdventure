@@ -57,7 +57,7 @@ spec = do
                 let gw = defaultGW
                     expr = UnaryExpression "look" (NounClause "around")
                 (output, _) <- runCommand executeLook expr gw
-                let visibleMovables = getActorMovableNamesAtLoc gw
+                let visibleMovables = getMovableNamesAtActorLoc gw
 
                 "silver coin" `shouldSatisfy` (`isInfixOf` output)
                 "bag of holding" `shouldSatisfy` (`isInfixOf` output)

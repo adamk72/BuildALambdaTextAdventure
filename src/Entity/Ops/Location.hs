@@ -29,7 +29,7 @@ findEntityIdAtActorLoc eId w =
         allVisibleIds = movableIds ++ locationIds
     in List.find (== eId) allVisibleIds
 
-getMovableIdsAtActorLoc :: World -> [EntityId]
+getMovableIdsAtActorLoc :: World -> [MovableId]
 getMovableIdsAtActorLoc w =
     let acLocId = getLocationId (activeActor w)
         MovablesRecord {movableItems = items, movableActors = actors} = getMovablesRecordByLocId acLocId w
