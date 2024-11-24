@@ -10,8 +10,8 @@ import           Parser.Types
 import Entity.Ops.Location (getLocationDestinations)
 import Data.Maybe (fromMaybe)
 
-moveTo :: Entity 'ActorT -> Text -> World -> GameStateText
-moveTo ac dstTag gw
+moveTo :: Text -> World -> GameStateText
+moveTo dstTag gw
     | currLocTag == dstTag = msg $ AlreadyAtLocation dstTag
     | dstId `elem` dstIds = do
         let newAc = setLocationId dstId ac
@@ -19,6 +19,7 @@ moveTo ac dstTag gw
         msg $ MovingToLocation dstTag
     | otherwise = msg $ NoPath dstTag
   where
+    ac = activeActor gw
     dstId = EntityId dstTag
     currLocTag = unEntityId $ getLocationId ac
     dstIds = fromMaybe [] (getLocationDestinations (getLocationId ac) gw)
@@ -26,9 +27,8 @@ moveTo ac dstTag gw
 executeGo :: CommandExecutor
 executeGo expr = do
     gw <- getWorld
-    let ac = activeActor gw
     case expr of
         (AtomicExpression _)                     -> msg GoWhere
-        (UnaryExpression _ (NounClause dst) )    -> moveTo ac dst gw
-        (BinaryExpression _ _ (NounClause dst) ) -> moveTo ac dst gw
+        (UnaryExpression _ (NounClause dst) )    -> moveTo dst gw
+        (BinaryExpression _ _ (NounClause dst) ) -> moveTo dst gw
         _                                        -> msg NotSure
