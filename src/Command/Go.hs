@@ -7,24 +7,28 @@ import           Core.State.GameState
 import           Entity.Entity
 import           Data.Text               (Text)
 import           Parser.Types
+import Entity.Ops.Location (getLocationDestinations)
+import Data.Maybe (fromMaybe)
 
 moveTo :: Entity 'ActorT -> Text -> World -> GameStateText
-moveTo actor dstTag gw = undefined
-    -- | dstTag == locTag (getLocationId actor) = msg $ AlreadyAtLocation $ locTag (getLocationId actor)
-    -- | dstTag `elem` validDstTags =
-    --     case find (\loc -> locTag loc == dstTag) (gwLocations gw) of
-    --         Just newLoc -> do
-    --             let newAc = setActorLoc newLoc actor
-    --             modifyWorld (const gw {gwActiveActor = newAc})
-    --             msg $ MovingToLocation dstTag
-    --         Nothing -> error $ unpack $ renderMessage $ LocationError dstTag
-    -- | otherwise = msg $ NoPath dstTag
+moveTo ac dstTag gw
+    | currLocTag == dstTag = msg $ AlreadyAtLocation dstTag
+    | dstId `elem` dstIds = do
+        let newAc = setLocationId dstId ac
+        modifyWorld $ \w -> w { activeActor = newAc }
+        msg $ MovingToLocation dstTag
+    | otherwise = msg $ NoPath dstTag
+  where
+    dstId = EntityId dstTag
+    currLocTag = unEntityId $ getLocationId ac
+    dstIds = fromMaybe [] (getLocationDestinations (getLocationId ac) gw)
 
 executeGo :: CommandExecutor
 executeGo expr = do
     gw <- getWorld
+    let ac = activeActor gw
     case expr of
         (AtomicExpression _)                     -> msg GoWhere
-        (UnaryExpression _ (NounClause dst) )    -> moveTo (activeActor gw) dst gw
-        (BinaryExpression _ _ (NounClause dst) ) -> moveTo (activeActor gw) dst gw
+        (UnaryExpression _ (NounClause dst) )    -> moveTo ac dst gw
+        (BinaryExpression _ _ (NounClause dst) ) -> moveTo ac dst gw
         _                                        -> msg NotSure

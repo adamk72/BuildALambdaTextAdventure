@@ -13,6 +13,9 @@ import           Entity.Entity
 import           Prelude       as P
 import           Utils
 
+getLocationDestinations :: LocationId -> World -> Maybe [LocationId]
+getLocationDestinations locId w = destinations <$> Map.lookup locId (locations w)
+
 -- | Update an entity's location
 updateLocation :: LocationId -> Entity a -> World -> World
 updateLocation newLocId entity world =
