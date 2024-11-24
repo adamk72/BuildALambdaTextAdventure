@@ -68,7 +68,7 @@ executeLook expr = do
                 lookAt target gw
 
         BinaryExpression _ (PrepClause prep) (NounClause target)
-            | prep `isPrepVariantOf` "in" && target == "inventory" ->
+            | (prep `isPrepVariantOf` "in" || prep `isPrepVariantOf` "at") && "inventory" `isSuffixOf` target ->
                 return $ lookInActorInventory gw
             | prep `isPrepVariantOf` "in" ->
                 lookInContainer target gw
