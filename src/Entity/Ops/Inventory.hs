@@ -19,8 +19,8 @@ data InventoryError
 type InventoryResult = Either InventoryError World
 
 -- | Core inventory access
-getActiveActorInventoryID :: World -> InventoryId
-getActiveActorInventoryID w = entityId (actorInventory (activeActor w))
+getActiveActorInventoryId :: World -> InventoryId
+getActiveActorInventoryId w = entityId (actorInventory (activeActor w))
 
 getInventory :: Entity a -> Maybe (EntityBase 'LocationT)
 getInventory entity = case entity of
@@ -76,6 +76,22 @@ makeActorContainer actor world =
         updatedActor = setActorInventory newInv actor
     in (updatedActor, world { actors = Map.insert (getId actor) updatedActor (actors world) })
 
+
+getEntityInventoryList :: Entity a -> World -> [Entity 'ItemT]
+getEntityInventoryList entity world =
+    let maybeContainerId = case entity of
+            Location base _ -> Just $ entityId base
+            Actor _ _ invBase -> Just $ entityId invBase
+            Item _ _ (Just invBase) -> Just $ entityId invBase
+            Item {} -> Nothing
+    in case maybeContainerId of
+        Nothing -> []
+        Just containerId ->
+            Prelude.filter (\item -> getLocationId item == containerId) (Map.elems $ items world)
+
+getActiveActorInventoryList :: World -> [Entity 'ItemT]
+getActiveActorInventoryList w = getEntityInventoryList (activeActor w) w
+
 -- | LEGACY OPERATIONS
 -- | For supporting refactor process
 
@@ -86,16 +102,6 @@ isInInventoryOf movable container =
         Just invId -> getLocationId movable == invId
         Nothing -> False
 
-getActiveActorInventoryList :: World -> [Entity 'ItemT]
-getActiveActorInventoryList w = getEntityInventoryList (activeActor w) w
-
-getEntityInventoryList :: Entity a -> World -> [Entity 'ItemT]
-getEntityInventoryList entity world =
-    case getInventoryId entity of
-        Nothing -> []
-        Just invId ->
-            Prelude.filter (\item -> getLocationId item == invId) $
-            Map.elems $ items world
 
 -- | Movement operations
 moveItemToContainer :: HasEntityBase a => Entity 'ItemT -> Entity a -> Entity 'LocationT -> World -> InventoryResult

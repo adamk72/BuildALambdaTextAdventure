@@ -18,11 +18,11 @@ getLocationDestinations locId w = destinations <$> Map.lookup locId (locations w
 
 -- | Update an entity's location
 updateLocation :: LocationId -> Entity a -> World -> World
-updateLocation newLocId entity world =
+updateLocation newLocId entity gw =
     case entity of
-        Actor {} -> world { actors = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (actors world) }
-        Item  {} -> world { items  = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (items world) }
-        Location {} -> world -- No update, return world unchanged for Location
+        Actor {} -> gw { actors = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (actors gw) }
+        Item  {} -> gw { items  = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (items gw) }
+        Location {} -> gw -- No update, return world unchanged for Location
 
 findItemIdAtActorLoc :: ItemId -> World -> Maybe ItemId
 findItemIdAtActorLoc iId w =
@@ -65,7 +65,7 @@ getActiveActorLocationName :: World -> Text
 getActiveActorLocationName w = getName (getActiveActorLocation w)
 
 getActiveActorLocationId :: World -> LocationId
-getActiveActorLocationId w = getEntityId (getActiveActorLocation w)
+getActiveActorLocationId = getLocationId . activeActor
 
 getActorsAtLocation :: LocationId -> World -> [Entity 'ActorT]
 getActorsAtLocation locId world = movableActors $ getMovablesRecordByLocId locId world

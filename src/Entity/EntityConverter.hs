@@ -29,8 +29,8 @@ convertToEntityWorld WorldJSON{..} = do
     let actorMap = Map.fromList [(getId act, act) | act <- actorEntities]
 
     -- First convert container items (those with hasInventorySlot = True)
-    let containerItems = P.filter (\item -> fromMaybe False (jHasInventorySlot item)) jItems
-        contentItems = P.filter (\item -> not $ fromMaybe False (jHasInventorySlot item)) jItems
+    let containerItems = P.filter (fromMaybe False . jHasInventorySlot) jItems
+        contentItems = P.filter (not . fromMaybe False . jHasInventorySlot) jItems
 
     -- Convert containers first
     containerEntities <- traverse (convertItemWithLoc locMap actorMap Map.empty) containerItems

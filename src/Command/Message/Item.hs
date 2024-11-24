@@ -5,7 +5,7 @@ import           Data.Text           (Text)
 
 data ItemMessage
     = DoNotSeeItem Text
-    | InvalidItem Text
+    | DontSeeItem Text
     | NoItem Text
     | InvalidItemInLocation Text
     | InvalidItemInContainer Text Text
@@ -16,7 +16,7 @@ instance MessageRenderer ItemMessage where
     renderMessage = \case
         DoNotSeeItem item -> "Don't see a " <> item <> "."
         DroppedItemSomewhere object loc -> "You dropped " <> object <> " " <> loc <> "."
-        InvalidItem item -> "Don't see a \"" <> item <> "\"."
+        DontSeeItem item -> "Don't see a \"" <> item <> "\"."
         NoItem item -> "There is no indication there's a \"" <> item <> "\" around here."
         InvalidItemInLocation item -> "Don't see a \"" <> item <> "\" around here."
         InvalidItemInContainer item container ->

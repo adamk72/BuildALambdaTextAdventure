@@ -1,21 +1,39 @@
 module Command.Get (module Command.Get) where
 
 import           Command.CommandExecutor
-import           Core.GameMonad
 import           Command.Message
+import           Core.GameMonad
 import           Core.State
+import           Data.Maybe
 import           Data.Text               (Text)
+import           Entity.Entity           hiding (getItem)
 import           Parser.Types
 import           Parser.Utils
+import           Prelude                 hiding (pred)
 
 -- | Attempt to take an item from a specific location or container
 getItem :: Text -> Maybe Text -> World -> GameStateText
-getItem itemTag srcM gw = undefined
---     | not (isInInventoryOf itemTag visibleItems) = msg $ InvalidItem itemTag
+getItem itemTag srcM gw =
+    case findEntityById itemId gw of
+        Just (ItemResult item) | item `elem` itemsInLoc -> tryGetItem item
+        Just (ItemResult item) | item `elem` itemsOnActor -> msg $ AlreadyHaveItem (getName item)
+        _ -> msg $ DontSeeItem itemTag
+    where
+        itemId = EntityId itemTag
+        itemsInLoc = getEntityInventoryList (getActiveActorLocation gw) gw
+        itemsOnActor = getActiveActorInventoryList gw
+
+        tryGetItem :: Entity 'ItemT -> GameStateText
+        tryGetItem item = do
+            let updatedGW = updateLocation (getId (activeActor gw)) item gw
+            modifyWorld (const updatedGW)
+            msg $ PickedUp itemTag (getName (activeActor gw))
+
+--     | not (isInInventoryOf itemTag visibleItems) = msg $ DontSeeItem itemTag
 --     | otherwise = case findEntityById itemTag gw of
 --         Nothing -> msgGameWordError $ ItemDoesNotExist itemTag
 --         Just item -> do
---             let acInv = getActiveActorInventoryID gw
+--             let acInv = getActiveActorInventoryId gw
 --             if getLocationId item == acInv
 --             then msg $ AlreadyHaveItem (getName item)
 --             else tryGetItem item acInv srcM
@@ -32,7 +50,7 @@ getItem itemTag srcM gw = undefined
 --                 Just container -> if isContainer container
 --                                 then moveAndMsg item locOrItem
 --                                 else msg $ NotAContainer src
---                 Nothing -> msg $ InvalidItem src
+--                 Nothing -> msg $ DontSeeItem src
 
 --     moveAndMsg :: Entity 'ItemT -> Entity 'LocationT -> GameStateText
 --     moveAndMsg item dstLoc = do
@@ -43,7 +61,6 @@ getItem itemTag srcM gw = undefined
 executeGet :: CommandExecutor
 executeGet expr = do
     gw <- getWorld
-
     let handle = \case
             AtomicExpression {} -> msg GetWhat
             UnaryExpression _ (NounClause itemTag) ->
