@@ -25,15 +25,11 @@ There are two types of Entities in the game world:
 - An Actor, which represents both the playable character of the game player and also represents the non-player character elements of the game; specifically, those elements that can be meaningfully interacted through commands like 'talk' and 'attack'. Actors can change Locations through the 'go' command.
 - An Item represents an in game object that the active character can interact with through commands like 'get' and 'open'. They can sometimes be picked up and carried in the Inventory of an Actor and do not move Locations unless carried as such. These usually are considered inanimate objects in the real world, but for the sake of the game, concepts like pets, wild animals, and homunculi may be included.
 
-### Locations, Inventory, and Containers
+### Locations, Capacity, and Containers
 
 A Location is the high level representation of space in the game world. Alone, without additional context, a `Location` type represents a physical space in the game world (like "meadow", "cave")
 
-Two other types of Location dependent on the context:
-
-- An Inventory is a `Location` that is associated with a Character/Actor and is the default space for "carrying" small Items. All Actors always have an Inventory space available.
-- A Container is an Item that has an Inventory space, but not all Items have space. Actors can access the Inventory of any Container that is considered Visible to them.
-
+A Container is a Location, Actor, or Item that has Capacity. Capacity is whether or not an Entity can store/carry something. Locations can store infinite objects of both Actor and Item type. All Actors can stores Items, but to a limited amount. Some Items can also store a limited number of other Items.
 
 ## Game Concepts
 

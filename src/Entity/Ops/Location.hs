@@ -5,12 +5,14 @@
 {-# HLINT ignore "Use join" #-}
 {-# HLINT ignore "Avoid lambda using `infix`" #-}
 module Entity.Ops.Location (module Entity.Ops.Location) where
-import           Data.List     as List (find)
-import qualified Data.Map      as Map
+import           Data.List               as List (find)
+import qualified Data.Map                as Map
 import           Data.Maybe
 import           Data.Text
+import           Entity.Class.EntityBase
+import           Entity.Class.Movable    (Movable (getLocationId, setLocationId), MovablesRecord (..))
 import           Entity.Entity
-import           Prelude       as P
+import           Prelude                 as P
 import           Utils
 
 getLocationDestinations :: LocationId -> World -> Maybe [LocationId]
@@ -20,8 +22,8 @@ getLocationDestinations locId w = destinations <$> Map.lookup locId (locations w
 updateLocation :: LocationId -> Entity a -> World -> World
 updateLocation newLocId entity gw =
     case entity of
-        Actor {} -> gw { actors = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (actors gw) }
-        Item  {} -> gw { items  = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (items gw) }
+        Actor {}    -> gw { actors = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (actors gw) }
+        Item  {}    -> gw { items  = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (items gw) }
         Location {} -> gw -- No update, return world unchanged for Location
 
 findItemIdAtActorLoc :: ItemId -> World -> Maybe ItemId

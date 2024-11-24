@@ -8,6 +8,8 @@ import           Command.Message
 import           Core.State
 import           Data.Maybe
 import           Data.Text               (Text, isSuffixOf)
+import           Entity.Class.EntityBase
+import           Entity.Class.Movable
 import           Entity.Entity
 import           Parser.Types
 import           Parser.Utils

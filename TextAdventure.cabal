@@ -52,10 +52,14 @@ library
       Core.State.GameState
       Core.State.JSON
       Core.State.JSONTypes
+      Entity.Class.Capacity
+      Entity.Class.EntityBase
+      Entity.Class.Movable
       Entity.Entity
       Entity.EntityConverter
       Entity.Ops.Inventory
       Entity.Ops.Location
+      Entity.Types
       Logger
       Parser.Parser
       Parser.Types

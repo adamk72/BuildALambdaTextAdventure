@@ -4,10 +4,10 @@
 {-# LANGUAGE StandaloneDeriving #-}
 module Entity.Entity (module Entity.Entity) where
 
-import           Data.Map  as Map
-import           Data.Text (Text)
+import           Data.Map     as Map
+import           Data.Text    (Text)
+import           Entity.Types (Capacity)
 
--- Core types remain the same
 data EntityType = LocationT | ActorT | ItemT
 
 newtype EntityId = EntityId { unEntityId :: Text }
@@ -25,74 +25,34 @@ data EntityBase (a :: EntityType) = EntityBase
     , entityName :: Text
     } deriving (Show, Eq)
 
--- Entity GADT remains but we'll add helper functions for common operations
 data Entity (a :: EntityType) where
     Location ::
-        { locationBase   :: EntityBase 'LocationT
-        , destinations   :: [LocationId]
+        { locationBase     :: EntityBase 'LocationT
+        , destinations     :: [LocationId]
+        , locationCapacity :: Capacity
         } -> Entity 'LocationT
 
     Actor ::
         { actorBase        :: EntityBase 'ActorT
         , actorLocationId  :: LocationId
-        , actorInventory   :: EntityBase 'LocationT
+        , actorCapacity    :: Capacity
         } -> Entity 'ActorT
 
     Item ::
         { itemBase        :: EntityBase 'ItemT
         , itemLocationId  :: LocationId
-        , itemInventory   :: Maybe (EntityBase 'LocationT)
+        , itemCapacity    :: Maybe Capacity
         } -> Entity 'ItemT
 
 deriving instance Show (Entity a)
 deriving instance Eq (Entity a)
 
--- World type stays mostly the same
 data World = World
     { locations   :: Map LocationId (Entity 'LocationT)
     , actors      :: Map ActorId (Entity 'ActorT)
     , items       :: Map InventoryId (Entity 'ItemT)
     , activeActor :: Entity 'ActorT
     } deriving (Show, Eq)
-
--- New type class for accessing entity properties uniformly
-class HasEntityBase (a :: EntityType) where
-    getBase :: Entity a -> EntityBase a
-
-instance HasEntityBase 'LocationT where
-    getBase (Location base _) = base
-
-instance HasEntityBase 'ActorT where
-    getBase (Actor base _ _) = base
-
-instance HasEntityBase 'ItemT where
-    getBase (Item base _ _) = base
-
-getId :: HasEntityBase a => Entity a -> EntityId
-getId = entityId . getBase
-
-getTags :: HasEntityBase a => Entity a -> Maybe [Text]
-getTags = entityTags . getBase
-
-getName :: HasEntityBase a => Entity a -> Text
-getName = entityName . getBase
-
-class Movable (a :: EntityType) where
-    getLocationId :: Entity a -> MovableId
-    setLocationId :: LocationId -> Entity a -> Entity a
-
-instance Movable 'ActorT where
-    getLocationId (Actor _ loc _) = loc
-    setLocationId newLoc (Actor base _ inv) = Actor base newLoc inv
-
-instance Movable 'ItemT where
-    getLocationId (Item _ loc _) = loc
-    setLocationId newLoc (Item base _ inv) = Item base newLoc inv
-
-data MovablesRecord = MovablesRecord
-    { movableItems  :: [Entity 'ItemT]
-    , movableActors :: [Entity 'ActorT]
-    }
 
 findLocationById :: LocationId -> World -> Maybe (Entity 'LocationT)
 findLocationById targetId = Map.lookup targetId . locations
@@ -108,18 +68,6 @@ isContainer (Location {})       = True
 isContainer (Actor {})          = True
 isContainer (Item _ _ (Just _)) = True
 isContainer (Item _ _ Nothing)  = False
-
-getEntityName :: Entity a -> Text
-getEntityName entity = case entity of
-    Location base _ -> entityName base
-    Actor base _ _  -> entityName base
-    Item base _ _   -> entityName base
-
-getEntityId :: Entity a -> EntityId
-getEntityId entity = case entity of
-    Location base _ -> entityId base
-    Actor base _ _  -> entityId base
-    Item base _ _   -> entityId base
 
 -- | EntityResult
 {- Example usage:
@@ -144,7 +92,6 @@ findEntityById targetId world =
                 Just item -> Just (ItemResult item)
                 Nothing   -> Nothing
 
--- Helper functions if needed
 isLocation :: Maybe EntityResult -> Bool
 isLocation (Just (LocResult _)) = True
 isLocation _                    = False

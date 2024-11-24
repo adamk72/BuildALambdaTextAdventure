@@ -3,14 +3,21 @@
 {-# LANGUAGE KindSignatures #-}
 module Entity.EntityConverter (convertToEntityWorld) where
 
-import           Core.State.JSONTypes (EntityJSON (..), WorldJSON (..))
-import qualified Core.State.JSONTypes as JSON (Location (..))
-import           Data.Map             as Map
-import qualified Data.Set             as Set
-import           Data.Text            (Text)
+import           Core.State.JSONTypes    (EntityJSON (..), WorldJSON (..))
+import qualified Core.State.JSONTypes    as JSON (Location (..))
+import           Data.Map                as Map
+import qualified Data.Set                as Set
+import           Data.Text               (Text)
+import           Entity.Class.EntityBase (getId)
 import           Entity.Entity
-import           Prelude              as P
+import           Entity.Types            (Capacity (..))
+import           Prelude                 as P
 
+defaultActorCapacity :: Int
+defaultActorCapacity = 3
+
+defaultItemCapacity :: Int
+defaultItemCapacity = 5
 
 type EntityConversionError = Text
 
@@ -62,13 +69,14 @@ validateUniqueIds locs actors items =
 
 convertLocation :: JSON.Location -> Entity 'LocationT
 convertLocation loc =
-    Location                             -- This Location is from Entity.Entity
+    Location
         { locationBase = EntityBase
-            { entityId = EntityId (JSON.locTag loc)    -- Use qualified access
-            , entityTags = JSON.locTags loc          -- Use qualified access
-            , entityName = JSON.locName loc            -- Use qualified access
+            { entityId = EntityId (JSON.locTag loc)
+            , entityTags = JSON.locTags loc
+            , entityName = JSON.locName loc
             }
-        , destinations = P.map EntityId (JSON.destinationTags loc)  -- Use qualified access
+        , destinations = P.map EntityId (JSON.destinationTags loc)
+        , locationCapacity = Unlimited
         }
 
 convertActorWithLoc :: Map LocationId (Entity 'LocationT) -> EntityJSON -> Either EntityConversionError (Entity 'ActorT)
@@ -85,11 +93,7 @@ convertActorWithLoc locMap json =
                         , entityName = jName json
                         }
                     , actorLocationId = locId
-                    , actorInventory =  EntityBase
-                        { entityId = EntityId (jTag json)
-                        , entityTags = Nothing
-                        , entityName = "contents of your pockets"
-                        }
+                    , actorCapacity = Limited defaultActorCapacity -- Todo: allow this to change
                     }
                else Left $ "Location tag: "  <> locTag <> " is invalid reference for a character."
 
@@ -115,12 +119,8 @@ convertItemWithLoc locMap actorMap itemMap json =
                         , entityName = jName json
                         }
                     , itemLocationId = containerId
-                    , itemInventory = if fromMaybe False (jHasInventorySlot json)
-                                   then Just EntityBase
-                                        { entityId = EntityId (jTag json)
-                                        , entityTags = Nothing
-                                        , entityName = "contents of " <> jTag json
-                                        }
+                    , itemCapacity = if fromMaybe False (jHasInventorySlot json)
+                                   then Just (Limited defaultItemCapacity)
                                    else Nothing
                     }
                else Left $ "Location tag: "  <> locTag <> " is not a valid container in this world."

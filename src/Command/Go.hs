@@ -1,14 +1,15 @@
 module Command.Go (module Command.Go) where
 
 import           Command.CommandExecutor
-import           Core.GameMonad
 import           Command.Message
+import           Core.GameMonad
 import           Core.State.GameState
-import           Entity.Entity
+import           Data.Maybe              (fromMaybe)
 import           Data.Text               (Text)
+import           Entity.Class.Movable
+import           Entity.Entity
+import           Entity.Ops.Location     (getLocationDestinations)
 import           Parser.Types
-import Entity.Ops.Location (getLocationDestinations)
-import Data.Maybe (fromMaybe)
 
 moveTo :: Text -> World -> GameStateText
 moveTo dstTag gw

@@ -6,6 +6,7 @@ import           Core.GameMonad
 import           Core.State
 import           Data.Maybe
 import           Data.Text               (Text)
+import           Entity.Class.EntityBase
 import           Entity.Entity           hiding (getItem)
 import           Parser.Types
 import           Parser.Utils
@@ -15,9 +16,9 @@ import           Prelude                 hiding (pred)
 getItem :: Text -> Maybe Text -> World -> GameStateText
 getItem itemTag srcM gw =
     case findEntityById itemId gw of
-        Just (ItemResult item) | item `elem` itemsInLoc -> tryGetItem item
+        Just (ItemResult item) | item `elem` itemsInLoc   -> tryGetItem item
         Just (ItemResult item) | item `elem` itemsOnActor -> msg $ AlreadyHaveItem (getName item)
-        _ -> msg $ DontSeeItem itemTag
+        _                                                 -> msg $ DontSeeItem itemTag
     where
         itemId = EntityId itemTag
         itemsInLoc = getEntityInventoryList (getActiveActorLocation gw) gw

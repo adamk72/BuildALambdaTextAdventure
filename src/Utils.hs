@@ -3,12 +3,13 @@
 {-# HLINT ignore "Use !!" #-}
 module Utils (module Utils) where
 
-import           Data.Text     (Text, intercalate, toLower)
-import qualified Data.Text     as T
-import           Entity.Entity (getEntityName, Entity(..))
+import           Data.Text               (Text, intercalate, toLower)
+import qualified Data.Text               as T
+import           Entity.Class.EntityBase
+import           Entity.Entity           (Entity (..))
 
-oxfordEntityNames :: [Entity a] -> Text
-oxfordEntityNames = oxfordComma . map (toLower . getEntityName)
+oxfordEntityNames :: HasEntityBase a => [Entity a] -> Text
+oxfordEntityNames = oxfordComma . map (toLower . getName)
 
 oxfordComma :: [Text] -> Text
 oxfordComma [] = ""
