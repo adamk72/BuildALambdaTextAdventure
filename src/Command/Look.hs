@@ -53,7 +53,13 @@ executeLook expr = do
 
         UnaryExpression _ (NounClause "around") -> do
             let surroundings = getMovableNamesAtActorLoc gw
-            msg2 (YouAreIn $ getActiveActorLocationName gw ) (LookAround (oxfordComma surroundings))
+                destinationIds = getLocationDestinations (getLocationId (activeActor gw )) gw
+            case destinationIds of
+                Just dstIds -> do
+                    let dstNames = map unEntityId dstIds
+                        message = renderMessage (YouAreIn $ getActiveActorLocationName gw ) <> " " <> renderMessage (LookAround (oxfordComma surroundings)) <> " You see exits to: " <> oxfordComma dstNames <> "."
+                    return message
+                Nothing -> return "You don't see a way out of here!"
 
         UnaryExpression _ (NounClause target)
             | "inventory" `isSuffixOf` target ->
