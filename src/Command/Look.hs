@@ -54,7 +54,7 @@ executeLook expr = do
             msg $ YouSeeGeneral "A general view of the space and possibly some items."
 
         UnaryExpression _ (NounClause "around") -> do
-            let surroundings = getMovableNamesAtActorLoc gw
+            let surroundings = getViewableNamesAtActorLoc gw
                 destinationIds = getLocationDestinations (getLocationId (activeActor gw )) gw
             case destinationIds of
                 Just dstIds -> do

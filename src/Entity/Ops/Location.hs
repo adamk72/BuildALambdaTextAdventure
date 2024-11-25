@@ -10,7 +10,7 @@ import qualified Data.Map                as Map
 import           Data.Maybe
 import           Data.Text
 import           Entity.Class.EntityBase
-import           Entity.Class.Movable    (Movable (getLocationId, setLocationId), MovablesRecord (..))
+import           Entity.Class.Viewable (getLocationId, setLocationId, ViewablesRecord (..))
 import           Entity.Entity
 import           Prelude                 as P
 import           Utils
@@ -34,28 +34,28 @@ findItemIdAtActorLoc iId w =
 
 findEntityIdAtActorLoc :: EntityId -> World -> Maybe EntityId
 findEntityIdAtActorLoc eId w =
-    let movableIds = getMovableIdsAtActorLoc w
+    let movableIds = getViewableIdsAtActorLoc w
         acLocId = getLocationId (activeActor w)
         locationIds = P.map getId $ Map.elems $ Map.filter (\loc -> getId loc == acLocId) (locations w)
         allVisibleIds = movableIds ++ locationIds
     in List.find (== eId) allVisibleIds
 
-getMovableIdsAtActorLoc :: World -> [MovableId]
-getMovableIdsAtActorLoc w =
+getViewableIdsAtActorLoc :: World -> [MovableId]
+getViewableIdsAtActorLoc w =
     let acLocId = getLocationId (activeActor w)
-        MovablesRecord {movableItems = items, movableActors = actors} = getMovablesRecordByLocId acLocId w
+        ViewablesRecord {viewableItems = items, viewableActors = actors} = getViewablesRecordByLocId acLocId w
     in P.map getId items ++ P.map getId actors
 
-getMovableNamesAtActorLoc :: World -> [Text]
-getMovableNamesAtActorLoc w =
+getViewableNamesAtActorLoc :: World -> [Text]
+getViewableNamesAtActorLoc w =
     let acLocId = getLocationId (activeActor w)
-        MovablesRecord {movableItems = items, movableActors = actors} = getMovablesRecordByLocId acLocId w
+        ViewablesRecord {viewableItems = items, viewableActors = actors} = getViewablesRecordByLocId acLocId w
     in P.map getName items ++ P.map getName actors
 
-getMovablesRecordByLocId :: LocationId -> World -> MovablesRecord
-getMovablesRecordByLocId locId world = MovablesRecord
-    { movableItems = Map.elems $ Map.filter (\item -> getLocationId item == locId) (items world)
-    , movableActors = Map.elems $ Map.filter (\actor -> getLocationId actor == locId) (actors world)
+getViewablesRecordByLocId :: LocationId -> World -> ViewablesRecord
+getViewablesRecordByLocId locId world = ViewablesRecord
+    { viewableItems = Map.elems $ Map.filter (\item -> getLocationId item == locId) (items world)
+    , viewableActors = Map.elems $ Map.filter (\actor -> getLocationId actor == locId) (actors world)
     }
 
 getActiveActorLocation :: World -> Entity 'LocationT
@@ -70,18 +70,18 @@ getActiveActorLocationId :: World -> LocationId
 getActiveActorLocationId = getLocationId . activeActor
 
 getActorsAtLocation :: LocationId -> World -> [Entity 'ActorT]
-getActorsAtLocation locId world = movableActors $ getMovablesRecordByLocId locId world
+getActorsAtLocation locId world = viewableActors $ getViewablesRecordByLocId locId world
 
 -- If you need to format actor names at a location
 getActorNamesAtLocation :: LocationId -> World -> [Text]
 getActorNamesAtLocation locId world =
-    P.map getName $ movableActors $ getMovablesRecordByLocId locId world
+    P.map getName $ viewableActors $ getViewablesRecordByLocId locId world
 
 -- If you need both items and actors but want to process them separately
 processLocationContents :: LocationId -> World -> Text
 processLocationContents locId world =
-    let MovablesRecord {movableItems = items, movableActors = actors} =
-            getMovablesRecordByLocId locId world
+    let ViewablesRecord {viewableItems = items, viewableActors = actors} =
+            getViewablesRecordByLocId locId world
     in "You see " <> formatActors actors <> " and " <> formatItems items
   where
     formatActors []     = "no one here"
