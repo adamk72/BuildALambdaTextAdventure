@@ -22,7 +22,7 @@ dropObject itemTag dstTagM gw =
             case changeItemContainer (getActiveActorLocation gw) item gw of
                 Right updatedGW -> do
                      modifyWorld (const updatedGW)
-                     msg $ DroppedItemWithInventory itemTag (showInventoryList (activeActor updatedGW) updatedGW)
+                     msg $ DroppedItemWithInventory itemTag (showInventoryList updatedGW)
                 Left errMsg -> return errMsg
 
 executeDrop :: CommandExecutor

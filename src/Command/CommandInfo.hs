@@ -2,19 +2,21 @@ module Command.CommandInfo (CommandInfo (..), CommandVerb (..), allCommands, fin
 
 import           Command.CommandExecutor
 import           Command.Commands
+import           Command.Debug
 import           Data.List               (find)
 import qualified Data.Text               as T
 
 data CommandVerb
     = LookVerb
-    | GoVerb
-    | GetVerb
+    | DebugVerb
     | DropVerb
-    | PutVerb
-    | PlaceVerb
-    | MoveVerb
-    | SetVerb
+    | GetVerb
+    | GoVerb
     | InventoryVerb
+    | MoveVerb
+    | PlaceVerb
+    | PutVerb
+    | SetVerb
     deriving (Show, Eq)
 
 data CommandInfo = CommandInfo
@@ -32,6 +34,7 @@ allCommands =
     , CommandInfo DropVerb "drop" [] executeDrop
     , CommandInfo PutVerb "put" ["place", "move", "set"] executePut
     , CommandInfo InventoryVerb "inventory" ["inv", "i"] executeInventory
+    , CommandInfo DebugVerb ":debug" [] executeDebug
     ]
 
 knownVerbs :: [T.Text]

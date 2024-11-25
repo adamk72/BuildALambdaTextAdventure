@@ -29,6 +29,7 @@ library
       Command.CommandExecutor
       Command.CommandInfo
       Command.Commands
+      Command.Debug
       Command.Drop
       Command.Get
       Command.Go
@@ -37,6 +38,7 @@ library
       Command.Message.Command
       Command.Message.Common
       Command.Message.Container
+      Command.Message.Debug
       Command.Message.Error
       Command.Message.Inventory
       Command.Message.Item
@@ -60,6 +62,7 @@ library
       Entity.EntityConverter
       Entity.Ops.Inventory
       Entity.Ops.Location
+      Entity.Ops.NestedInventory
       Entity.Types
       Logger
       Parser.Parser

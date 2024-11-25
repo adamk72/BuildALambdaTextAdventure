@@ -31,6 +31,7 @@ putItemInContainer itemTag containerTag gw =
                 Just (LocationResult location) -> addItemToContainer location item
                 _                              -> msg $ DontSeeItem itemTag
 
+        -- Todo: fix the problem where the tardis can be in the bag and the bag in the tardis.
         addItemToContainer :: (HasCapacity a, HasEntityBase a) => Entity a -> Entity 'ItemT -> GameStateText
         addItemToContainer container item =
             case changeItemContainer container item gw of

@@ -4,6 +4,7 @@ import           Command.Message.Common  (MessageRenderer (..))
 import           Data.Text               (Text)
 import           Entity.Class.Capacity
 import           Entity.Class.EntityBase
+import           Entity.Ops.NestedInventory
 import           Entity.Entity
 import           Utils                   (oxfordEntityNames)
 
@@ -30,9 +31,9 @@ instance MessageRenderer InventoryMessage where
         NotFoundIn item container -> "Cannot find " <> item <> " in " <> container
         NotAContainer container -> container <> " isn't a container."
 
-showInventoryList :: Entity 'ActorT -> World -> Text
-showInventoryList actor w = do
-    let items = getItemList (getId actor) w
-    if null items
+showInventoryList :: World -> Text
+showInventoryList w = do
+    let nestedItems = getNestedInventoryList (activeActor w) w
+    if null nestedItems
         then "Your inventory is empty."
-        else "Your inventory contains: " <> oxfordEntityNames items <> "."
+        else "Your inventory contains: " <> formatNestedInventory nestedItems <> "."

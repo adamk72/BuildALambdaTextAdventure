@@ -1,4 +1,4 @@
-module Entity.Types (Capacity (..)) where
+module Entity.Types (module Entity.Types) where
 
 -- | Represents capacity constraints for containers
 data Capacity =

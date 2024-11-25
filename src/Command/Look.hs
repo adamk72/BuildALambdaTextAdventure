@@ -34,17 +34,11 @@ lookAt eTag gw = do
     case findEntityIdAtActorLoc (EntityId eTag) gw of
         Nothing -> return $ "Don't see a " <> eTag <> " to look at."
         Just _ -> case fromJust (findEntityById (EntityId eTag) gw) of
-                (LocationResult loc)     -> return $ "You're looking at " <> getName loc
-                (ActorResult actor) -> return $ "You're looking at " <> getName actor
-                (ItemResult item)   -> return $ "You're looking at " <> getName item
+                (LocationResult loc) -> return $ "You're looking at " <> getName loc
+                (ActorResult actor)  -> return $ "You're looking at " <> getName actor
+                (ItemResult item)    -> return $ "You're looking at " <> getName item
 
--- | Look at inventory contents
-lookInActorInventory :: World -> Text
-lookInActorInventory gw = do
-    let objects = getActiveActorInventoryList gw
-    if null objects
-        then "You don't have anything in your inventory."
-        else "Your inventory has: " <> oxfordEntityNames objects
+
 
 executeLook :: CommandExecutor
 executeLook expr = do
@@ -65,13 +59,13 @@ executeLook expr = do
 
         UnaryExpression _ (NounClause target)
             | "inventory" `isSuffixOf` target ->
-                return $ lookInActorInventory gw
+                return $ showInventoryList gw
             | otherwise ->
                 lookAt target gw
 
         BinaryExpression _ (PrepClause prep) (NounClause target)
             | (prep `isPrepVariantOf` "in" || prep `isPrepVariantOf` "at") && "inventory" `isSuffixOf` target ->
-                return $ lookInActorInventory gw
+                return $ showInventoryList gw
             | prep `isPrepVariantOf` "in" ->
                 lookInContainer target gw
             | prep `isPrepVariantOf` "at" || prep `isPrepVariantOf` "toward" ->
