@@ -10,21 +10,13 @@ import qualified Data.Map                as Map
 import           Data.Maybe
 import           Data.Text
 import           Entity.Class.EntityBase
-import           Entity.Class.Viewable (getLocationId, setLocationId, ViewablesRecord (..))
+import           Entity.Class.Viewable   (ViewablesRecord (..), getLocationId, getViewablesRecordByLocId)
 import           Entity.Entity
 import           Prelude                 as P
 import           Utils
 
 getLocationDestinations :: LocationId -> World -> Maybe [LocationId]
 getLocationDestinations locId w = destinations <$> Map.lookup locId (locations w)
-
--- | Update an entity's location
-updateLocation :: LocationId -> Entity a -> World -> World
-updateLocation newLocId entity gw =
-    case entity of
-        Actor {}    -> gw { actors = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (actors gw) }
-        Item  {}    -> gw { items  = Map.adjust (const $ setLocationId newLocId entity) (getId entity) (items gw) }
-        Location {} -> gw -- No update, return world unchanged for Location
 
 findItemIdAtActorLoc :: ItemId -> World -> Maybe ItemId
 findItemIdAtActorLoc iId w =
@@ -51,12 +43,6 @@ getViewableNamesAtActorLoc w =
     let acLocId = getLocationId (activeActor w)
         ViewablesRecord {viewableItems = items, viewableActors = actors} = getViewablesRecordByLocId acLocId w
     in P.map getName items ++ P.map getName actors
-
-getViewablesRecordByLocId :: LocationId -> World -> ViewablesRecord
-getViewablesRecordByLocId locId world = ViewablesRecord
-    { viewableItems = Map.elems $ Map.filter (\item -> getLocationId item == locId) (items world)
-    , viewableActors = Map.elems $ Map.filter (\actor -> getLocationId actor == locId) (actors world)
-    }
 
 getActiveActorLocation :: World -> Entity 'LocationT
 getActiveActorLocation w =

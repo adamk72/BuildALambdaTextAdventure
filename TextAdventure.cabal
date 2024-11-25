@@ -53,7 +53,6 @@ library
       Core.State.JSON
       Core.State.JSONTypes
       Entity.Class.Capacity
-      Entity.Class.Conveyable
       Entity.Class.EntityBase
       Entity.Class.Movable
       Entity.Class.Viewable

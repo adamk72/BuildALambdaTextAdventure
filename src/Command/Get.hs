@@ -6,6 +6,7 @@ import           Core.GameMonad
 import           Core.State
 import           Data.Maybe
 import           Data.Text               (Text)
+import           Entity.Class.Capacity   (addItem)
 import           Entity.Class.EntityBase
 import           Entity.Entity           hiding (getItem)
 import           Parser.Types
@@ -16,7 +17,7 @@ import           Prelude                 hiding (pred)
 getItem :: Text -> Maybe Text -> World -> GameStateText
 getItem itemTag srcM gw =
     case findEntityById itemId gw of
-        Just (ItemResult item) | item `elem` itemsInLoc   -> tryGetItem item
+        Just (ItemResult item) | item `elem` itemsInLoc   -> addItemToInventory item
         Just (ItemResult item) | item `elem` itemsOnActor -> msg $ AlreadyHaveItem (getName item)
         _                                                 -> msg $ DontSeeItem itemTag
     where
@@ -24,40 +25,13 @@ getItem itemTag srcM gw =
         itemsInLoc = getEntityInventoryList (getActiveActorLocation gw) gw
         itemsOnActor = getActiveActorInventoryList gw
 
-        tryGetItem :: Entity 'ItemT -> GameStateText
-        tryGetItem item = do
-            let updatedGW = updateLocation (getId (activeActor gw)) item gw
-            modifyWorld (const updatedGW)
-            msg $ PickedUp itemTag (getName (activeActor gw))
-
---     | not (isInInventoryOf itemTag visibleItems) = msg $ DontSeeItem itemTag
---     | otherwise = case findEntityById itemTag gw of
---         Nothing -> msgGameWordError $ ItemDoesNotExist itemTag
---         Just item -> do
---             let acInv = getActiveActorInventoryId gw
---             if getLocationId item == acInv
---             then msg $ AlreadyHaveItem (getName item)
---             else tryGetItem item acInv srcM
-
---   where
---     tryGetItem :: Entity 'ItemT -> Entity 'LocationT -> Maybe Text -> GameStateText
---     tryGetItem item locOrItem = \case
---         Nothing -> moveAndMsg item locOrItem
---         Just src -> case findAnyLocationByTag src gw of
---             Just loc -> if itemExistsAtLoc itemTag loc gw True
---                        then moveAndMsg item locOrItem
---                        else msg $ NotFoundIn itemTag src
---             Nothing -> case findEntityById src gw of
---                 Just container -> if isContainer container
---                                 then moveAndMsg item locOrItem
---                                 else msg $ NotAContainer src
---                 Nothing -> msg $ DontSeeItem src
-
---     moveAndMsg :: Entity 'ItemT -> Entity 'LocationT -> GameStateText
---     moveAndMsg item dstLoc = do
---         let updatedGW = moveItemLoc item dstLoc gw
---         modifyWorld (const updatedGW)
---         msg $ PickedUp itemTag (getName actor)
+        addItemToInventory :: Entity 'ItemT -> GameStateText
+        addItemToInventory item = do
+            case addItem (activeActor gw) item gw of
+                Right updatedGW -> do
+                     modifyWorld (const updatedGW)
+                     msg $ PickedUp itemTag (getName (activeActor gw))
+                Left errMsg -> return errMsg
 
 executeGet :: CommandExecutor
 executeGet expr = do
