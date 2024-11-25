@@ -1,23 +1,29 @@
 module Command.Drop (module Command.Drop) where
 import           Command.CommandExecutor
-import           Core.GameMonad
 import           Command.Message
+import           Core.GameMonad
 import           Core.State
-import           Data.Text
+import           Entity.Class.Capacity
+import           Entity.Entity
 import           Parser.Types
+import           Utils                   (ContainerTag, ItemTag)
 
+dropObject :: ItemTag -> Maybe ContainerTag -> World -> GameStateText
+dropObject itemTag dstTagM gw =
+    case findEntityById itemId gw of
+        Just (ItemResult item) | item `elem` itemsOnActor -> dropItemAtLocation item
+        _                                                 -> msg $ YouDoNotHave itemTag
+    where
+        itemId = EntityId itemTag
+        itemsOnActor = getActiveActorInventoryList gw
 
-dropObject :: Text -> Maybe Text -> Text -> World -> GameStateText
-dropObject object dstM actorLoc gw = undefined
-    -- case findEntityById (EntityId object) gw of
-    --     Just item -> do
-    --         let updatedGW = moveItemLoc item actorLoc gw
-    --             inv = oxfordEntityNames (getActorInventoryItems updatedGW)
-    --         modifyWorld (const updatedGW)
-    --         case dstM of
-    --             Nothing  -> msg $ DroppedItemWithInventory object inv
-    --             Just dst -> msg $ DroppedItemSomewhere object dst
-    --     Nothing -> msg $ YouDoNotHave object
+        dropItemAtLocation :: Entity 'ItemT -> GameStateText
+        dropItemAtLocation item = do
+            case changeItemContainer (getActiveActorLocation gw) item gw of
+                Right updatedGW -> do
+                     modifyWorld (const updatedGW)
+                     msg $ DroppedItemWithInventory itemTag (showInventoryList (activeActor updatedGW) updatedGW)
+                Left errMsg -> return errMsg
 
 executeDrop :: CommandExecutor
 executeDrop expr = do
@@ -26,8 +32,8 @@ executeDrop expr = do
             AtomicExpression _ ->
                 msg DropWhat
             UnaryExpression _ (NounClause object) ->
-                dropObject object Nothing "TBD LOCATION" gw
+                dropObject object Nothing  gw
             BinaryExpression {} ->
                 msg DropWhat
-            ComplexExpression _ (NounClause object) (PrepClause prep) (NounClause dst) -> dropObject object (Just (prep <> " " <> dst)) "TBD LOCATION" gw
+            ComplexExpression _ (NounClause object) (PrepClause prep) (NounClause dst) -> dropObject object (Just (prep <> " " <> dst)) gw
     handle expr

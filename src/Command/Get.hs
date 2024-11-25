@@ -6,15 +6,16 @@ import           Core.GameMonad
 import           Core.State
 import           Data.Maybe
 import           Data.Text               (Text)
-import           Entity.Class.Capacity   (addItem)
+import           Entity.Class.Capacity   (changeItemContainer)
 import           Entity.Class.EntityBase
 import           Entity.Entity           hiding (getItem)
 import           Parser.Types
 import           Parser.Utils
 import           Prelude                 hiding (pred)
+import           Utils                   (ItemTag)
 
 -- | Attempt to take an item from a specific location or container
-getItem :: Text -> Maybe Text -> World -> GameStateText
+getItem :: ItemTag -> Maybe Text -> World -> GameStateText
 getItem itemTag srcM gw =
     case findEntityById itemId gw of
         Just (ItemResult item) | item `elem` itemsInLoc   -> addItemToInventory item
@@ -26,8 +27,8 @@ getItem itemTag srcM gw =
         itemsOnActor = getActiveActorInventoryList gw
 
         addItemToInventory :: Entity 'ItemT -> GameStateText
-        addItemToInventory item = do
-            case addItem (activeActor gw) item gw of
+        addItemToInventory item =
+            case changeItemContainer (activeActor gw) item gw of
                 Right updatedGW -> do
                      modifyWorld (const updatedGW)
                      msg $ PickedUp itemTag (getName (activeActor gw))

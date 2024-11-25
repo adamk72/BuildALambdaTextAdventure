@@ -11,6 +11,7 @@ import           Entity.Entity
     (Entity (Actor, Item, Location, actorBase, itemBase, itemLocationId, locationBase), EntityBase (entityId), EntityId,
     EntityType (..), World (items))
 import           Entity.Types            (Capacity (..))
+import           Utils                   (oxfordEntityNames)
 
 class HasCapacity (a :: EntityType) where
     getCapacity :: Entity a -> Capacity
@@ -48,8 +49,8 @@ getItemList :: EntityId -> World -> [Entity 'ItemT]
 getItemList containerId world =
     Map.elems $ Map.filter (\item -> itemLocationId item == containerId) (items world)
 
-addItem :: (HasCapacity a, HasEntityBase a) => Entity a -> Entity 'ItemT -> World -> Either Text World
-addItem container item world =
+changeItemContainer :: (HasCapacity a, HasEntityBase a) => Entity a -> Entity 'ItemT -> World -> Either Text World
+changeItemContainer container item world =
     if canAddItem container world
     then Right $ updateItemLocation (entityId $ itemBase item) (getId container) world
     else Left "Container is full"

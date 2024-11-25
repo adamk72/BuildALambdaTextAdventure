@@ -8,6 +8,11 @@ import qualified Data.Text               as T
 import           Entity.Class.EntityBase
 import           Entity.Entity           (Entity (..))
 
+type LocationTag = Text
+type ActorTag = Text
+type ItemTag = Text
+type ContainerTag = Text
+
 oxfordEntityNames :: HasEntityBase a => [Entity a] -> Text
 oxfordEntityNames = oxfordComma . map (toLower . getName)
 
