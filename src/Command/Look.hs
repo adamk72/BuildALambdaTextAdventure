@@ -34,7 +34,7 @@ lookAt eTag gw = do
     case findEntityIdAtActorLoc (EntityId eTag) gw of
         Nothing -> return $ "Don't see a " <> eTag <> " to look at."
         Just _ -> case fromJust (findEntityById (EntityId eTag) gw) of
-                (LocResult loc)     -> return $ "You're looking at " <> getName loc
+                (LocationResult loc)     -> return $ "You're looking at " <> getName loc
                 (ActorResult actor) -> return $ "You're looking at " <> getName actor
                 (ItemResult item)   -> return $ "You're looking at " <> getName item
 

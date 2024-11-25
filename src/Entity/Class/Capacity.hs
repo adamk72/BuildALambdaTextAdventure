@@ -11,7 +11,6 @@ import           Entity.Entity
     (Entity (Actor, Item, Location, actorBase, itemBase, itemLocationId, locationBase), EntityBase (entityId), EntityId,
     EntityType (..), World (items))
 import           Entity.Types            (Capacity (..))
-import           Utils                   (oxfordEntityNames)
 
 class HasCapacity (a :: EntityType) where
     getCapacity :: Entity a -> Capacity

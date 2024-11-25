@@ -1,34 +1,43 @@
 module Command.Put (module Command.Put) where
 
 import           Command.CommandExecutor
-import           Core.GameMonad
 import           Command.Message
+import           Core.GameMonad
 import           Core.State
-import           Data.Text               (Text)
+import           Entity.Class.Capacity   (HasCapacity, changeItemContainer)
+import           Entity.Class.EntityBase (HasEntityBase)
+import           Entity.Entity
 import           Parser.Types
+import           Parser.Utils            (isPrepVariantOf)
+import           Utils                   (ItemTag, LocationTag)
 
-putItemInContainer :: Text -> Text -> World -> GameStateText
-putItemInContainer itemTag containerTag gw = undefined
-    -- case (findEntityByTag itemTag gw, findEntityByTag containerTag gw) of
-    --     (Just item, Just container)
-    --         | itemTagExistsAtActorLoc itemTag gw && itemTagExistsAtActorLoc containerTag gw ->
-    --             if isContainer container
-    --                 then do
-    --                     let updatedGW = moveItemToContainer item container gw
-    --                     case updatedGW of
-    --                         Right newGW -> do
-    --                             modifyWorld (const newGW)
-    --                             msg $ PutItemIn itemTag containerTag
-    --                         Left err -> return err
-    --                 else msg $ Command.Message.NotAContainer containerTag
-    --         | itemTagExistsAtActorLoc itemTag gw ->
-    --             msg $ NoContainerForItem itemTag containerTag
-    --         | itemTagExistsAtActorLoc containerTag gw ->
-    --             msg $ NoItemForContainer itemTag containerTag
-    --         | otherwise ->
-    --             msg $ InvalidItemInLocation itemTag
-    --     (Nothing, _) -> msgGameWordError $ ItemError itemTag
-    --     (_, Nothing) -> msgGameWordError $ ItemError containerTag
+putItemInContainer :: ItemTag -> LocationTag -> World -> GameStateText
+putItemInContainer itemTag containerTag gw =
+    case findEntityById itemId gw of
+        Just (ItemResult item) | item `elem` itemsInLoc || item `elem` itemsOnActor
+            -> tryToAddItemToContainer item
+        _   -> msg $ DontSeeItem itemTag
+    where
+        itemId = EntityId itemTag
+        containerId = EntityId containerTag
+        itemsInLoc = getEntityInventoryList (getActiveActorLocation gw) gw
+        itemsOnActor = getActiveActorInventoryList gw
+
+        tryToAddItemToContainer :: Entity 'ItemT -> GameStateText
+        tryToAddItemToContainer item =
+            case findEntityById containerId gw of
+                Just (ItemResult container)    -> addItemToContainer container item
+                Just (ActorResult actor)       -> addItemToContainer actor item
+                Just (LocationResult location) -> addItemToContainer location item
+                _                              -> msg $ DontSeeItem itemTag
+
+        addItemToContainer :: (HasCapacity a, HasEntityBase a) => Entity a -> Entity 'ItemT -> GameStateText
+        addItemToContainer container item =
+            case changeItemContainer container item gw of
+                Right updatedGW -> do
+                     modifyWorld (const updatedGW)
+                     return $ "You put " <> itemTag <> " in " <> containerTag <> "."
+                Left errMsg -> return errMsg
 
 executePut :: CommandExecutor
 executePut expr = do
@@ -40,5 +49,7 @@ executePut expr = do
             msg $ PutWhere itemTag
         BinaryExpression {} ->
             msg PutWhat
-        ComplexExpression _ (NounClause itemTag) _ (NounClause containerTag) ->
-            putItemInContainer itemTag containerTag gw
+        ComplexExpression _ (NounClause itemTag) (PrepClause prep)  (NounClause containerTag)
+            | prep `isPrepVariantOf` "in" ->
+                putItemInContainer itemTag containerTag gw
+        ComplexExpression {} -> return "TBD"

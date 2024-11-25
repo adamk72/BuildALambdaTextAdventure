@@ -73,19 +73,19 @@ isContainer (Item _ _ Nothing)  = False
 {- Example usage:
 case findEntityById targetId world of
     Nothing -> handleNotFound targetId
-    Just (LocResult loc) -> handleLocation loc
+    Just (LocationResult loc) -> handleLocation loc
     Just (ActorResult actor) -> handleActor actor
     Just (ItemResult item) -> handleItem item
 -}
 data EntityResult =
-    LocResult (Entity 'LocationT) |
+    LocationResult (Entity 'LocationT) |
     ActorResult (Entity 'ActorT) |
     ItemResult (Entity 'ItemT)
 
 findEntityById :: EntityId -> World -> Maybe EntityResult
 findEntityById targetId world =
     case Map.lookup targetId (locations world) of
-        Just loc -> Just (LocResult loc)
+        Just loc -> Just (LocationResult loc)
         Nothing -> case Map.lookup targetId (actors world) of
             Just actor -> Just (ActorResult actor)
             Nothing -> case Map.lookup targetId (items world) of
@@ -93,7 +93,7 @@ findEntityById targetId world =
                 Nothing   -> Nothing
 
 isLocation :: Maybe EntityResult -> Bool
-isLocation (Just (LocResult _)) = True
+isLocation (Just (LocationResult _)) = True
 isLocation _                    = False
 
 isActor :: Maybe EntityResult -> Bool
@@ -105,7 +105,7 @@ isItem (Just (ItemResult _)) = True
 isItem _                     = False
 
 getLocation :: Maybe EntityResult -> Maybe (Entity 'LocationT)
-getLocation (Just (LocResult loc)) = Just loc
+getLocation (Just (LocationResult loc)) = Just loc
 getLocation _                      = Nothing
 
 getActor :: Maybe EntityResult -> Maybe (Entity 'ActorT)
