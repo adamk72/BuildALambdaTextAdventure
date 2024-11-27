@@ -27,8 +27,7 @@ data Expression =
     deriving (Show, Eq)
 
 data ParseError =
-      UnknownVerb Text
-    | MissingObject
+      MissingObject
     | MissingTarget
     | MalformedExpression Text
     deriving (Show, Eq)

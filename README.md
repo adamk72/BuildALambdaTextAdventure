@@ -38,7 +38,6 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 ## Todos
 
 ### Coding Todos
-- [] Enhance Interpreter to return an Either that either returns a text error or the full Entity so I don't have to check in every command.
 - [] Pre-work for scenarios
   - [] Create "give" command for NPC interaction.
   - [] Create "talk" command for NPC interaction.

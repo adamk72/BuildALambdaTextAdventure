@@ -1,9 +1,8 @@
 module Parser.Parser (parsePhrase, renderExpression, renderExpressionError) where
 
-import           Command.CommandInfo
-import           Data.Maybe          (listToMaybe)
-import           Data.Text           (Text)
-import qualified Data.Text           as T
+import           Data.Maybe   (listToMaybe)
+import           Data.Text    (Text)
+import qualified Data.Text    as T
 import           Parser.Types
 import           Parser.Utils
 
@@ -31,10 +30,8 @@ parsePhrase :: Text -> Either ParseError Expression
 parsePhrase input = do
     let words' = filter (not . isArticle) $ T.words $ T.toLower input
     case words' of
-        [] -> Left $ MalformedExpression input
-        (w:ws) -> if w `elem` knownVerbs
-                  then parsePhraseType w ws
-                  else Left $ UnknownVerb w
+        []     -> Left $ MalformedExpression input
+        (w:ws) -> parsePhraseType w ws
 
 parsePhraseType :: Text -> [Text] -> Either ParseError Expression
 parsePhraseType verb [] = Right $ AtomicExpression verb
@@ -71,12 +68,11 @@ renderExpression = \case
 
 renderExpressionError :: ParseError -> Text
 renderExpressionError = \case
-    UnknownVerb verb ->
-        "I don't understand the phrase '" <> verb <> "'. Valid phrases start with: " <>
-        T.intercalate ", " knownVerbs <> "."
     MissingObject ->
-        "This phrase needs an object to act on. For example: 'get key' or 'drop sword'."
+        "This phrase needs an object to act on. For example: 'put bauble in bag', where 'bauble' is the object."
     MissingTarget ->
-        "This phrase needs a target. For example: 'go cave' or 'look at chest'."
+        "This phrase needs a target. For example: 'put bauble in bag' where 'bag' is the target."
+    MalformedExpression "" ->
+        "Did you mean to type a command?"
     MalformedExpression expr ->
         "I couldn't understand '" <> expr <> "'. Please try rephrasing your command."

@@ -7,23 +7,26 @@ import           Command.CommandInfo
 import           Core.Config          (quitCommands)
 import           Core.GameMonad
 import           Core.State.GameState
-import           Data.Text            (Text, toLower, words)
+import           Data.Text            (Text, toLower)
+import qualified Data.Text            as T
 import           Parser.Parser
+import           Parser.Utils         (getVerb)
 import           Prelude              hiding (words)
 
-tryCommand :: CommandInfo -> Text -> Either Text (GameMonad Text)
-tryCommand cmd input =
+tryCommand :: Text -> Either Text (GameMonad Text)
+tryCommand input =
     case parsePhrase input of
         Left err   -> Left $ renderExpressionError err
-        Right expr -> Right $ cmdExec cmd expr
+        Right expr -> do
+            let verb = getVerb expr
+            case findCommand verb of
+                Just cmdInfo -> Right $ cmdExec cmdInfo expr
+                Nothing      -> Left $ "I don't understand '" <> verb <> "'. Valid phrases start with: " <> T.intercalate ", " knownVerbs <> "."
 
 interpretCommand :: Text -> GameMonad (Maybe Text)
 interpretCommand raw = do
     let input = toLower raw
-    let match = case findCommand (head $ words input) of
-            Just cmdInfo -> tryCommand cmdInfo input
-            Nothing      -> Left "Unknown command"
-    case match of
+    case tryCommand input of
         Right action -> do
             logGameInfo $ "Executing command: " <> input
             result <- action
@@ -36,4 +39,4 @@ interpretCommand raw = do
                 return Nothing
             else do
                 logGameError $ "Command error: " <> err
-                return $ Just $ "Don't know how to " <> input <> ". Got error: " <> err <> "."
+                return $ Just err
