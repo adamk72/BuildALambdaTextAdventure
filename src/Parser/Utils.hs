@@ -1,24 +1,10 @@
-module Parser.Utils (getPrepVariants, getVerb, isPrepVariantOf, knownArticles, knownPreps, verbsRequiringObjects) where
+module Parser.Utils (getPrepVariants, getVerb, isPrepVariantOf) where
+
+import Parser.Internal.Patterns (knownPreps,)
 import           Data.Text    (Text, words)
 import           Parser.Types
 import           Prelude      hiding (words)
 
-verbsRequiringObjects :: [Text]
-verbsRequiringObjects = ["put", "place", "move", "set"]
-
-knownPreps :: [(Text, [[Text]])]
-knownPreps =
-    [ ("in", [["in"], ["inside"], ["into"], ["in", "to"]])
-    , ("on", [["on"], ["onto"], ["upon"], ["on", "top", "of"]])
-    , ("under", [["under"], ["beneath"], ["underneath"]])
-    , ("at", [["at"], ["towards"], ["toward"]])
-    , ("from", [["from"], ["out", "of"]])
-    , ("to", [["to"]])
-    , ("toward", [["toward"], ["towards"]])
-    ]
-
-knownArticles :: [Text]
-knownArticles = ["the", "a", "an"]
 
 getPrepVariants :: Text -> Maybe [[Text]]
 getPrepVariants basePrep = lookup basePrep knownPreps
@@ -29,11 +15,11 @@ isPrepVariantOf basePrep variantPhrase = case getPrepVariants basePrep of
     Just variants -> let words' = words variantPhrase
                     in words' `elem` variants
 
-getVerb :: Expression -> Text
+getVerb :: CmdExpression -> Text
 getVerb = \case
-    AtomicExpression verb -> verb
-    UnaryExpression verb _ -> verb
-    BinaryExpression verb _ _ -> verb
-    ComplexExpression verb _ _ _ -> verb
+    AtomicCmdExpression verb -> verb
+    UnaryCmdExpression verb _ -> verb
+    BinaryCmdExpression verb _ _ -> verb
+    ComplexCmdExpression verb _ _ _ -> verb
 
 

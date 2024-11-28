@@ -9,7 +9,7 @@
 
 # Command patterns
 
-## Parse rules
+## Verb Phrase Parse rules
 
 These assume that the first word, the verb, passes a check that they are valid for parsing; otherwise reject as "I don't know how to do "X".
 
@@ -33,13 +33,13 @@ The returned action phrase will act as a pattern to match on. Certain prepositio
 
 Only some of these make sense in a lightweight game. For instance, we could parse "hide behind the tree" to mean that the player is going to take that action, but there's little point. For one, there are no antagonists (at this time; a multi-player version may be viable) to seek out the player. Likewise, the act of hiding something behind a tree indicates the need for a location separate from the current space the player. So, the very least, the "hide" verb as applied to the player doesn't make much sense. Hiding objects may make sense however, as a future plan for the game is to have a moving antagonist who may react to a location depending on what is there. If a player left something behind to be found later by another actor (recall, the player will eventually be able to form severable party), then the roaming antagonist may need react --- and all this said, it may justify the hiding of an actor in way that means the player is forced to switch to another actor.
 
-## verb
+### verb
 
 - inventory
 - look
 - quit
 
-## verb preposition target
+### verb preposition target
 
 - go cave
 - lock door
@@ -54,7 +54,7 @@ Only some of these make sense in a lightweight game. For instance, we could pars
 - look at bag
 - look towards the north
 
-## verb object preposition target
+### verb object preposition target
 
 - put bauble in bag
 - put cup on tall table
@@ -65,6 +65,57 @@ Only some of these make sense in a lightweight game. For instance, we could pars
 - push chair under table
 - drop cat from roof
 
+# Conditional Phrase Parse Rules
 
+These are phrases that are internal to the adventure and not typed into the command line by the player. As with verb phrases, the articles don't matter.
 
+They one of two forms:
 
+1. Basic: Basic phrases which establish the state of location, item, or actor
+2. Tagged: Similar to Basic, except the possessive clause refers to a tag or type (type and tag are synonyms).
+
+## Basic
+
+- subject [negation] condition  - e.g., door locked, guard standing, guard not standing
+  - negations: "no," "not"
+- subject verb condition        - e.g., door is locked, queen is ruler, bauble is red
+  - verbs: "is," "is not," "are," "are not"
+- subject verb possession       - e.g., queen has ring, guard has coin
+  - verbs" "has," "has no,", "doesn't have," "doesn't have any"
+
+## Tagged
+
+Negation and verbs are as with the Basic structure.
+
+- subject [negation] condition "tag|type"   - e.g., bauble blue tag, bauble not blue type
+- subject "tag|type" verb condition         - e.g., bauble tag is blue, bauble type is not blue
+- subject verb condition "tag|type"         - e.g., bauble is blue tag, bauble type is blue type
+- subject verb possession "tag|type"        - e.g., bauble has blue tag, bauble type has blue type
+- subject verb "of tag|of type" condition   - e.g., bauble is of type blue, bauble is of tag blue
+
+##  Examples
+
+### Basic Examples
+- castle locked
+- castle is locked
+- castle not locked
+- castle is not locked
+- castle door is not locked
+- the guard has the key
+- guard does not have the key
+- guard doesn't have any key
+- guard has key
+- guard has no key
+- bauble is blue
+- alice is queen
+- alice is not queen
+
+### Tagged Examples
+These make use of potential tags that can be applied to Entities.
+
+- bauble blue tag
+- bauble has blue tag
+- bauble has a blue tag
+- bauble tag is blue
+- guard is of type royal
+- guard type is royal

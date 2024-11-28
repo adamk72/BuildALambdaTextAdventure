@@ -16,7 +16,7 @@ spec = do
         describe "expression handling" $ do
             it "handles atomic expression (just 'get')" $ do
                 let gw = defaultGW
-                    expr = AtomicExpression "get"
+                    expr = AtomicCmdExpression "get"
                 (output, newState) <- runCommand executeGet expr gw
 
                 output `shouldBe` renderMessage GetWhat
@@ -24,7 +24,7 @@ spec = do
 
             it "handles unary expression (get <item>)" $ do
                 let gw = defaultGW
-                    expr = UnaryExpression "get" (NounClause "silver coin")
+                    expr = UnaryCmdExpression "get" (NounClause "silver coin")
                 (output, newState) <- runCommand executeGet expr gw
 
                 output `shouldBe` "Moved silver coin to Alice the Adventurer"
@@ -32,7 +32,7 @@ spec = do
 
             it "handles binary expression (get <item> from <location>)" $ do
                 let gw = defaultGW
-                    expr = BinaryExpression "get" (PrepClause "from") (NounClause "someplace")
+                    expr = BinaryCmdExpression "get" (PrepClause "from") (NounClause "someplace")
                 (output, newState) <- runCommand executeGet expr gw
 
                 output `shouldBe` renderMessage GetWhat
@@ -40,7 +40,7 @@ spec = do
 
             it "handle complex sentences for picking something up" $ do
                 let gw = defaultGW
-                    expr = ComplexExpression "get" (NounClause "silver coin") (PrepClause "from") (NounClause "meadow")
+                    expr = ComplexCmdExpression "get" (NounClause "silver coin") (PrepClause "from") (NounClause "meadow")
                 (output, newState) <- runCommand executeGet expr gw
 
                 output `shouldBe` renderMessage (PickedUp "silver coin" "Alice the Adventurer")

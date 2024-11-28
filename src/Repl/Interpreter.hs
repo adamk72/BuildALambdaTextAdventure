@@ -15,13 +15,13 @@ import           Prelude              hiding (words)
 
 tryCommand :: Text -> Either Text (GameMonad Text)
 tryCommand input =
-    case parsePhrase input of
+    case parseCmdPhrase input of
         Left err   -> Left $ renderExpressionError err
         Right expr -> do
             let verb = getVerb expr
             case findCommand verb of
                 Just cmdInfo -> Right $ cmdExec cmdInfo expr
-                Nothing      -> Left $ "I don't understand '" <> verb <> "'. Valid phrases start with: " <> T.intercalate ", " knownVerbs <> "."
+                Nothing      -> Left $ "I don't understand '" <> verb <> "'. Valid phrases start with: " <> T.intercalate ", " knownCmdVerbs <> "."
 
 interpretCommand :: Text -> GameMonad (Maybe Text)
 interpretCommand raw = do

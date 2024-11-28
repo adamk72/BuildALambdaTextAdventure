@@ -1,4 +1,4 @@
-module Parser.Types (Expression (..), NounClause (..), ParseError (..), PrepClause (..)) where
+module Parser.Types (CmdExpression (..), NounClause (..), ParseError (..), PrepClause (..), Subject, CondClause(..), CondExpression(..)) where
 
 import           Data.Text
 
@@ -19,15 +19,24 @@ newtype PrepClause = PrepClause { unPrepClause :: Text }
 
 type Verb = Text
 
-data Expression =
-      AtomicExpression Verb
-    | UnaryExpression Verb NounClause
-    | BinaryExpression Verb PrepClause NounClause
-    | ComplexExpression Verb NounClause PrepClause NounClause
+data CmdExpression =
+      AtomicCmdExpression Verb
+    | UnaryCmdExpression Verb NounClause
+    | BinaryCmdExpression Verb PrepClause NounClause
+    | ComplexCmdExpression Verb NounClause PrepClause NounClause
+    deriving (Show, Eq)
+
+newtype CondClause = CondClause { unCondClause :: Text} deriving (Show, Eq)
+
+type Subject = Text
+
+data CondExpression =
+      UnaryCondExpression Subject CondClause
     deriving (Show, Eq)
 
 data ParseError =
       MissingObject
     | MissingTarget
     | MalformedExpression Text
+    | TBDError
     deriving (Show, Eq)

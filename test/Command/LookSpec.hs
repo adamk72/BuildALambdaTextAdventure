@@ -19,7 +19,7 @@ spec = do
         describe "expression handling" $ do
             it "handles atomic expression (just 'look')" $ do
                 let gw = defaultGW
-                    expr = AtomicExpression "look"
+                    expr = AtomicCmdExpression "look"
                 (output, newState) <- runCommand executeLook expr gw
 
                 output `shouldBe` "A general view of the space and possibly some items."
@@ -27,7 +27,7 @@ spec = do
 
             it "handles unary expression (look around)" $ do
                 let gw = defaultGW
-                    expr = UnaryExpression "look" (NounClause "around")
+                    expr = UnaryCmdExpression "look" (NounClause "around")
                 (output, newState) <- runCommand executeLook expr gw
 
                 -- Test that output includes location and visible items
@@ -38,7 +38,7 @@ spec = do
 
             it "handles looking at specific items" $ do
                 let gw = defaultGW
-                    expr = BinaryExpression "look" (PrepClause "at") (NounClause "silver coin")
+                    expr = BinaryCmdExpression "look" (PrepClause "at") (NounClause "silver coin")
                 (output, newState) <- runCommand executeLook expr gw
 
                 "silver coin" `shouldSatisfy` (`isInfixOf` output)
@@ -46,7 +46,7 @@ spec = do
 
             it "handles looking in containers" $ do
                 let gw = defaultGW
-                    expr = BinaryExpression "look" (PrepClause "in") (NounClause "bag of holding")
+                    expr = BinaryCmdExpression "look" (PrepClause "in") (NounClause "bag of holding")
                 (output, newState) <- runCommand executeLook expr gw
 
                 "pearl" `shouldSatisfy` (`isInfixOf` output)
@@ -55,7 +55,7 @@ spec = do
         describe "visibility rules" $ do
             it "shows items in the current location" $ do
                 let gw = defaultGW
-                    expr = UnaryExpression "look" (NounClause "around")
+                    expr = UnaryCmdExpression "look" (NounClause "around")
                 (output, _) <- runCommand executeLook expr gw
                 let visibleMovables = getViewableNamesAtActorLoc gw
 
@@ -64,7 +64,7 @@ spec = do
 
             it "doesn't show items in other locations" $ do
                 let gw = defaultGW
-                    expr = UnaryExpression "look" (NounClause "around")
+                    expr = UnaryCmdExpression "look" (NounClause "around")
                 (output, _) <- runCommand executeLook expr gw
 
                 "bat" `shouldNotSatisfy` (`isInfixOf` output)  -- bat is in cave
@@ -72,7 +72,7 @@ spec = do
 
             it "shows items in visible containers" $ do
                 let gw = defaultGW
-                    expr = BinaryExpression "look" (PrepClause "in") (NounClause "bag of holding")
+                    expr = BinaryCmdExpression "look" (PrepClause "in") (NounClause "bag of holding")
                 (output, _) <- runCommand executeLook expr gw
 
                 "pearl" `shouldSatisfy` (`isInfixOf` output)
@@ -80,14 +80,14 @@ spec = do
         describe "state preservation" $ do
             it "maintains actor location after looking" $ do
                 let gw = defaultGW
-                    expr = UnaryExpression "look" (NounClause "around")
+                    expr = UnaryCmdExpression "look" (NounClause "around")
                 (_, newState) <- runCommand executeLook expr gw
 
                 verifyStartLocation newState "meadow"
 
             it "maintains inventory after looking" $ do
                 let gw = defaultGW
-                    expr = UnaryExpression "look" (NounClause "around")
+                    expr = UnaryCmdExpression "look" (NounClause "around")
                 (_, newState) <- runCommand executeLook expr gw
 
                 let originalInventory = getActiveActorInventoryList gw
@@ -97,7 +97,7 @@ spec = do
 
             it "maintains world state integrity" $ do
                 let gw = defaultGW
-                    expr = UnaryExpression "look" (NounClause "around")
+                    expr = UnaryCmdExpression "look" (NounClause "around")
                 (_, newState) <- runCommand executeLook expr gw
 
                 Map.size (items gw) `shouldBe` Map.size (items newState)

@@ -65,6 +65,7 @@ library
       Entity.Ops.NestedInventory
       Entity.Types
       Logger
+      Parser.Internal.Patterns
       Parser.Parser
       Parser.Types
       Parser.Utils

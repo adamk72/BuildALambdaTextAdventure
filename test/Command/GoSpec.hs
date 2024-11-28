@@ -17,7 +17,7 @@ spec = do
         describe "expression handling" $ do
             it "handles atomic expression (just 'go')" $ do
                 let gw = defaultGW
-                    expr = AtomicExpression "go"
+                    expr = AtomicCmdExpression "go"
                 (output, newState) <- runCommand executeGo expr gw
 
                 output `shouldBe` renderMessage GoWhere -- Should be updated with proper error message
@@ -25,7 +25,7 @@ spec = do
 
             it "handles unary expression (go <location>)" $ do
                 let gw = defaultGW
-                    expr = UnaryExpression "go" (NounClause "cave")
+                    expr = UnaryCmdExpression "go" (NounClause "cave")
                 (output, newState) <- runCommand executeGo expr gw
 
                 output `shouldBe` "Moving to cave."
@@ -33,7 +33,7 @@ spec = do
 
             it "handles binary expression (go to <location>)" $ do
                 let gw = defaultGW
-                    expr = BinaryExpression "go" (PrepClause "to") (NounClause "cave")
+                    expr = BinaryCmdExpression "go" (PrepClause "to") (NounClause "cave")
                 (output, newState) <- runCommand executeGo expr gw
 
                 output `shouldBe` "Moving to cave."
@@ -41,7 +41,7 @@ spec = do
 
             it "handles complex expression as unknown" $ do
                 let gw = defaultGW
-                    expr = ComplexExpression "go" (NounClause "something") (PrepClause "to") (NounClause "cave")
+                    expr = ComplexCmdExpression "go" (NounClause "something") (PrepClause "to") (NounClause "cave")
                 (output, newState) <- runCommand executeGo expr gw
 
                 output `shouldBe` renderMessage NotSure

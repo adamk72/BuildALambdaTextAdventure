@@ -15,7 +15,7 @@ spec = do
         describe "expression handling" $ do
             it "handles atomic expression (just 'put')" $ do
                 let gw = defaultGW
-                    expr = AtomicExpression "put"
+                    expr = AtomicCmdExpression "put"
                 (output, newState) <- runCommand executePut expr gw
 
                 output `shouldBe` renderMessage PutWhat
@@ -23,7 +23,7 @@ spec = do
 
             it "handles unary expression (put <item>)" $ do
                 let gw = defaultGW
-                    expr = UnaryExpression "put" (NounClause "silver coin")
+                    expr = UnaryCmdExpression "put" (NounClause "silver coin")
                 (output, newState) <- runCommand executePut expr gw
 
                 output `shouldBe` renderMessage (PutWhere "silver coin")
@@ -31,7 +31,7 @@ spec = do
 
             it "handles binary expression (put in <container>)" $ do
                 let gw = defaultGW
-                    expr = BinaryExpression "put" (PrepClause "in") (NounClause "bag of holding")
+                    expr = BinaryCmdExpression "put" (PrepClause "in") (NounClause "bag of holding")
                 (output, newState) <- runCommand executePut expr gw
 
                 output `shouldBe` renderMessage PutWhat

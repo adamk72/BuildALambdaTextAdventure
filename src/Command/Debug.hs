@@ -13,7 +13,7 @@ executeDebug :: CommandExecutor
 executeDebug expr = do
     gw <- getWorld
     case expr of
-        UnaryExpression _ (NounClause cmd)
+        UnaryCmdExpression _ (NounClause cmd)
             | cmd == "world" -> msg $ ShowWorldState $ formatWorld gw
             | otherwise -> msg $ InvalidDebugCommand cmd
         _ -> msg $ InvalidDebugCommand "Debug commands must be in the form ':debug <command>'"

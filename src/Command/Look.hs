@@ -44,10 +44,10 @@ executeLook :: CommandExecutor
 executeLook expr = do
     gw <- getWorld
     case expr of
-        AtomicExpression {} ->
+        AtomicCmdExpression {} ->
             msg $ YouSeeGeneral "A general view of the space and possibly some items."
 
-        UnaryExpression _ (NounClause "around") -> do
+        UnaryCmdExpression _ (NounClause "around") -> do
             let surroundings = getViewableNamesAtActorLoc gw
                 destinationIds = getLocationDestinations (getLocationId (activeActor gw )) gw
             case destinationIds of
@@ -57,13 +57,13 @@ executeLook expr = do
                     return message
                 Nothing -> return "You don't see a way out of here!"
 
-        UnaryExpression _ (NounClause target)
+        UnaryCmdExpression _ (NounClause target)
             | "inventory" `isSuffixOf` target ->
                 return $ showInventoryList gw
             | otherwise ->
                 lookAt target gw
 
-        BinaryExpression _ (PrepClause prep) (NounClause target)
+        BinaryCmdExpression _ (PrepClause prep) (NounClause target)
             | (prep `isPrepVariantOf` "in" || prep `isPrepVariantOf` "at") && "inventory" `isSuffixOf` target ->
                 return $ showInventoryList gw
             | prep `isPrepVariantOf` "in" ->
@@ -73,5 +73,5 @@ executeLook expr = do
             | otherwise ->
                 return "TBD"
 
-        ComplexExpression _ (NounClause object) (PrepClause prep) (NounClause target) ->
+        ComplexCmdExpression _ (NounClause object) (PrepClause prep) (NounClause target) ->
             return $ "You look at " <> object <> " " <> prep <> " " <> target <> "."

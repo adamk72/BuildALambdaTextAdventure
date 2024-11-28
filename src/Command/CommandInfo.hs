@@ -1,4 +1,4 @@
-module Command.CommandInfo (CommandInfo (..), CommandVerb (..), allCommands, findCommand, knownVerbs) where
+module Command.CommandInfo (CommandInfo (..), CommandVerb (..), allCommands, findCommand, knownCmdVerbs) where
 
 import           Command.CommandExecutor
 import           Command.Commands
@@ -37,8 +37,8 @@ allCommands =
     , CommandInfo DebugVerb ":debug" [] executeDebug
     ]
 
-knownVerbs :: [T.Text]
-knownVerbs = concatMap (\cmd -> cmdText cmd : cmdAliases cmd) allCommands
+knownCmdVerbs :: [T.Text]
+knownCmdVerbs = concatMap (\cmd -> cmdText cmd : cmdAliases cmd) allCommands
 
 findCommand :: T.Text -> Maybe CommandInfo
 findCommand text = find matchingCommand allCommands

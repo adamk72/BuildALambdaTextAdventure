@@ -6,7 +6,7 @@ import           Control.Monad.State
 import           Core.State
 import           Data.Text              (Text, isInfixOf)
 import           Logger                 (initGameHistory)
-import           Parser.Types           (Expression)
+import           Parser.Types           (CmdExpression)
 import           System.Directory       (getTemporaryDirectory)
 import           System.FilePath        ((</>))
 import           Test.Hspec
@@ -22,7 +22,7 @@ initTestState wrld = do
     return $ GameState wrld history
 
 -- | Run a command in the test environment
-runCommand :: CommandExecutor -> Expression -> World -> IO (Text, World)
+runCommand :: CommandExecutor -> CmdExpression -> World -> IO (Text, World)
 runCommand executor expr initialWorld = do
     st <- initTestState initialWorld
     (result, finalState) <- runStateT (executor expr) st

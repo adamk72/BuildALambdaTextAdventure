@@ -29,11 +29,11 @@ executeDrop :: CommandExecutor
 executeDrop expr = do
     gw <- getWorld
     let handle = \case
-            AtomicExpression _ ->
+            AtomicCmdExpression _ ->
                 msg DropWhat
-            UnaryExpression _ (NounClause object) ->
+            UnaryCmdExpression _ (NounClause object) ->
                 dropObject object Nothing  gw
-            BinaryExpression {} ->
+            BinaryCmdExpression {} ->
                 msg DropWhat
-            ComplexExpression _ (NounClause object) (PrepClause prep) (NounClause dst) -> dropObject object (Just (prep <> " " <> dst)) gw
+            ComplexCmdExpression _ (NounClause object) (PrepClause prep) (NounClause dst) -> dropObject object (Just (prep <> " " <> dst)) gw
     handle expr

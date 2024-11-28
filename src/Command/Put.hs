@@ -44,13 +44,13 @@ executePut :: CommandExecutor
 executePut expr = do
     gw <- getWorld
     case expr of
-        AtomicExpression {} ->
+        AtomicCmdExpression {} ->
             msg PutWhat
-        UnaryExpression _ (NounClause itemTag) ->
+        UnaryCmdExpression _ (NounClause itemTag) ->
             msg $ PutWhere itemTag
-        BinaryExpression {} ->
+        BinaryCmdExpression {} ->
             msg PutWhat
-        ComplexExpression _ (NounClause itemTag) (PrepClause prep)  (NounClause containerTag)
+        ComplexCmdExpression _ (NounClause itemTag) (PrepClause prep)  (NounClause containerTag)
             | prep `isPrepVariantOf` "in" ->
                 putItemInContainer itemTag containerTag gw
-        ComplexExpression {} -> return "TBD"
+        ComplexCmdExpression {} -> return "TBD"

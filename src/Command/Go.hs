@@ -29,7 +29,7 @@ executeGo :: CommandExecutor
 executeGo expr = do
     gw <- getWorld
     case expr of
-        (AtomicExpression _)                     -> msg GoWhere
-        (UnaryExpression _ (NounClause dst) )    -> moveTo dst gw
-        (BinaryExpression _ _ (NounClause dst) ) -> moveTo dst gw
+        (AtomicCmdExpression _)                     -> msg GoWhere
+        (UnaryCmdExpression _ (NounClause dst) )    -> moveTo dst gw
+        (BinaryCmdExpression _ _ (NounClause dst) ) -> moveTo dst gw
         _                                        -> msg NotSure

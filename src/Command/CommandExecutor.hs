@@ -5,4 +5,4 @@ import           Core.State.GameState
 import           Data.Text
 import           Parser.Types
 
-type CommandExecutor = Expression -> GameMonad Text
+type CommandExecutor = CmdExpression -> GameMonad Text

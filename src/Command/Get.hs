@@ -38,12 +38,12 @@ executeGet :: CommandExecutor
 executeGet expr = do
     gw <- getWorld
     let handle = \case
-            AtomicExpression {} -> msg GetWhat
-            UnaryExpression _ (NounClause itemTag) ->
+            AtomicCmdExpression {} -> msg GetWhat
+            UnaryCmdExpression _ (NounClause itemTag) ->
                 getItem itemTag Nothing gw
-            BinaryExpression {} -> msg GetWhat
-            ComplexExpression _ (NounClause itemTag) (PrepClause prep) (NounClause src)
+            BinaryCmdExpression {} -> msg GetWhat
+            ComplexCmdExpression _ (NounClause itemTag) (PrepClause prep) (NounClause src)
                 | prep `isPrepVariantOf` "from" || prep `isPrepVariantOf` "in" ->
                     getItem itemTag (Just src) gw
-            ComplexExpression {} -> return "TBD"
+            ComplexCmdExpression {} -> return "TBD"
     handle expr
