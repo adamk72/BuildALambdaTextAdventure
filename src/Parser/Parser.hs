@@ -1,10 +1,10 @@
-module Parser.Parser (parseCmdPhrase, renderExpression, renderExpressionError) where
+module Parser.Parser (parseCmdPhrase, parseCondPhrase, renderExpression, renderExpressionError) where
 
-import           Command.CommandInfo      (knownCmdVerbs)
 import           Data.Text                (Text)
 import qualified Data.Text                as T
 import           Parser.Internal.Patterns
-    (MatchPreference (First, Last), findPattern, knownArticles, knownPatterns, knownPreps, verbsRequiringObjects)
+    (MatchPreference (First, Last), findPattern, isCondTypeOf, knownArticles,knownCondPatterns,
+    knownPreps, verbsRequiringObjects)
 import           Parser.Types
 import           Prelude                  hiding (words)
 
@@ -15,36 +15,53 @@ isArticle = (`elem` knownArticles)
 makeNounClause :: [Text] -> NounClause
 makeNounClause = NounClause . T.unwords
 
-makeCondClause :: [Text] -> CondClause
-makeCondClause = CondClause . T.unwords
+makeSubjClause:: [Text] -> SubjClause
+makeSubjClause = SubjClause . T.unwords
+
+makeStateClause:: [Text] -> StateClause
+makeStateClause = StateClause . T.unwords
+
+makePossessionClause:: [Text] -> PossessionClause
+makePossessionClause = PossessionClause . T.unwords
 
 findPrepClause :: [Text] -> Either ParseError (Maybe (Text, [Text], [Text]))
 findPrepClause words = Right $ findPattern knownPreps Last words
 
 findCondPattern :: [Text] -> Either ParseError (Maybe (Text, [Text], [Text]))
-findCondPattern words = Right $ findPattern knownPatterns First words
+findCondPattern words = Right $ findPattern knownCondPatterns First words
 
 -- | Main parsing functions
 parseCondPhrase :: Text -> Either ParseError CondExpression
 parseCondPhrase input = do
     let words' = filter (not . isArticle) $ T.words $ T.toLower input
     case words' of
-        []     -> Left $ MalformedExpression input
-        (w:ws) -> runParseCondPhrase w ws
+        [] -> Left MalformedCondExpression
+        _  -> runParseCondPhrase words'
 
-runParseCondPhrase :: Text -> [Text] -> Either ParseError CondExpression
-runParseCondPhrase _ [] = Left TBDError
-runParseCondPhrase subject clause = do
+runParseCondPhrase :: [Text] -> Either ParseError CondExpression
+runParseCondPhrase [] = Left TBDError
+runParseCondPhrase clause = do
     condResult <- findCondPattern clause
     case condResult of
-        Nothing           -> Right $ UnaryCondExpression subject (makeCondClause clause)
-        Just (t0, t1, t2) -> undefined
+        Nothing           -> Left MalformedCondExpression
+        Just (verbClause, subject, condition) ->
+            case isCondTypeOf verbClause of
+            PosState               -> makeStateExpr "is" PosStateExpression
+            NegState               -> makeStateExpr "is no" NegStateExpression
+            Possessive             -> makePossesExpr "has" PossessiveExpression
+            NonPossessive          -> makePossesExpr "has no" NonPossessiveExpression
+            UnknownConditionalType -> Left TBDError
+            where
+                makePossesExpr v ctor =
+                    Right $ ctor v (makeSubjClause subject) (makePossessionClause condition)
+                makeStateExpr v ctor =
+                    Right $ ctor v (makeSubjClause subject) (makeStateClause condition)
 
 parseCmdPhrase :: Text -> Either ParseError CmdExpression
 parseCmdPhrase input = do
     let words' = filter (not . isArticle) $ T.words $ T.toLower input
     case words' of
-        []     -> Left $ MalformedExpression input
+        []     -> Left $ MalformedCmdExpression input
         (w:ws) -> runParseCmdPhrase w ws
 
 runParseCmdPhrase :: Text -> [Text] -> Either ParseError CmdExpression
@@ -83,11 +100,12 @@ renderExpression = \case
 renderExpressionError :: ParseError -> Text
 renderExpressionError = \case
     TBDError -> "TBD on ths one"
+    MalformedCondExpression -> "Phrase is incomplete."
     MissingObject ->
         "This phrase needs an object to act on. For example: 'put bauble in bag', where 'bauble' is the object."
     MissingTarget ->
         "This phrase needs a target. For example: 'put bauble in bag' where 'bag' is the target."
-    MalformedExpression "" ->
+    MalformedCmdExpression "" ->
         "Did you mean to type a command?"
-    MalformedExpression expr ->
+    MalformedCmdExpression expr ->
         "I couldn't understand '" <> expr <> "'. Please try rephrasing your command."

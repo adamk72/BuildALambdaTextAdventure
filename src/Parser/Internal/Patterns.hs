@@ -4,15 +4,18 @@ module Parser.Internal.Patterns
     , PatternList
     , PatternMatch
     , findPattern
+    , isCondTypeOf
     , knownArticles
-    , knownPatterns
+    , knownCondNegations
+    , knownCondPatterns
     , knownPreps
     , verbsRequiringObjects
     ) where
 
-import           Data.Maybe (listToMaybe)
-import           Data.Text  (Text)
-import           Prelude    hiding (words)
+import           Data.Maybe   (listToMaybe, mapMaybe)
+import           Data.Text    (Text, isInfixOf, toLower, unwords)
+import           Parser.Types (ConditionalType (..))
+import           Prelude      hiding (words)
 
 -- | Type alias for pattern matching results
 -- (matched base pattern, words before, words after)
@@ -46,6 +49,7 @@ findPattern patterns pref words =
         First -> listToMaybe matches
         Last  -> listToMaybe (reverse matches)
 
+
 knownPreps :: PatternList
 knownPreps =
     [ ("in",    [["in"], ["into"], ["inside"], ["within"]])
@@ -56,15 +60,43 @@ knownPreps =
     , ("under", [["under"], ["underneath"], ["beneath"]])
     ]
 
-knownPatterns :: PatternList
-knownPatterns =
-    [ ("is",  [["is"], ["are"], ["was"], ["were"]])
-    , ("has", [["has"], ["have"], ["had"]])
-    , ("not", [["not"], ["doesn't"], ["does", "not"], ["has", "no"], ["don't"]])
+knownCondNegations :: [Text]
+knownCondNegations = ["no", "n't", "not"]
+
+knownCondPatterns :: PatternList
+knownCondPatterns =
+     [ ("is",  [["is"], ["is", "not"], ["not"], ["are"], ["are", "not"]])
+    , ("has", [["has"], ["has", "no"], ["does", "not", "have"], ["doesn't", "have"], ["don't", "have"]])
     ]
 
+hasClause :: Text -> [Text] -> Bool
+hasClause p clauses =
+    let lowP = toLower p
+    in any (`isInfixOf` lowP) clauses
+
+isCondTypeOf :: Text -> ConditionalType
+isCondTypeOf t = case findMatchingPattern t of
+    Just ("is", True)   -> NegState
+    Just ("is", False)  -> PosState
+    Just ("has", True)  -> NonPossessive
+    Just ("has", False) -> Possessive
+    Just {}             -> UnknownConditionalType
+    Nothing             -> UnknownConditionalType
+
+findMatchingPattern :: Text -> Maybe (Text, Bool)
+findMatchingPattern input =
+    let lowered = toLower input
+        matchPattern (patternName, variants) =
+            let matches = any (hasClause lowered . pure . Data.Text.unwords) variants
+                hasNeg = any (hasClause lowered . pure . Data.Text.unwords)
+                         (filter (any (`elem` knownCondNegations)) variants)
+            in if matches
+               then Just (patternName, hasNeg)
+               else Nothing
+    in listToMaybe $ mapMaybe matchPattern knownCondPatterns
+
 knownArticles :: [Text]
-knownArticles = ["the", "a", "an"]
+knownArticles = ["the", "a", "an", "any"]
 
 verbsRequiringObjects :: [Text]
 verbsRequiringObjects = ["put", "place", "move", "set"]

@@ -1,4 +1,15 @@
-module Parser.Types (CmdExpression (..), NounClause (..), ParseError (..), PrepClause (..), Subject, CondClause(..), CondExpression(..)) where
+module Parser.Types
+    ( CmdExpression (..)
+    , CondExpression (..)
+    , ConditionalType (..)
+    , NounClause (..)
+    , ParseError (..)
+    , PossessionClause (..)
+    , PrepClause (..)
+    , StateClause (..)
+    , SubjClause (..)
+    , Subject
+    ) where
 
 import           Data.Text
 
@@ -26,17 +37,26 @@ data CmdExpression =
     | ComplexCmdExpression Verb NounClause PrepClause NounClause
     deriving (Show, Eq)
 
-newtype CondClause = CondClause { unCondClause :: Text} deriving (Show, Eq)
+newtype SubjClause = SubjClause { unSubjClause :: Text} deriving (Show, Eq)
+newtype StateClause = StateClause { unStateClause :: Text} deriving (Show, Eq)
+newtype PossessionClause = PossessionClause { unPossessionClause :: Text} deriving (Show, Eq)
 
 type Subject = Text
 
 data CondExpression =
-      UnaryCondExpression Subject CondClause
+      PosStateExpression Text SubjClause StateClause
+    | NegStateExpression Text SubjClause StateClause
+    | PossessiveExpression Text SubjClause PossessionClause
+    | NonPossessiveExpression Text SubjClause PossessionClause
+    deriving (Show, Eq)
+
+data ConditionalType = PosState | NegState | Possessive | NonPossessive | UnknownConditionalType
     deriving (Show, Eq)
 
 data ParseError =
       MissingObject
     | MissingTarget
-    | MalformedExpression Text
+    | MalformedCmdExpression Text
+    | MalformedCondExpression
     | TBDError
     deriving (Show, Eq)

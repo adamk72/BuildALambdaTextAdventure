@@ -75,7 +75,7 @@ spec = do
 
         context "with invalid commands" $ do
             it "fails on empty input" $ do
-                parseCmdPhrase "" `shouldBe` Left (MalformedExpression "")
+                parseCmdPhrase "" `shouldBe` Left (MalformedCmdExpression "")
 
             it "fails on missing objects for verbs that require them" $ do
                 parseCmdPhrase "put in bag" `shouldBe` Left MissingObject

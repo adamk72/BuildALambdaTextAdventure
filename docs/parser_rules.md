@@ -93,6 +93,11 @@ Negation and verbs are as with the Basic structure.
 - subject verb possession "tag|type"        - e.g., bauble has blue tag, bauble type has blue type
 - subject verb "of tag|of type" condition   - e.g., bauble is of type blue, bauble is of tag blue
 
+### Conditions Verbs List
+
+- is: is, is not, not, are, are not
+- has: has, has no, does not have, doesn't have, don't have
+
 ##  Examples
 
 ### Basic Examples
@@ -103,7 +108,6 @@ Negation and verbs are as with the Basic structure.
 - castle door is not locked
 - the guard has the key
 - guard does not have the key
-- guard doesn't have any key
 - guard has key
 - guard has no key
 - bauble is blue
@@ -119,3 +123,4 @@ These make use of potential tags that can be applied to Entities.
 - bauble tag is blue
 - guard is of type royal
 - guard type is royal
+- guard doesn't have any key -- `any` here implies a type.
