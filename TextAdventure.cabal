@@ -27,7 +27,7 @@ library
   exposed-modules:
       Command.Actor
       Command.CommandExecutor
-      Command.CommandInfo
+      Command.CommandHandler
       Command.Commands
       Command.Debug
       Command.Drop
@@ -71,6 +71,13 @@ library
       Parser.Utils
       Repl.Interpreter
       Repl.Repl
+      Scenario.Checks.Has
+      Scenario.Checks.HasNot
+      Scenario.Checks.Is
+      Scenario.Checks.IsNot
+      Scenario.CondCheckHandler
+      Scenario.ConditionalChecks
+      Scenario.ConditionalExecutor
       Utils
   other-modules:
       Paths_TextAdventure

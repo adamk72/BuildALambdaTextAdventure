@@ -2,7 +2,7 @@
 module Repl.InterpreterSpec (spec) where
 
 import           Command.CommandExecutor (CommandExecutor)
-import           Command.CommandInfo     (CommandInfo (..), CommandVerb (..))
+import           Command.CommandHandler     (CommandHandler (..), CommandVerb (..))
 import           Command.TestUtils
 import           Control.Monad.State
 import           Core.State.GameState
@@ -12,8 +12,8 @@ import           Repl.Interpreter
 import           Test.Hspec
 
 -- Helper function to create test commands
-mkTestCommand :: CommandVerb -> Text -> [Text] -> CommandExecutor -> CommandInfo
-mkTestCommand verb txt aliases exec = CommandInfo
+mkTestCommand :: CommandVerb -> Text -> [Text] -> CommandExecutor -> CommandHandler
+mkTestCommand verb txt aliases exec = CommandHandler
     { cmdVerb = verb
     , cmdText = txt
     , cmdAliases = aliases

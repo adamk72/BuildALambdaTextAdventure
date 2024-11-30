@@ -3,7 +3,7 @@
 
 module Repl.Interpreter (interpretCommand, tryCommand) where
 
-import           Command.CommandInfo
+import           Command.CommandHandler
 import           Core.Config          (quitCommands)
 import           Core.GameMonad
 import           Core.State.GameState

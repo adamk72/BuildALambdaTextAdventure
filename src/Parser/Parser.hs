@@ -46,16 +46,16 @@ runParseCondPhrase clause = do
         Nothing           -> Left MalformedCondExpression
         Just (verbClause, subject, condition) ->
             case isCondTypeOf verbClause of
-            PosState               -> makeStateExpr "is" PosStateExpression
-            NegState               -> makeStateExpr "is no" NegStateExpression
-            Possessive             -> makePossesExpr "has" PossessiveExpression
-            NonPossessive          -> makePossesExpr "has no" NonPossessiveExpression
+            PosState               -> makeStateExpr PosStateExpression
+            NegState               -> makeStateExpr NegStateExpression
+            Possessive             -> makePossesExpr PossessiveExpression
+            NonPossessive          -> makePossesExpr NonPossessiveExpression
             UnknownConditionalType -> Left TBDError
             where
-                makePossesExpr v ctor =
-                    Right $ ctor v (makeSubjClause subject) (makePossessionClause condition)
-                makeStateExpr v ctor =
-                    Right $ ctor v (makeSubjClause subject) (makeStateClause condition)
+                makePossesExpr ctor =
+                    Right $ ctor (makeSubjClause subject) (makePossessionClause condition)
+                makeStateExpr ctor =
+                    Right $ ctor (makeSubjClause subject) (makeStateClause condition)
 
 parseCmdPhrase :: Text -> Either ParseError CmdExpression
 parseCmdPhrase input = do

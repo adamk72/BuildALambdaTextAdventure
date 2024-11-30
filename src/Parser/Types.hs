@@ -44,10 +44,10 @@ newtype PossessionClause = PossessionClause { unPossessionClause :: Text} derivi
 type Subject = Text
 
 data CondExpression =
-      PosStateExpression Text SubjClause StateClause
-    | NegStateExpression Text SubjClause StateClause
-    | PossessiveExpression Text SubjClause PossessionClause
-    | NonPossessiveExpression Text SubjClause PossessionClause
+      PosStateExpression SubjClause StateClause
+    | NegStateExpression SubjClause StateClause
+    | PossessiveExpression SubjClause PossessionClause
+    | NonPossessiveExpression SubjClause PossessionClause
     deriving (Show, Eq)
 
 data ConditionalType = PosState | NegState | Possessive | NonPossessive | UnknownConditionalType

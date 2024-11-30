@@ -38,7 +38,7 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 ## Todos
 
 ### Coding Todos
-- [] Pre-work for scenarios
+- [] Supplementary for scenarios
   - [] Create "give" command for NPC interaction.
   - [] Create "talk" command for NPC interaction.
   - [x] "Look" should describe NPCs in location
@@ -47,6 +47,10 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
   - [] Allow for "lock" and "unlock" command.
   - [] Possibly add "types" to Entities in order to generalize them. This way when using the "guard" tag, it means any guard instead of specific guard (with possibility of having subtypes like "bribable"?).
   - [] Work out how currency and commodities will work so the player can hold and give arbitrary amounts of some items.
+- [] Scenario Work
+  - [] Do the supplementary work, above.
+  - [] Aeson parse the scenarios section of the Trial Adventure.json file.
+  - [] Determine how you're actually going to access that data in the midst of a command use.
 - [] Logging, Gave saves, Game replays
   - [] Log status for debugging.
   - [] Where there are `error` throws, try logging instead.
