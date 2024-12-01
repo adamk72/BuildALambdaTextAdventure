@@ -137,7 +137,7 @@
               "guard at castle entry",
               "guard has silver coin"
             ],
-            "whileFalse": [
+            "whileTrue": [
               {
                 "actions": [
                   "go castle"

@@ -50,6 +50,8 @@ runParseCondPhrase clause = do
             NegState               -> makeStateExpr NegStateExpression
             Possessive             -> makePossesExpr PossessiveExpression
             NonPossessive          -> makePossesExpr NonPossessiveExpression
+            AtLocation             -> makeStateExpr AtLocationExpression
+            NotAtLocation          -> makeStateExpr NotAtLocationExpression
             UnknownConditionalType -> Left TBDError
             where
                 makePossesExpr ctor =

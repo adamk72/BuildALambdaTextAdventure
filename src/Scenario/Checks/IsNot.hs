@@ -1,5 +1,4 @@
-module Scenario.Checks.IsNot where
-
+module Scenario.Checks.IsNot (module Scenario.Checks.IsNot) where
 
 import Scenario.ConditionalExecutor
 

@@ -48,9 +48,11 @@ data CondExpression =
     | NegStateExpression SubjClause StateClause
     | PossessiveExpression SubjClause PossessionClause
     | NonPossessiveExpression SubjClause PossessionClause
+    | AtLocationExpression SubjClause StateClause
+    | NotAtLocationExpression SubjClause StateClause
     deriving (Show, Eq)
 
-data ConditionalType = PosState | NegState | Possessive | NonPossessive | UnknownConditionalType
+data ConditionalType = PosState | NegState | Possessive | NonPossessive | UnknownConditionalType | AtLocation | NotAtLocation
     deriving (Show, Eq)
 
 data ParseError =

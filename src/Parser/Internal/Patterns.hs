@@ -1,4 +1,3 @@
-
 module Parser.Internal.Patterns
     ( MatchPreference (..)
     , PatternList
@@ -65,8 +64,9 @@ knownCondNegations = ["no", "n't", "not"]
 
 knownCondPatterns :: PatternList
 knownCondPatterns =
-     [ ("is",  [["is"], ["is", "not"], ["not"], ["are"], ["are", "not"], ["is", "in"], ["is", "not", "in"], ["is", "inside"], ["is", "not", "inside"], ["inside"], ["not", "inside"], ["isn't", "in"], ["aren't", "in"], ["aren't"], ["at"], ["is", "at"]])
-    , ("has", [["has"], ["has", "no"], ["does", "not", "have"], ["doesn't", "have"], ["don't", "have"], ["owns"], ["carries"], ["possesses"], ["holds"], ["doesn't", "hold"], ["doesn't", "posses"], ["doesn't", "carry"]])
+     [ ("at", [["is", "in"], ["is", "not", "in"], ["is", "inside"], ["is", "not", "inside"], ["inside"], ["not", "inside"], ["isn't", "in"], ["aren't", "in"], ["aren't"], ["at"], ["is", "at"], ["is", "not", "at"]])
+     , ("is",  [["is"], ["is", "not"], ["not"], ["are"], ["are", "not"]])
+     , ("has", [["has"], ["has", "no"], ["does", "not", "have"], ["doesn't", "have"], ["don't", "have"], ["owns"], ["carries"], ["possesses"], ["holds"], ["doesn't", "hold"], ["doesn't", "posses"], ["doesn't", "carry"]])
     ]
 
 hasClause :: Text -> [Text] -> Bool
@@ -80,9 +80,12 @@ isCondTypeOf t = case findMatchingPattern t of
     Just ("is", False)  -> PosState
     Just ("has", True)  -> NonPossessive
     Just ("has", False) -> Possessive
+    Just ("at", True)   -> NotAtLocation
+    Just ("at", False)  -> AtLocation
     Just {}             -> UnknownConditionalType
     Nothing             -> UnknownConditionalType
 
+-- Todo: Refactor so that instead of `hasNeg` it gives the ConditionalType instead as part of the tuple.
 findMatchingPattern :: Text -> Maybe (Text, Bool)
 findMatchingPattern input =
     let lowered = toLower input
