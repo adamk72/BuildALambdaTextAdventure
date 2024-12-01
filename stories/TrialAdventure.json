@@ -32,7 +32,7 @@
       {
         "tag": "silver coin",
         "name": "a silver coin",
-        "locationTag": "cave"
+        "locationTag": "castle entry"
       },
       {
         "tag": "box",
@@ -135,7 +135,7 @@
           {
             "all": [
               "guard at castle entry",
-              "guard has silver coin"
+              "guard does not have a silver coin"
             ],
             "whileTrue": [
               {

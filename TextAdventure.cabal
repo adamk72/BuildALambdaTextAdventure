@@ -32,6 +32,7 @@ library
       Command.Debug
       Command.Drop
       Command.Get
+      Command.Give
       Command.Go
       Command.Look
       Command.Message
@@ -40,6 +41,7 @@ library
       Command.Message.Container
       Command.Message.Debug
       Command.Message.Error
+      Command.Message.Give
       Command.Message.Inventory
       Command.Message.Item
       Command.Message.Location

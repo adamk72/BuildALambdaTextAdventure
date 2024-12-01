@@ -19,6 +19,7 @@ allCommands =
     , CommandHandler "get" ["take"] executeGet
     , CommandHandler "drop" [] executeDrop
     , CommandHandler "put" ["place", "move", "set"] executePut
+    , CommandHandler "give" ["hand"] executeGive
     , CommandHandler "inventory" ["inv", "i"] executeInventory
     , CommandHandler ":debug" [] executeDebug
     ]
