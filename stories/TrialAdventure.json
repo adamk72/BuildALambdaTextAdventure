@@ -127,15 +127,15 @@
         "startConditions": [
           {
             "all": [
-              "true castle entry is locked"
+              "castle entry is locked"
             ]
           }
         ],
         "endConditions": [
           {
             "all": [
-              "true guard at castle entry",
-              "true guard has silver coin"
+              "guard at castle entry",
+              "guard has silver coin"
             ],
             "whileFalse": [
               {
@@ -161,8 +161,8 @@
           },
           {
             "all": [
-              "false guard at castle entry",
-              "true bob has magic bauble"
+              "guard at castle entry",
+              "bob has magic bauble"
             ],
             "whileFalse": [
               {
@@ -182,7 +182,7 @@
           },
           {
             "all": [
-              "false guard at castle entry"
+              "guard at castle entry"
             ],
             "whileTrue": [
               {
@@ -202,8 +202,8 @@
           },
           {
             "any": [
-              "true alice is queen",
-              "true bob is king"
+              "alice is queen",
+              "bob is king"
             ],
             "whileFalse": [
               {

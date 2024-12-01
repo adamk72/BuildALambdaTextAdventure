@@ -78,6 +78,7 @@ library
       Scenario.CondCheckHandler
       Scenario.ConditionalChecks
       Scenario.ConditionalExecutor
+      Scenario.Types
       Utils
   other-modules:
       Paths_TextAdventure

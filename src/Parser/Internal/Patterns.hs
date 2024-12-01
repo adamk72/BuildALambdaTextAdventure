@@ -65,8 +65,8 @@ knownCondNegations = ["no", "n't", "not"]
 
 knownCondPatterns :: PatternList
 knownCondPatterns =
-     [ ("is",  [["is"], ["is", "not"], ["not"], ["are"], ["are", "not"]])
-    , ("has", [["has"], ["has", "no"], ["does", "not", "have"], ["doesn't", "have"], ["don't", "have"]])
+     [ ("is",  [["is"], ["is", "not"], ["not"], ["are"], ["are", "not"], ["is", "in"], ["is", "not", "in"], ["is", "inside"], ["is", "not", "inside"], ["inside"], ["not", "inside"], ["isn't", "in"], ["aren't", "in"], ["aren't"]])
+    , ("has", [["has"], ["has", "no"], ["does", "not", "have"], ["doesn't", "have"], ["don't", "have"], ["owns"], ["carries"], ["possesses"], ["holds"], ["doesn't", "hold"], ["doesn't", "posses"], ["doesn't", "carry"]])
     ]
 
 hasClause :: Text -> [Text] -> Bool

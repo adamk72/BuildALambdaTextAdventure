@@ -74,7 +74,29 @@ They one of two forms:
 1. Basic: Basic phrases which establish the state of location, item, or actor
 2. Tagged: Similar to Basic, except the possessive clause refers to a tag or type (type and tag are synonyms).
 
-## Basic
+## Rationale
+
+In the "scenarios" object list in an adventure JSON file, the creator will establish the baseline of each of the major scenarios. For example, there might be scenario where the guard will allow the the player to pass the castle gate only if a bribe is given _and_ the guard's commander is not watching. Essentially there will be a series of states that need to be met before a particular action can be taken. In the example, once the opening conditions are met, then the player can go into the castle through the castle gate route.
+
+In code, this means parsing the initial scenarios from human readable form to the in-game state management. Each scenario will have a startCondition like so:
+
+```json
+"startConditions": [ {
+    "all": [ "true castle entry is locked" ]
+  } ],
+```
+
+which will be an object in code like this:
+
+```haskell
+-- TBD
+```
+
+In some cases, parts of the scenario are evaluated behind the scenes, preventing the player access; more often than not, the user will get some sort of feedback, clue, or hint as to what can be done to overcome an obstacle, though they may not know the entire extent of what needs to be done, based on how many conditions there are to match the end conditions.
+
+## Phrase Forms
+
+### Basic
 
 - subject [negation] condition  - e.g., door locked, guard standing, guard not standing
   - negations: "no," "not"
@@ -83,7 +105,7 @@ They one of two forms:
 - subject verb possession       - e.g., queen has ring, guard has coin
   - verbs" "has," "has no,", "doesn't have," "doesn't have any"
 
-## Tagged
+### Tagged
 
 Negation and verbs are as with the Basic structure.
 
@@ -93,9 +115,9 @@ Negation and verbs are as with the Basic structure.
 - subject verb possession "tag|type"        - e.g., bauble has blue tag, bauble type has blue type
 - subject verb "of tag|of type" condition   - e.g., bauble is of type blue, bauble is of tag blue
 
-### Conditions Verbs List
+## Conditions Verbs List
 
-- is: is, is not, not, are, are not
+- is: is, is not, not, are, are not, is at, at, not at, is not at
 - has: has, has no, does not have, doesn't have, don't have
 
 ##  Examples
