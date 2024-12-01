@@ -19,24 +19,25 @@ checkForScenarioResponse cmd world =
 
         checkScenario scenario = checkConditionGroups (endConditions scenario)
 
-        checkConditionGroups groups = foldr checkGroup Nothing groups
-
         checkGroup group result = case result of
-            Just r -> Just r
+            Just r -> Just r  -- Already found a response
             Nothing ->
-                if not (checkConditionGroup group world)
-                then case whileFalse group of
-                    Just responses -> foldr checkResponse Nothing responses
-                    Nothing -> Nothing
-                else case whileTrue group of
-                    Just responses -> foldr checkResponse Nothing responses
+                let conditionMet = checkConditionGroup group world
+                    responses = if conditionMet
+                            then whileTrue group
+                            else whileFalse group
+                in case responses of
+                    Just rs -> foldr (checkResponse cmd) Nothing rs
                     Nothing -> Nothing
 
-        checkResponse resp result = case result of
-            Just r -> Just r
-            Nothing -> if cmd `elem` actions resp
+        checkResponse :: CmdExpression -> ScenarioResponse -> Maybe Text -> Maybe Text
+        checkResponse userCmd resp result = case result of
+            Just r -> Just r  -- Already found a response
+            Nothing -> if userCmd `elem` actions resp
                       then Just (response resp)
                       else Nothing
+
+        checkConditionGroups = foldr checkGroup Nothing
 
     in foldr (\scenario result -> case result of
         Just r -> Just r

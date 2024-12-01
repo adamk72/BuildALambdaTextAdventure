@@ -5,57 +5,41 @@ import           Data.Text               (Text)
 import           Entity.Class.Capacity   (getItemList)
 import           Entity.Class.EntityBase (getId)
 import           Entity.Class.Viewable   (getLocationId)
-import           Entity.Entity           (EntityResult (..), World (..), findEntityById)
-import           Entity.Types.Common     (EntityId (..))
+import           Entity.Entity           (EntityResult (..), findEntityById)
+import           Entity.Types.Common     (EntityId (..), LocationId)
 import           Parser.Types            (CondExpression (..), PossessionClause (..), StateClause (..), SubjClause (..))
 
 type ConditionalExecutor = CondExpression -> GameMonad Text
 
--- | Check if an entity has a specific state
-checkState :: EntityId -> Text -> World -> Bool
-checkState entityId state world =
-    case findEntityById entityId world of
-        Just (ActorResult _)    -> True  -- Actors can have states (would need state tracking)
-        Just (ItemResult _)     -> True  -- Items can have states (would need state tracking)
-        Just (LocationResult _) -> True  -- Locations can have states (would need state tracking)
-        Nothing                 -> False
-
 executeConditionCheck :: CondExpression -> World -> Bool
 executeConditionCheck expr world = case expr of
     AtLocationExpression (SubjClause subject) (StateClause location) ->
-        case findEntityById (EntityId subject) world of
-            Just (ActorResult actor) -> getLocationId actor == EntityId location
-            Just (ItemResult item)   -> getLocationId item == EntityId location
-            _                        -> False
+        checkLocation (EntityId subject) (EntityId location) (==)
 
     NotAtLocationExpression (SubjClause subject) (StateClause location) ->
-        case findEntityById (EntityId subject) world of
-            Just (ActorResult actor) -> getLocationId actor /= EntityId location
-            Just (ItemResult item)   -> getLocationId item /= EntityId location
-            _                        -> False
-
-    PosStateExpression (SubjClause subject) (StateClause state) ->
-        checkState (EntityId subject) state world
-
-    NegStateExpression (SubjClause subject) (StateClause state) ->
-        not $ checkState (EntityId subject) state world
+        checkLocation (EntityId subject) (EntityId location) (/=)
 
     PossessiveExpression (SubjClause subject) (PossessionClause itemTag) ->
-        case findEntityById (EntityId subject) world of
-            Just (ActorResult actor) ->
-                let items = getItemList (getId actor) world
-                in any (\i -> unEntityId (getId i) == itemTag) items
-            Just (ItemResult container) ->
-                let items = getItemList (getId container) world
-                in any (\i -> unEntityId (getId i) == itemTag) items
-            _ -> False
+        checkPossession (EntityId subject) itemTag id
 
     NonPossessiveExpression (SubjClause subject) (PossessionClause itemTag) ->
-        case findEntityById (EntityId subject) world of
-            Just (ActorResult actor) ->
-                let items = getItemList (getId actor) world
-                in not $ any (\i -> unEntityId (getId i) == itemTag) items
-            Just (ItemResult container) ->
-                let items = getItemList (getId container) world
-                in not $ any (\i -> unEntityId (getId i) == itemTag) items
-            _ -> False
+        checkPossession (EntityId subject) itemTag not
+
+    PosStateExpression {} -> False
+    NegStateExpression {} -> False
+  where
+    checkLocation :: EntityId -> LocationId -> (LocationId -> LocationId -> Bool) -> Bool
+    checkLocation subjectId locId comp = case findEntityById subjectId world of
+        Just (ActorResult actor) -> getLocationId actor `comp` locId
+        Just (ItemResult item)   -> getLocationId item `comp` locId
+        _                        -> False
+
+    checkPossession :: EntityId -> Text -> (Bool -> Bool) -> Bool
+    checkPossession subjectId itemTag modifier = case findEntityById subjectId world of
+        Just (ActorResult actor)    -> modifier $ hasItem (getId actor) itemTag
+        Just (ItemResult container) -> modifier $ hasItem (getId container) itemTag
+        _                           -> False
+
+    hasItem :: EntityId -> Text -> Bool
+    hasItem containerId tag = any (\i -> unEntityId (getId i) == tag) $
+                             getItemList containerId world

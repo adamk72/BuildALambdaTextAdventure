@@ -1,8 +1,11 @@
 {-# LANGUAGE DataKinds #-}
 module Mock.TestWorld (module Mock.TestWorld) where
 
+import qualified Data.Map                as Map
+import           Entity.Class.EntityBase
 import           Entity.Entity
-import qualified Data.Map               as Map
+import           Entity.Types            (Capacity (..))
+import           Entity.Types.Common
 
 -- Common test locations
 testCave :: Entity 'LocationT
@@ -13,6 +16,7 @@ testCave = Location
         , entityName = "A dark cave"
         }
     , destinations = [EntityId "meadow", EntityId "forest"]
+    , locationCapacity = Unlimited
     }
 
 testMeadow :: Entity 'LocationT
@@ -23,6 +27,7 @@ testMeadow = Location
         , entityName = "A flowery meadow"
         }
     , destinations = [EntityId "cave", EntityId "narnia"]
+    , locationCapacity = Unlimited
     }
 
 testForest :: Entity 'LocationT
@@ -33,6 +38,7 @@ testForest = Location
         , entityName = "A dense forest"
         }
     , destinations = [EntityId "cave"]
+    , locationCapacity = Unlimited
     }
 
 -- Common test actors
@@ -44,11 +50,7 @@ testAlice = Actor
         , entityName = "Alice the Adventurer"
         }
     , actorLocationId = EntityId "meadow"
-    , actorInventory = EntityBase
-        { entityId = EntityId "alice-inventory"
-        , entityTags = Nothing
-        , entityName = "Alice's pockets"
-        }
+    , actorCapacity = Limited 10
     }
 
 testBob :: Entity 'ActorT
@@ -59,11 +61,7 @@ testBob = Actor
         , entityName = "Bob the Brave"
         }
     , actorLocationId = EntityId "meadow"
-    , actorInventory = EntityBase
-        { entityId = EntityId "bob-inventory"
-        , entityTags = Nothing
-        , entityName = "Bob's pockets"
-        }
+    , actorCapacity = Limited 10
     }
 
 -- Common test items
@@ -75,11 +73,7 @@ testBagOfHolding = Item
         , entityName = "a bag of holding"
         }
     , itemLocationId = EntityId "meadow"
-    , itemInventory = Just EntityBase
-        { entityId = EntityId "bag-of-holding-inventory"
-        , entityTags = Nothing
-        , entityName = "inside bag of holding"
-        }
+    , itemCapacity = Just (Limited 20)
     }
 
 testPearl :: Entity 'ItemT
@@ -89,8 +83,8 @@ testPearl = Item
         , entityTags = Nothing
         , entityName = "a pearl of unique luster"
         }
-    , itemLocationId = EntityId "bag-of-holding-inventory"
-    , itemInventory = Nothing
+    , itemLocationId = EntityId "bag of holding"
+    , itemCapacity = Nothing
     }
 
 testAnotherPearl :: Entity 'ItemT
@@ -100,8 +94,8 @@ testAnotherPearl = Item
         , entityTags = Nothing
         , entityName = "another pearl of unique luster"
         }
-    , itemLocationId = EntityId "bag-of-holding-inventory"
-    , itemInventory = Nothing
+    , itemLocationId = EntityId "bag of holding"
+    , itemCapacity = Nothing
     }
 
 testBag :: Entity 'ItemT
@@ -112,11 +106,7 @@ testBag = Item
         , entityName = "a simple bag"
         }
     , itemLocationId = EntityId "meadow"
-    , itemInventory = Just EntityBase
-        { entityId = EntityId "bag-inventory"
-        , entityTags = Nothing
-        , entityName = "inside bag"
-        }
+    , itemCapacity = Just (Limited 5)
     }
 
 testBauble :: Entity 'ItemT
@@ -127,7 +117,7 @@ testBauble = Item
         , entityName = "a shiny bauble"
         }
     , itemLocationId = EntityId "meadow"
-    , itemInventory = Nothing
+    , itemCapacity = Nothing
     }
 
 testCoin :: Entity 'ItemT
@@ -138,7 +128,7 @@ testCoin = Item
         , entityName = "a silver coin"
         }
     , itemLocationId = EntityId "meadow"
-    , itemInventory = Nothing
+    , itemCapacity = Nothing
     }
 
 testEightBall :: Entity 'ItemT
@@ -149,7 +139,7 @@ testEightBall = Item
         , entityName = "a magic eight ball"
         }
     , itemLocationId = EntityId "forest"
-    , itemInventory = Nothing
+    , itemCapacity = Nothing
     }
 
 testBat :: Entity 'ItemT
@@ -160,7 +150,7 @@ testBat = Item
         , entityName = "a cute bat"
         }
     , itemLocationId = EntityId "cave"
-    , itemInventory = Nothing
+    , itemCapacity = Nothing
     }
 
 -- World builder
@@ -170,6 +160,7 @@ defaultGW = World
     , actors = Map.fromList [(getId actor, actor) | actor <- [testAlice, testBob]]
     , items = Map.fromList [(getId item, item) | item <- allItems]
     , activeActor = testAlice
+    , scenarios = Map.empty
     }
   where
     allItems = [testCoin, testEightBall, testBat, testBagOfHolding,
@@ -178,7 +169,7 @@ defaultGW = World
 -- Helper functions
 withActorAt :: World -> Entity 'LocationT -> World
 withActorAt world newLoc =
-    world { activeActor = setLocationId (getId newLoc) (activeActor world) }
+    world { activeActor = (activeActor world) { actorLocationId = getId newLoc } }
 
 withLocations :: World -> [Entity 'LocationT] -> World
 withLocations world newLocs =

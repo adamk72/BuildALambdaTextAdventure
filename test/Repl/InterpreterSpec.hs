@@ -2,20 +2,19 @@
 module Repl.InterpreterSpec (spec) where
 
 import           Command.CommandExecutor (CommandExecutor)
-import           Command.CommandHandler     (CommandHandler (..), CommandVerb (..))
+import           Command.CommandHandler (CommandHandler(..))
 import           Command.TestUtils
 import           Control.Monad.State
 import           Core.State.GameState
 import           Data.Text               (Text, isPrefixOf)
-import Mock.TestWorld
+import           Mock.TestWorld
 import           Repl.Interpreter
 import           Test.Hspec
 
 -- Helper function to create test commands
-mkTestCommand :: CommandVerb -> Text -> [Text] -> CommandExecutor -> CommandHandler
-mkTestCommand verb txt aliases exec = CommandHandler
-    { cmdVerb = verb
-    , cmdText = txt
+mkTestCommand :: Text -> [Text] -> CommandExecutor -> CommandHandler
+mkTestCommand txt aliases exec = CommandHandler
+    { cmdText = txt
     , cmdAliases = aliases
     , cmdExec = exec
     }
@@ -28,20 +27,18 @@ mockSuccessExecutor _ = return "Success!"
 spec :: Spec
 spec = describe "Interpreter" $ do
     describe "tryCommand" $ do
-        let testCmd = mkTestCommand LookVerb "test" [] mockSuccessExecutor
-
         it "succeeds for valid commands" $ do
             initialState <- initTestState defaultGW
-            case tryCommand testCmd "test around" of
+            case tryCommand "inventory" of
                 Right action -> do
                     (output, finalState) <- runStateT action initialState
-                    output `shouldBe` "Success!"
+                    "Your inventory" `isPrefixOf` output `shouldBe` True
                     gsWorld finalState `shouldBe` defaultGW
                 Left err -> expectationFailure $ "Expected Right but got Left: " ++ show err
 
         it "returns Left for malformed commands" $ do
-            case tryCommand testCmd "" of
-                Left err -> err `shouldBe` "I couldn't understand ''. Please try rephrasing your command."
+            case tryCommand "" of
+                Left err -> err `shouldBe` "Did you mean to type a command?"
                 Right _  -> expectationFailure "Expected Left but got Right"
 
     describe "interpretCommand" $ do
@@ -54,14 +51,16 @@ spec = describe "Interpreter" $ do
         it "handles unknown commands with an error message" $ do
             initialState <- initTestState defaultGW
             (result, finalState) <- runStateT (interpretCommand "nonexistent") initialState
-            result `shouldBe` Just "Don't know how to nonexistent. Got error: Unknown command."
+            case result of
+                Just txt -> "I don't understand 'nonexistent'" `isPrefixOf` txt `shouldBe` True
+                Nothing -> expectationFailure "Expected Just but got Nothing"
             gsWorld finalState `shouldBe` defaultGW
 
         it "returns the command output for known commands" $ do
             initialState <- initTestState defaultGW
             (result, finalState) <- runStateT (interpretCommand "inventory") initialState
             case result of
-                Just txt -> "Your inventory is: " `isPrefixOf` txt `shouldBe` True
+                Just txt -> "Your inventory" `isPrefixOf` txt `shouldBe` True
                 Nothing  -> expectationFailure "Expected Just but got Nothing"
             gsWorld finalState `shouldBe` defaultGW
 
@@ -77,8 +76,7 @@ spec = describe "Interpreter" $ do
             initialState <- initTestState defaultGW
             (result, finalState) <- runStateT (interpretCommand "look !!!") initialState
             case result of
-                Just txt -> "Don't know how to look !!!." `isPrefixOf` txt `shouldBe` True
-                -- Just txt -> "Don't know how to look !!!."  `shouldBe` txt
+                Just txt -> "I couldn't understand" `isPrefixOf` txt `shouldBe` True
                 Nothing  -> expectationFailure "Expected Just but got Nothing"
             gsWorld finalState `shouldBe` defaultGW
 

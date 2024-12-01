@@ -152,6 +152,7 @@ test-suite TextAdventure-test
       Mock.TestWorld
       Parser.ParserSpec
       Repl.InterpreterSpec
+      Scenario.ConditionSpec
       Paths_TextAdventure
   autogen-modules:
       Paths_TextAdventure

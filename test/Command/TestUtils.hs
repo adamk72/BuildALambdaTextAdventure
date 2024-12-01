@@ -4,13 +4,15 @@ module Command.TestUtils (module Command.TestUtils) where
 import           Command.CommandExecutor
 import           Control.Monad.State
 import           Core.State
-import           Data.Text              (Text, isInfixOf)
-import           Logger                 (initGameHistory)
-import           Parser.Types           (CmdExpression)
-import           System.Directory       (getTemporaryDirectory)
-import           System.FilePath        ((</>))
-import           Test.Hspec
+import           Data.Text               (Text, isInfixOf)
+import           Entity.Class.Movable
 import           Entity.Entity
+import           Entity.Types.Common
+import           Logger                  (initGameHistory)
+import           Parser.Types            (CmdExpression)
+import           System.Directory        (getTemporaryDirectory)
+import           System.FilePath         ((</>))
+import           Test.Hspec
 
 -- | Create a test GameState with temporary log files
 initTestState :: World -> IO GameState

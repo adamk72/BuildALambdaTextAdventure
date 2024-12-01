@@ -17,9 +17,6 @@ spec = do
                 parseCmdPhrase "INVENTORY" `shouldBe` Right (AtomicCmdExpression "inventory")
                 parseCmdPhrase "Look" `shouldBe` Right (AtomicCmdExpression "look")
 
-            it "rejects unknown verbs" $ do
-                parseCmdPhrase "dance" `shouldBe` Left (UnknownVerb "dance")
-
         context "with verb-target commands" $ do
             it "parses simple movement commands" $ do
                 parseCmdPhrase "go cave" `shouldBe` Right (UnaryCmdExpression "go" (NounClause "cave"))

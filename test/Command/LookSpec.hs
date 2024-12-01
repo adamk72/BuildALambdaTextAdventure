@@ -8,6 +8,7 @@ import           Core.Operations
 import           Mock.TestWorld
 import           Parser.Types
 import           Test.Hspec
+import           Entity.Class.EntityBase
 import           Entity.Entity
 import           Data.Text            (Text, isInfixOf)
 import qualified Data.Map            as Map
