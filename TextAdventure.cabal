@@ -72,6 +72,7 @@ library
       Parser.Utils
       Repl.Interpreter
       Repl.Repl
+      Scenario.Check
       Scenario.Checks.Has
       Scenario.Checks.HasNot
       Scenario.Checks.Is
