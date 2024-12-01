@@ -4,6 +4,7 @@ module Entity.Class.EntityBase (module Entity.Class.EntityBase) where
 
 import           Data.Text
 import           Entity.Entity
+import           Entity.Types.Common
 
 class HasEntityBase (a :: EntityType) where
     getBase :: Entity a -> EntityBase a

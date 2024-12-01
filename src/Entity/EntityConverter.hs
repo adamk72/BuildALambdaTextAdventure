@@ -3,15 +3,18 @@
 {-# LANGUAGE KindSignatures #-}
 module Entity.EntityConverter (convertToEntityWorld) where
 
-import           Core.State.JSONTypes    (EntityJSON (..), WorldJSON (..))
-import qualified Core.State.JSONTypes    as JSON (Location (..))
-import           Data.Map                as Map
-import qualified Data.Set                as Set
-import           Data.Text               (Text)
-import           Entity.Class.EntityBase (getId)
+import           Core.State.JSONTypes       (EntityJSON (..), WorldJSON (..))
+import qualified Core.State.JSONTypes       as JSON (Location (..))
+import           Data.Map                   as Map
+import qualified Data.Set                   as Set
+import           Data.Text                  (Text)
+import           Entity.Class.EntityBase    (getId)
 import           Entity.Entity
-import           Entity.Types            (Capacity (..))
-import           Prelude                 as P
+import           Entity.Types               (Capacity (..))
+import           Entity.Types.Common
+import           Prelude                    as P
+import           Scenario.ScenarioConverter (convertToScenario)
+import           Scenario.Types
 
 defaultActorCapacity :: Int
 defaultActorCapacity = 3
@@ -49,12 +52,18 @@ convertToEntityWorld WorldJSON{..} = do
     -- Combine all items into final map
     let itemMap = Map.fromList $ [(getId item, item) | item <- containerEntities ++ contentEntities]
 
+    -- Convert scenarios
+    scenarioResults <- case jScenarios of
+        Just scenarios -> traverse convertToScenario scenarios
+        Nothing        -> Right []
+    let scenarioMap = Map.fromList [(Scenario.Types.tag scenario, scenario) | scenario <- scenarioResults]
+
     let activeActorId = EntityId jStartingActorTag
     activeActor <- case Map.lookup activeActorId actorMap of
                      Just actor -> Right actor
                      Nothing    -> Left $ "Missing starting actor for this tag: " <> jStartingActorTag
 
-    Right $ World locMap actorMap itemMap activeActor
+    Right $ World locMap actorMap itemMap activeActor scenarioMap
 
 validateUniqueIds :: [JSON.Location] -> [EntityJSON] -> [EntityJSON] -> Either EntityConversionError ()
 validateUniqueIds locs actors items =

@@ -4,6 +4,7 @@
 module Entity.Class.Movable (module Entity.Class.Movable) where
 
 import           Entity.Entity
+import           Entity.Types.Common
 
 class Movable (a :: EntityType) where
     getLocationId :: Entity a -> LocationId

@@ -11,6 +11,7 @@ import           Data.Text               (Text, isSuffixOf)
 import           Entity.Class.EntityBase
 import           Entity.Class.Movable
 import           Entity.Entity
+import           Entity.Types.Common
 import           Parser.Types
 import           Parser.Utils
 import           Utils

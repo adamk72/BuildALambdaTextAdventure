@@ -5,6 +5,7 @@ import           Core.GameMonad
 import           Core.State
 import           Entity.Class.Capacity
 import           Entity.Entity
+import           Entity.Types.Common
 import           Parser.Types
 import           Utils                   (ContainerTag, ItemTag)
 

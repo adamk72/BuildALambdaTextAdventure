@@ -8,9 +8,10 @@ import qualified Data.Map                as Map
 import           Data.Text               (Text)
 import           Entity.Class.EntityBase (HasEntityBase, getId)
 import           Entity.Entity
-    (Entity (Actor, Item, Location, actorBase, itemBase, itemLocationId, locationBase), EntityBase (entityId), EntityId,
+    (Entity (Actor, Item, Location, actorBase, itemBase, itemLocationId, locationBase), EntityBase (entityId),
     EntityType (..), World (items))
 import           Entity.Types            (Capacity (..))
+import           Entity.Types.Common
 
 class HasCapacity (a :: EntityType) where
     getCapacity :: Entity a -> Capacity

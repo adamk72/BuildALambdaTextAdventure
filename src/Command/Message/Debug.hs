@@ -6,6 +6,7 @@ import           Data.Text               (Text)
 import qualified Data.Text               as T
 import           Entity.Class.EntityBase (getName)
 import           Entity.Entity
+import           Entity.Types.Common
 
 data DebugMessage =
     ShowWorldState Text |

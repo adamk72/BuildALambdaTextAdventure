@@ -5,6 +5,7 @@ module Entity.Class.Viewable (ViewablesRecord (..), getLocationId, getViewablesR
 
 import qualified Data.Map      as Map
 import           Entity.Entity
+import           Entity.Types.Common
 
 class Viewable (a :: EntityType) where
     getLocationId :: Entity a -> LocationId

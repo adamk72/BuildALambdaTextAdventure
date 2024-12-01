@@ -1,12 +1,11 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Scenario.Types (Scenario (..)) where
+module Scenario.Types (ConditionGroup (..), ConditionType (..), Scenario (..), ScenarioResponse (..)) where
 
-import Data.Text
-import           Entity.Entity (EntityId (..))
-import           Parser.Types  (CmdExpression (..), CondExpression(..))
-import           GHC.Generics (Generic)
-
+import           Data.Text           (Text)
+import           Entity.Types.Common (EntityId)
+import           GHC.Generics        (Generic)
+import           Parser.Types        (CmdExpression, CondExpression)
 
 data Scenario = Scenario
     { tag             :: EntityId

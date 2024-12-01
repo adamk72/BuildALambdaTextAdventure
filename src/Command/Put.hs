@@ -7,6 +7,7 @@ import           Core.State
 import           Entity.Class.Capacity   (HasCapacity, changeItemContainer)
 import           Entity.Class.EntityBase (HasEntityBase)
 import           Entity.Entity
+import           Entity.Types.Common
 import           Parser.Types
 import           Parser.Utils            (isPrepVariantOf)
 import           Utils                   (ItemTag, LocationTag)

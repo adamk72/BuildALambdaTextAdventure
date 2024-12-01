@@ -64,6 +64,7 @@ library
       Entity.Ops.Location
       Entity.Ops.NestedInventory
       Entity.Types
+      Entity.Types.Common
       Logger
       Parser.Internal.Patterns
       Parser.Parser
@@ -78,6 +79,7 @@ library
       Scenario.CondCheckHandler
       Scenario.ConditionalChecks
       Scenario.ConditionalExecutor
+      Scenario.ScenarioConverter
       Scenario.Types
       Utils
   other-modules:

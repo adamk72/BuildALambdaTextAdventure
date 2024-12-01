@@ -12,6 +12,7 @@ import           Data.Text
 import           Entity.Class.EntityBase
 import           Entity.Class.Viewable   (ViewablesRecord (..), getLocationId, getViewablesRecordByLocId)
 import           Entity.Entity
+import           Entity.Types.Common
 import           Prelude                 as P
 import           Utils
 

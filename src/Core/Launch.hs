@@ -3,13 +3,13 @@
 
 module Core.Launch (launch) where
 
-import           Core.State           (AppState (..), loadGameEnvironmentJSON)
-import           Data.Text            (Text, pack)
+import           Core.State             (AppState (..), loadGameEnvironmentJSON)
+import           Core.State.GameState   (World)
+import           Data.Text              (Text, pack)
+import           Entity.EntityConverter (convertToEntityWorld)
 import           Logger
-import           Repl.Repl            (replLoop)
-import           System.FilePath      (takeDirectory, (</>))
-import Entity.EntityConverter (convertToEntityWorld)
-import Core.State.GameState (World)
+import           Repl.Repl              (replLoop)
+import           System.FilePath        (takeDirectory, (</>))
 
 initAppState :: World -> FilePath -> IO AppState
 initAppState gw baseDir = do

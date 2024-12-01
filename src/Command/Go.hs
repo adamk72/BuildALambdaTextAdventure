@@ -7,7 +7,7 @@ import           Core.State.GameState
 import           Data.Maybe              (fromMaybe)
 import           Data.Text               (Text)
 import           Entity.Class.Movable
-import           Entity.Entity
+import           Entity.Types.Common
 import           Entity.Ops.Location     (getLocationDestinations)
 import           Parser.Types
 

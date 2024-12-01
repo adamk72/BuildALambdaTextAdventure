@@ -4,20 +4,13 @@
 {-# LANGUAGE StandaloneDeriving #-}
 module Entity.Entity (module Entity.Entity) where
 
-import           Data.Map     as Map
-import           Data.Text    (Text)
-import           Entity.Types (Capacity)
+import           Data.Map            as Map
+import           Data.Text           (Text)
+import           Entity.Types        (Capacity)
+import           Entity.Types.Common
+import           Scenario.Types
 
 data EntityType = LocationT | ActorT | ItemT
-
-newtype EntityId = EntityId { unEntityId :: Text }
-    deriving (Show, Eq, Ord)
-
-type LocationId = EntityId
-type ActorId = EntityId
-type ItemId = EntityId
-type MovableId = EntityId
-type InventoryId = EntityId
 
 data EntityBase (a :: EntityType) = EntityBase
     { entityId   :: EntityId
@@ -52,6 +45,7 @@ data World = World
     , actors      :: Map ActorId (Entity 'ActorT)
     , items       :: Map InventoryId (Entity 'ItemT)
     , activeActor :: Entity 'ActorT
+    , scenarios   :: Map EntityId Scenario
     } deriving (Show, Eq)
 
 findLocationById :: LocationId -> World -> Maybe (Entity 'LocationT)
@@ -94,7 +88,7 @@ findEntityById targetId world =
 
 isLocation :: Maybe EntityResult -> Bool
 isLocation (Just (LocationResult _)) = True
-isLocation _                    = False
+isLocation _                         = False
 
 isActor :: Maybe EntityResult -> Bool
 isActor (Just (ActorResult _)) = True
@@ -106,7 +100,7 @@ isItem _                     = False
 
 getLocation :: Maybe EntityResult -> Maybe (Entity 'LocationT)
 getLocation (Just (LocationResult loc)) = Just loc
-getLocation _                      = Nothing
+getLocation _                           = Nothing
 
 getActor :: Maybe EntityResult -> Maybe (Entity 'ActorT)
 getActor (Just (ActorResult actor)) = Just actor

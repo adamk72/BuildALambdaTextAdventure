@@ -1,12 +1,12 @@
 module Parser.Parser (parseCmdPhrase, parseCondPhrase, renderExpression, renderExpressionError) where
 
-import           Data.Text                (Text)
+import           Data.Text                (Text, unwords)
 import qualified Data.Text                as T
 import           Parser.Internal.Patterns
-    (MatchPreference (First, Last), findPattern, isCondTypeOf, knownArticles,knownCondPatterns,
-    knownPreps, verbsRequiringObjects)
+    (MatchPreference (First, Last), findPattern, isCondTypeOf, knownArticles, knownCondPatterns, knownPreps,
+    verbsRequiringObjects)
 import           Parser.Types
-import           Prelude                  hiding (words)
+import           Prelude                  hiding (unwords, words)
 
 -- | Helper functions
 isArticle :: Text -> Bool
@@ -35,7 +35,7 @@ parseCondPhrase :: Text -> Either ParseError CondExpression
 parseCondPhrase input = do
     let words' = filter (not . isArticle) $ T.words $ T.toLower input
     case words' of
-        [] -> Left MalformedCondExpression
+        [] -> Left $ MalformedCondExpression input
         _  -> runParseCondPhrase words'
 
 runParseCondPhrase :: [Text] -> Either ParseError CondExpression
@@ -43,7 +43,7 @@ runParseCondPhrase [] = Left TBDError
 runParseCondPhrase clause = do
     condResult <- findCondPattern clause
     case condResult of
-        Nothing           -> Left MalformedCondExpression
+        Nothing           -> Left $ MalformedCondExpression $ unwords clause
         Just (verbClause, subject, condition) ->
             case isCondTypeOf verbClause of
             PosState               -> makeStateExpr PosStateExpression
@@ -100,7 +100,7 @@ renderExpression = \case
 renderExpressionError :: ParseError -> Text
 renderExpressionError = \case
     TBDError -> "TBD on ths one"
-    MalformedCondExpression -> "Phrase is incomplete."
+    MalformedCondExpression phrase -> "Conditional phrase is incomplete or possibly empty: " <> phrase
     MissingObject ->
         "This phrase needs an object to act on. For example: 'put bauble in bag', where 'bauble' is the object."
     MissingTarget ->

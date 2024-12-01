@@ -57,6 +57,6 @@ data ParseError =
       MissingObject
     | MissingTarget
     | MalformedCmdExpression Text
-    | MalformedCondExpression
+    | MalformedCondExpression Text
     | TBDError
     deriving (Show, Eq)

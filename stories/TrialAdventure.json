@@ -13,7 +13,7 @@
         "tag": "alice",
         "tags": ["gritty", "brave", "knight"],
         "name": "Alice the Adventurer",
-        "locationTag": "meadow"
+        "locationTag": "castle entry"
       },
       {
         "tag": "bob",
@@ -138,6 +138,12 @@
               "guard has silver coin"
             ],
             "whileFalse": [
+              {
+                "actions": [
+                  "go castle"
+                ],
+                "response": "The guard puts out a hand to stop you."
+              },
               {
                 "actions": [
                   "unlock castle entry",
