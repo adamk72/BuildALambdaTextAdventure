@@ -7,7 +7,6 @@ import           Data.Text                  (Text)
 import           GHC.Generics               (Generic)
 import           Scenario.ScenarioConverter (ScenarioJSON)
 
--- | JSON representation of an entity (actor or item)
 data EntityJSON = EntityJSON {
     jTag              :: Text,
     jTags             :: Maybe [Text],
@@ -32,10 +31,10 @@ instance FromJSON EntityJSON where
             }
 
 data Location = Location {
-    locTag          :: Text,        -- Will be converted to EntityId
+    locTag          :: Text,
     locTags         :: Maybe [Text],
     locName         :: Text,
-    destinationTags :: [Text]       -- Will be converted to [EntityId]
+    destinationTags :: [Text]
 } deriving (Show, Eq, Generic)
 
 instance FromJSON Location where
@@ -51,7 +50,6 @@ instance FromJSON Location where
             , destinationTags = dests
             }
 
--- | JSON representation of the game world
 data WorldJSON = WorldJSON {
     jStartingActorTag :: Text,
     jPlayableActors   :: [EntityJSON],

@@ -7,7 +7,6 @@ import           Logger              (GameHistory)
 
 type GameMonad a = StateT GameState IO a
 
--- | Combined state for game operations
 data GameState = GameState
     { gsWorld :: World
     , gsHistory :: GameHistory

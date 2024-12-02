@@ -5,19 +5,15 @@ import           Core.State.GameState (GameMonad, GameState (..), World)
 import           Data.Text            (Text)
 import           Logger
 
--- | Run a GameMonad computation
 runGameMonad :: GameMonad a -> GameState -> IO (a, GameState)
 runGameMonad = runStateT
 
--- | Get the current World
 getWorld :: GameMonad World
 getWorld = gets gsWorld
 
--- | Modify the World
 modifyWorld :: (World -> World) -> GameMonad ()
 modifyWorld f = modify $ \s -> s { gsWorld = f (gsWorld s) }
 
--- | Logging functions that work within GameMonad
 logGameDebug :: Text -> GameMonad ()
 logGameDebug msg = do
     _state <- get

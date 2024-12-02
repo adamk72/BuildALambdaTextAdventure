@@ -10,7 +10,7 @@ import           Entity.Class.EntityBase (HasEntityBase, getId)
 import           Entity.Entity
     (Entity (Actor, Item, Location, actorBase, itemBase, itemLocationId, locationBase), EntityBase (entityId),
     EntityType (..), World (items))
-import           Entity.Types            (Capacity (..))
+import           Entity.Types.Capacity   (Capacity (..))
 import           Entity.Types.Common
 
 class HasCapacity (a :: EntityType) where
@@ -22,10 +22,10 @@ instance HasCapacity 'LocationT where
     getCapacity (Location {}) = Unlimited
     getInventoryCount loc world =
         length $ getItemList (entityId $ locationBase loc) world
-    canAddItem _ _ = True  -- Locations can always accept items
+    canAddItem _ _ = True
 
 instance HasCapacity 'ActorT where
-    getCapacity (Actor _ _ cap) = cap -- Example: Limited 10 ≈ actors can carry 10 items
+    getCapacity (Actor _ _ cap) = cap
     getInventoryCount actor world =
         length $ getItemList (entityId $ actorBase actor) world
     canAddItem actor world =

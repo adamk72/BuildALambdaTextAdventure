@@ -1,4 +1,4 @@
-module Parser.Internal.Patterns
+module Parser.Patterns
     ( CondPatternList
     , CondPatternMatch
     , MatchPreference (..)
@@ -25,14 +25,9 @@ type PrepPatternMatch = (Text, [Text], [Text])
 data PatternType = PosState | NegState | Possessive | NonPossessive | AtLocation | NotAtLocation
     deriving (Show, Eq)
 
--- | Whether to prefer first or last match when multiple patterns match
 data MatchPreference = First | Last
     deriving (Eq, Show)
 
--- | List of known patterns and their variants
--- | Whether to prefer first or last match
--- | Input words to search
--- | Found pattern if any
 -- Todo: Fix. This is _not_ greedy/exact, so the PatternList needs to be properly ordered to ensure it behaves as expected with multi-words.
 -- For example, when working with "is not", if "is" is found first, then "is not" will be skipped.
 findPattern :: [(a, [[Text]])] -> MatchPreference -> [Text] -> Maybe (a, [Text], [Text])
@@ -61,7 +56,7 @@ knownPreps =
     , ("under", [["under"], ["underneath"], ["beneath"]])
     ]
 
--- | Order is important here; see note with `findPattern`.
+-- Order is important here; see note with `findPattern`.
 knownCondPatterns :: CondPatternList
 knownCondPatterns =
      [ (NotAtLocation, [["is", "not", "in"], ["is", "not", "inside"], ["not", "inside"], ["isn't", "in"], ["are", "not", "in"], ["aren't", "in"], ["is", "not", "at"], ["not", "at"], ["isn't", "at"]])

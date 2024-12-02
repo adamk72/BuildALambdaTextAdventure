@@ -34,7 +34,7 @@ checkForScenarioResponse cmd world =
         checkScenario scenario = checkConditionGroups (endConditions scenario)
 
         checkGroup group result = case result of
-            Just r -> Just r  -- Already found a response
+            Just r -> Just r
             Nothing ->
                 let conditionMet = checkConditionGroup group world
                     responses = if conditionMet
@@ -46,7 +46,7 @@ checkForScenarioResponse cmd world =
 
         checkResponse :: CmdExpression -> ScenarioResponse -> Maybe Text -> Maybe Text
         checkResponse userCmd resp result = case result of
-            Just r -> Just r  -- Already found a response
+            Just r -> Just r
             Nothing -> if userCmd `elem` actions resp
                       then Just (response resp)
                       else Nothing

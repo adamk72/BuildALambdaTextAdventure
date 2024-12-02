@@ -12,8 +12,8 @@ data InventoryMessage
     | YouDoNotHave Text
     | LookAround Text
     | AlreadyHaveItem Text
-    | NotFoundIn Text Text         -- item, container/location
-    | NotAContainer Text           -- container name
+    | NotFoundIn Text Text
+    | NotAContainer Text
     deriving (Eq, Show)
 
 instance MessageRenderer InventoryMessage where

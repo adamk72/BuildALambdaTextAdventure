@@ -27,24 +27,21 @@ import           System.FilePath        (takeDirectory)
 data LogLevel = Debug | Info | Error
     deriving (Show, Eq, Ord)
 
--- | Structure for a single log entry
 data LogEntry = LogEntry
     { timestamp :: UTCTime
     , level     :: LogLevel
     , message   :: T.Text
-    , isCommand :: Bool  -- Flag to identify if this is a player command
+    , isCommand :: Bool
     } deriving (Show, Eq)
 
--- | Game history containing both logs and recent commands
 data GameHistory = GameHistory
-    { logEntries        :: [LogEntry]       -- All log entries
-    , recentCommands    :: [T.Text]     -- Recent player commands only
-    , maxCommandHistory :: Int       -- Maximum number of commands to keep
-    , logFile           :: FilePath           -- Path to log file
-    , historyFile       :: FilePath       -- Path to command history file
+    { logEntries        :: [LogEntry]
+    , recentCommands    :: [T.Text]
+    , maxCommandHistory :: Int
+    , logFile           :: FilePath
+    , historyFile       :: FilePath
     } deriving (Show)
 
--- | Initialize a new game history
 initGameHistory :: FilePath -> FilePath -> IO GameHistory
 initGameHistory logPath histPath = do
     createDirectoryIfMissing True (takeDirectory logPath)
@@ -57,7 +54,6 @@ initGameHistory logPath histPath = do
         , historyFile = histPath
         }
 
--- | Log a player command - adds to command history and logs as Info
 logCommand :: MonadIO m => GameHistory -> T.Text -> m GameHistory
 logCommand hist cmd = do
     timestamp <- liftIO getCurrentTime
@@ -66,23 +62,18 @@ logCommand hist cmd = do
             { logEntries = entry : logEntries hist
             , recentCommands = take (maxCommandHistory hist) (cmd : recentCommands hist)
             }
-    -- Write to log file
     liftIO $ TIO.appendFile (logFile hist) (formatLogEntry entry)
     return newHist
 
--- | Log a debug message
 logDebug :: MonadIO m => GameHistory -> T.Text -> m GameHistory
 logDebug hist = logMessage hist Debug False
 
--- | Log an info message
 logInfo :: MonadIO m => GameHistory -> T.Text -> m GameHistory
 logInfo hist = logMessage hist Info False
 
--- | Log an error message
 logError :: MonadIO m => GameHistory -> T.Text -> m GameHistory
 logError hist = logMessage hist Error False
 
--- | Internal helper for logging messages
 logMessage :: MonadIO m => GameHistory -> LogLevel -> Bool -> T.Text -> m GameHistory
 logMessage hist level isCmd msg = do
     timestamp <- liftIO getCurrentTime
@@ -92,7 +83,6 @@ logMessage hist level isCmd msg = do
     liftIO $ TIO.appendFile (logFile hist) (formatLogEntry entry)
     return newHist
 
--- | Format a log entry for file output
 formatLogEntry :: LogEntry -> T.Text
 formatLogEntry LogEntry{..} = T.unwords
     [ T.pack (show timestamp)
@@ -102,21 +92,16 @@ formatLogEntry LogEntry{..} = T.unwords
     , "\n"
     ]
 
--- | Get recent commands for UI history
 getRecentCommands :: GameHistory -> [T.Text]
 getRecentCommands = recentCommands
 
--- | Save game history to file
 saveHistory :: GameHistory -> IO ()
 saveHistory hist = do
-    -- Write all pending log entries
     let logContent = T.unlines $ map formatLogEntry (reverse $ logEntries hist)
     TIO.appendFile (logFile hist) logContent
 
-    -- Write command history
     TIO.writeFile (historyFile hist) $ T.unlines (reverse $ recentCommands hist)
 
--- | Load game history from file
 loadHistory :: FilePath -> FilePath -> IO GameHistory
 loadHistory logPath histPath = do
     hist <- initGameHistory logPath histPath

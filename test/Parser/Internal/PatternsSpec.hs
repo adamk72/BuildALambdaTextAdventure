@@ -1,11 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Parser.Internal.PatternsSpec (spec) where
 
-import           Data.Text                (Text, words)
-import qualified Data.Text                as T
-import           Parser.Internal.Patterns
-import           Parser.Types
-import           Prelude                  hiding (words)
+import           Data.Text       (words)
+import qualified Data.Text       as T
+import           Parser.Patterns
+import           Prelude         hiding (words)
 import           Test.Hspec
 
 spec :: Spec

@@ -10,7 +10,7 @@ import qualified Data.Set                   as Set
 import           Data.Text                  (Text)
 import           Entity.Class.EntityBase    (getId)
 import           Entity.Entity
-import           Entity.Types               (Capacity (..))
+import           Entity.Types.Capacity      (Capacity (..))
 import           Entity.Types.Common
 import           Prelude                    as P
 import           Scenario.ScenarioConverter (convertToScenario)
@@ -24,35 +24,26 @@ defaultItemCapacity = 5
 
 type EntityConversionError = Text
 
--- | Convert from a GameEnvironment to our new Entity-based World
 convertToEntityWorld :: WorldJSON -> Either EntityConversionError World
 convertToEntityWorld WorldJSON{..} = do
-    -- First validate all IDs are unique
     validateUniqueIds jLocations jPlayableActors jItems
 
-    -- Create all locations
     let locEntities = P.map convertLocation jLocations
         locMap = Map.fromList [(getId loc, loc) | loc <- locEntities]
 
-    -- Convert actors, referencing the location IDs
     actorEntities <- traverse (convertActorWithLoc locMap) jPlayableActors
     let actorMap = Map.fromList [(getId act, act) | act <- actorEntities]
 
-    -- First convert container items (those with hasInventorySlot = True)
     let containerItems = P.filter (fromMaybe False . jHasInventorySlot) jItems
         contentItems = P.filter (not . fromMaybe False . jHasInventorySlot) jItems
 
-    -- Convert containers first
     containerEntities <- traverse (convertItemWithLoc locMap actorMap Map.empty) containerItems
     let containerMap = Map.fromList [(getId item, item) | item <- containerEntities]
 
-    -- Then convert contents, with access to the container map
     contentEntities <- traverse (convertItemWithLoc locMap actorMap containerMap) contentItems
 
-    -- Combine all items into final map
     let itemMap = Map.fromList $ [(getId item, item) | item <- containerEntities ++ contentEntities]
 
-    -- Convert scenarios
     scenarioResults <- case jScenarios of
         Just scenarios -> traverse convertToScenario scenarios
         Nothing        -> Right []
@@ -108,7 +99,7 @@ convertActorWithLoc locMap json =
 
 convertItemWithLoc :: Map LocationId (Entity 'LocationT)
                   -> Map ActorId (Entity 'ActorT)
-                  -> Map ItemId (Entity 'ItemT)  -- Add itemMap
+                  -> Map ItemId (Entity 'ItemT)
                   -> EntityJSON
                   -> Either EntityConversionError (Entity 'ItemT)
 convertItemWithLoc locMap actorMap itemMap json =
@@ -116,7 +107,6 @@ convertItemWithLoc locMap actorMap itemMap json =
         Nothing -> Left $ "Invalid location reference from item list: " <> jTag json
         Just locTag ->
             let containerId = EntityId locTag
-                -- Check if container exists in any of our entity maps
                 containerExists = containerId `Map.member` locMap ||
                                 containerId `Map.member` actorMap ||
                                 containerId `Map.member` itemMap

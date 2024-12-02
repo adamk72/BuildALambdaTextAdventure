@@ -4,9 +4,9 @@
 {-# LANGUAGE StandaloneDeriving #-}
 module Entity.Entity (module Entity.Entity) where
 
-import           Data.Map            as Map
-import           Data.Text           (Text)
-import           Entity.Types        (Capacity)
+import           Data.Map              as Map
+import           Data.Text             (Text)
+import           Entity.Types.Capacity (Capacity (..))
 import           Entity.Types.Common
 import           Scenario.Types
 
@@ -63,7 +63,7 @@ isContainer (Actor {})          = True
 isContainer (Item _ _ (Just _)) = True
 isContainer (Item _ _ Nothing)  = False
 
--- | EntityResult
+-- EntityResult
 {- Example usage:
 case findEntityById targetId world of
     Nothing -> handleNotFound targetId

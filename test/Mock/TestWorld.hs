@@ -1,10 +1,11 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE MonoLocalBinds #-}
 module Mock.TestWorld (module Mock.TestWorld) where
 
 import qualified Data.Map                as Map
 import           Entity.Class.EntityBase
 import           Entity.Entity
-import           Entity.Types            (Capacity (..))
+import           Entity.Types.Capacity   (Capacity (..))
 import           Entity.Types.Common
 
 -- Common test locations

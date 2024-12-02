@@ -26,8 +26,8 @@ source-repository head
 library
   exposed-modules:
       Command.Actor
+      Command.CommandDefinition
       Command.CommandExecutor
-      Command.CommandHandler
       Command.Commands
       Command.Debug
       Command.Drop
@@ -56,31 +56,25 @@ library
       Core.State.GameState
       Core.State.JSON
       Core.State.JSONTypes
+      Entity.Class.CanMoveSelf
       Entity.Class.Capacity
       Entity.Class.EntityBase
-      Entity.Class.Movable
       Entity.Class.Viewable
       Entity.Entity
       Entity.EntityConverter
       Entity.Ops.Inventory
       Entity.Ops.Location
       Entity.Ops.NestedInventory
-      Entity.Types
+      Entity.Types.Capacity
       Entity.Types.Common
       Logger
-      Parser.Internal.Patterns
       Parser.Parser
+      Parser.Patterns
       Parser.Types
       Parser.Utils
       Repl.Interpreter
       Repl.Repl
       Scenario.Check
-      Scenario.Checks.Has
-      Scenario.Checks.HasNot
-      Scenario.Checks.Is
-      Scenario.Checks.IsNot
-      Scenario.CondCheckHandler
-      Scenario.ConditionalChecks
       Scenario.ConditionalExecutor
       Scenario.ScenarioConverter
       Scenario.Types

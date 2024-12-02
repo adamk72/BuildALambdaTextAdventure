@@ -39,22 +39,23 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 
 ### Coding Todos
 - [] Supplementary for scenarios
-  - [] Create "give" command for NPC interaction.
+  - [x] Create "give" command for NPC interaction.
   - [] Create "talk" command for NPC interaction.
   - [x] "Look" should describe NPCs in location
-  - [] "Look" should describe locations exits; not all exits will be "real" and lead to other places.
+  - [x] "Look" should describe locations exits;
+  - [] For Look, not all exits will be "real" and lead to other places.
   - [] Allow for "open" and "close" commands (is this necessary; can we assume that if something isn't locked, it can be opened without needing a specific command?) Maybe treating as a status, like, "blocked" and "unblocked" makes more sense.
   - [] Allow for "lock" and "unlock" command.
   - [] Possibly add "types" to Entities in order to generalize them. This way when using the "guard" tag, it means any guard instead of specific guard (with possibility of having subtypes like "bribable"?).
   - [] Work out how currency and commodities will work so the player can hold and give arbitrary amounts of some items.
 - [] Scenario Work
   - [] Do the supplementary work, above.
-  - [] Aeson parse the scenarios section of the Trial Adventure.json file.
-  - [] Determine how you're actually going to access that data in the midst of a command use.
+  - [x] Aeson parse the scenarios section of the Trial Adventure.json file.
+  - [x] Determine how you're actually going to access that data in the midst of a command use.
 - [] Logging, Gave saves, Game replays
-  - [] Log status for debugging.
+  - [z] Log status for debugging.
   - [] Where there are `error` throws, try logging instead.
-  - [] Save current state of game to files.
+  - [å] Save current state of game to files.
   - [] Save commands so that the user can up arrow to get last command.
   - [] Save (valid) moves to files so that the game can be replayed for testing.
 - [] Create 'prospect' location status, indicating Look is misdirecting the player
@@ -70,7 +71,7 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
   1. [x] Just get a simple gameWorld or player structure in place at launch.
   2. [x] Structure the data.
   3. [x] Pull in data from file.
-- [] Create move command from Meadow to Cave and back.
+- [x] Create move command from Meadow to Cave and back.
 - [x] Move Quit commands over to the parser.
   - [x] Fix it so that it returns a proper Maybe or Either rather than a Text.
 - [] Have REPL prompt dynamically update when the location (or other details) change.

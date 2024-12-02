@@ -15,7 +15,6 @@ import           Parser.Utils
 import           Prelude                 hiding (pred)
 import           Utils                   (ItemTag)
 
--- | Attempt to take an item from a specific location or container
 getItem :: ItemTag -> Maybe Text -> World -> GameStateText
 getItem itemTag srcM gw =
     case findEntityById itemId gw of

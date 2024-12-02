@@ -3,7 +3,7 @@ module Command.Message
     , module Command.Message.Common
     , module Command.Message.Container
     , module Command.Message.Error
-    , module Command.Message.Give      -- Add this line
+    , module Command.Message.Give
     , module Command.Message.Inventory
     , module Command.Message.Item
     , module Command.Message.Location
@@ -15,7 +15,7 @@ import           Command.Message.Command
 import           Command.Message.Common
 import           Command.Message.Container
 import           Command.Message.Error
-import           Command.Message.Give      -- Add this line
+import           Command.Message.Give
 import           Command.Message.Inventory
 import           Command.Message.Item
 import           Command.Message.Location

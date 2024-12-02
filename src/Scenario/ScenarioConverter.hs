@@ -7,7 +7,6 @@ import           Parser.Parser       (parseCmdPhrase, parseCondPhrase, renderExp
 import           Parser.Types        (ParseError)
 import           Scenario.Types
 
--- | JSON representation of a Scenario
 data ScenarioJSON = ScenarioJSON
     { sTag             :: Text
     , sName            :: Text
@@ -16,7 +15,6 @@ data ScenarioJSON = ScenarioJSON
     , sActionsOnceTrue :: Maybe [Text]
     } deriving (Show, Eq)
 
--- | JSON representation of a ConditionGroup
 data ConditionGroupJSON = ConditionGroupJSON
     { cgAll        :: Maybe [Text]
     , cgAny        :: Maybe [Text]
@@ -24,7 +22,6 @@ data ConditionGroupJSON = ConditionGroupJSON
     , cgWhileTrue  :: Maybe [ScenarioResponseJSON]
     } deriving (Show, Eq)
 
--- | JSON representation of a ScenarioResponse
 data ScenarioResponseJSON = ScenarioResponseJSON
     { srActions  :: [Text]
     , srResponse :: Text
@@ -67,11 +64,9 @@ instance FromJSON ScenarioResponseJSON where
             , srResponse = resp
             }
 
--- | Helper function to convert ParseError to Text in Either
 convertParseError :: Either ParseError a -> Either Text a
 convertParseError = either (Left . renderExpressionError) Right
 
--- | Convert JSON data to our Haskell types
 convertToScenario :: ScenarioJSON -> Either Text Scenario
 convertToScenario ScenarioJSON{..} = do
     startConds <- traverse convertConditionGroup sStartConditions

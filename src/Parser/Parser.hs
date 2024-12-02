@@ -1,15 +1,14 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Parser.Parser (parseCmdPhrase, parseCondPhrase, renderExpression, renderExpressionError) where
 
-import           Data.Text                (Text, unwords)
-import qualified Data.Text                as T
-import           Parser.Internal.Patterns
+import           Data.Text       (Text, unwords)
+import qualified Data.Text       as T
+import           Parser.Patterns
     (CondPatternMatch, MatchPreference (First, Last), PatternType (..), PrepPatternMatch, findPattern, knownArticles,
     knownCondPatterns, knownPreps, verbsRequiringObjects)
 import           Parser.Types
-import           Prelude                  hiding (unwords, words)
+import           Prelude         hiding (unwords, words)
 
--- | Helper functions
 isArticle :: Text -> Bool
 isArticle = (`elem` knownArticles)
 
@@ -31,7 +30,6 @@ findPrepClause words = Right $ findPattern knownPreps Last words
 findCondPattern :: [Text] -> Either ParseError (Maybe CondPatternMatch)
 findCondPattern words = Right $ findPattern knownCondPatterns First words
 
--- | Main parsing functions
 parseCondPhrase :: Text -> Either ParseError CondExpression
 parseCondPhrase input = do
     let words' = filter (not . isArticle) $ T.words $ T.toLower input
@@ -90,7 +88,6 @@ runParseCmdPhrase verb clause = do
                             (PrepClause prep)
                             (makeNounClause target)
 
--- | Rendering functions
 renderExpression :: CmdExpression -> Text
 renderExpression = \case
     AtomicCmdExpression verb ->

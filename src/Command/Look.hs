@@ -7,17 +7,16 @@ import           Command.CommandExecutor
 import           Command.Message
 import           Core.State
 import           Data.Maybe
-import           Data.Text               (Text, isSuffixOf)
+import           Data.Text                (Text, isSuffixOf)
+import           Entity.Class.CanMoveSelf
 import           Entity.Class.EntityBase
-import           Entity.Class.Movable
 import           Entity.Entity
 import           Entity.Types.Common
 import           Parser.Types
 import           Parser.Utils
-import           Scenario.Check          (toScenarioCheck)
+import           Scenario.Check           (toScenarioCheck)
 import           Utils
 
--- | Look inside a container
 lookInContainer :: Text -> World -> GameStateText
 lookInContainer containerTag gw = do
     case findItemIdAtActorLoc (EntityId containerTag) gw of
@@ -30,7 +29,6 @@ lookInContainer containerTag gw = do
                                 msg $ LookIn containerTag (oxfordEntityNames  items)
                             else msg $ NotAContainer containerTag
 
--- | Look at a specific item or entity
 lookAt :: Text -> World -> GameStateText
 lookAt eTag gw = do
     case findEntityIdAtActorLoc (EntityId eTag) gw of
@@ -70,7 +68,7 @@ executeLookRaw gw expr = do
                 return $ showInventoryList gw
             | prep `isPrepVariantOf` "in" ->
                 lookInContainer target gw
-            | prep `isPrepVariantOf` "at" || prep `isPrepVariantOf` "toward" ->
+            | prep `isPrepVariantOf` "at" || prep `isPrepVariantOf` "toward" {- Todo: check why this works; it should't-}  ->
                 lookAt target gw
             | otherwise ->
                 return "TBD"

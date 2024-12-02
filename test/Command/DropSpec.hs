@@ -4,7 +4,6 @@ module Command.DropSpec (spec) where
 import           Command.Commands
 import           Command.TestUtils
 import           Command.Message
-import           Core.State
 import Mock.TestWorld
 import           Parser.Types
 import           Test.Hspec
@@ -31,8 +30,7 @@ spec = do
                 let dropExpr = UnaryCmdExpression "drop" (NounClause "silver coin")
                 (output, finalState) <- runCommand executeDrop dropExpr midState
 
-                output `shouldBe` renderMessage (DroppedItemWithInventory "silver coin" "") -- no inventory at this time
--- checkItemTagInPocket "silver coin" finalState `shouldBe` False
+                output `shouldBe` renderMessage (DroppedItemWithInventory "silver coin" "")
 
             it "questions what is meant by an incomplete phrase" $ do
                 let gw = defaultGW
@@ -45,8 +43,7 @@ spec = do
                     expr = ComplexCmdExpression "drop" (NounClause "silver coin") (PrepClause "on") (NounClause "ground")
                 (output, newState) <- runCommand executeDrop expr gw
 
-                output `shouldBe` renderMessage (DroppedItemSomewhere "silver coin" "on ground") -- no inventory at this time
--- checkItemTagInPocket "silver coin" newState `shouldBe` False
+                output `shouldBe` renderMessage (DroppedItemSomewhere "silver coin" "on ground")
 
             it "handles dropping of all objects" $ do
                 let gw = defaultGW

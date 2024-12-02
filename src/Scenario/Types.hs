@@ -16,17 +16,17 @@ data Scenario = Scenario
     } deriving (Show, Eq, Generic)
 
 data ScenarioResponse = ScenarioResponse
-    { actions  :: [CmdExpression]     -- Actions that trigger this response
-    , response :: Text       -- Text to show player
+    { actions  :: [CmdExpression]
+    , response :: Text
     } deriving (Show, Eq, Generic)
 
 data ConditionType
-    = All [CondExpression]    -- All conditions must be met
-    | Any [CondExpression]    -- Any condition must be met
+    = All [CondExpression]
+    | Any [CondExpression]
     deriving (Show, Eq, Generic)
 
 data ConditionGroup = ConditionGroup
     { conditions :: ConditionType
-    , whileFalse :: Maybe [ScenarioResponse]  -- Responses while conditions aren't met
-    , whileTrue  :: Maybe [ScenarioResponse]  -- Responses while conditions are met
+    , whileFalse :: Maybe [ScenarioResponse]
+    , whileTrue  :: Maybe [ScenarioResponse]
     } deriving (Show, Eq, Generic)

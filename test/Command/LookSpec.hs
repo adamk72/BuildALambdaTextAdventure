@@ -4,15 +4,13 @@ module Command.LookSpec (spec) where
 import           Command.Commands
 import           Command.TestUtils
 import           Core.State
-import           Core.Operations
 import           Mock.TestWorld
 import           Parser.Types
 import           Test.Hspec
 import           Entity.Class.EntityBase
-import           Entity.Entity
-import           Data.Text            (Text, isInfixOf)
+import           Data.Text            (isInfixOf)
 import qualified Data.Map            as Map
-import           Command.Message
+import Command.CommandExecutor (ScenarioCheckExecutor(..))
 
 spec :: Spec
 spec = do
@@ -21,7 +19,7 @@ spec = do
             it "handles atomic expression (just 'look')" $ do
                 let gw = defaultGW
                     expr = AtomicCmdExpression "look"
-                (output, newState) <- runCommand executeLook expr gw
+                (output, newState) <- runCommand (runScenarioCheck  executeLook) expr gw
 
                 output `shouldBe` "A general view of the space and possibly some items."
                 verifyStartLocation newState "meadow"
@@ -29,7 +27,7 @@ spec = do
             it "handles unary expression (look around)" $ do
                 let gw = defaultGW
                     expr = UnaryCmdExpression "look" (NounClause "around")
-                (output, newState) <- runCommand executeLook expr gw
+                (output, newState) <- runCommand (runScenarioCheck executeLook) expr gw
 
                 -- Test that output includes location and visible items
                 "flowery meadow" `shouldSatisfy` (`isInfixOf` output)
@@ -40,7 +38,7 @@ spec = do
             it "handles looking at specific items" $ do
                 let gw = defaultGW
                     expr = BinaryCmdExpression "look" (PrepClause "at") (NounClause "silver coin")
-                (output, newState) <- runCommand executeLook expr gw
+                (output, newState) <- runCommand (runScenarioCheck executeLook) expr gw
 
                 "silver coin" `shouldSatisfy` (`isInfixOf` output)
                 verifyStartLocation newState "meadow"
@@ -48,7 +46,7 @@ spec = do
             it "handles looking in containers" $ do
                 let gw = defaultGW
                     expr = BinaryCmdExpression "look" (PrepClause "in") (NounClause "bag of holding")
-                (output, newState) <- runCommand executeLook expr gw
+                (output, newState) <- runCommand (runScenarioCheck executeLook) expr gw
 
                 "pearl" `shouldSatisfy` (`isInfixOf` output)
                 verifyStartLocation newState "meadow"
@@ -57,8 +55,7 @@ spec = do
             it "shows items in the current location" $ do
                 let gw = defaultGW
                     expr = UnaryCmdExpression "look" (NounClause "around")
-                (output, _) <- runCommand executeLook expr gw
-                let visibleMovables = getViewableNamesAtActorLoc gw
+                (output, _) <- runCommand (runScenarioCheck executeLook) expr gw
 
                 "silver coin" `shouldSatisfy` (`isInfixOf` output)
                 "bag of holding" `shouldSatisfy` (`isInfixOf` output)
@@ -66,15 +63,15 @@ spec = do
             it "doesn't show items in other locations" $ do
                 let gw = defaultGW
                     expr = UnaryCmdExpression "look" (NounClause "around")
-                (output, _) <- runCommand executeLook expr gw
+                (output, _) <- runCommand (runScenarioCheck executeLook) expr gw
 
-                "bat" `shouldNotSatisfy` (`isInfixOf` output)  -- bat is in cave
-                "eight ball" `shouldNotSatisfy` (`isInfixOf` output)  -- eight ball is in forest
+                "bat" `shouldNotSatisfy` (`isInfixOf` output)
+                "eight ball" `shouldNotSatisfy` (`isInfixOf` output)
 
             it "shows items in visible containers" $ do
                 let gw = defaultGW
                     expr = BinaryCmdExpression "look" (PrepClause "in") (NounClause "bag of holding")
-                (output, _) <- runCommand executeLook expr gw
+                (output, _) <- runCommand (runScenarioCheck executeLook) expr gw
 
                 "pearl" `shouldSatisfy` (`isInfixOf` output)
 
@@ -82,14 +79,14 @@ spec = do
             it "maintains actor location after looking" $ do
                 let gw = defaultGW
                     expr = UnaryCmdExpression "look" (NounClause "around")
-                (_, newState) <- runCommand executeLook expr gw
+                (_, newState) <- runCommand (runScenarioCheck executeLook) expr gw
 
                 verifyStartLocation newState "meadow"
 
             it "maintains inventory after looking" $ do
                 let gw = defaultGW
                     expr = UnaryCmdExpression "look" (NounClause "around")
-                (_, newState) <- runCommand executeLook expr gw
+                (_, newState) <- runCommand (runScenarioCheck executeLook) expr gw
 
                 let originalInventory = getActiveActorInventoryList gw
                     newInventory = getActiveActorInventoryList newState
@@ -99,7 +96,7 @@ spec = do
             it "maintains world state integrity" $ do
                 let gw = defaultGW
                     expr = UnaryCmdExpression "look" (NounClause "around")
-                (_, newState) <- runCommand executeLook expr gw
+                (_, newState) <- runCommand (runScenarioCheck executeLook) expr gw
 
                 Map.size (items gw) `shouldBe` Map.size (items newState)
                 Map.size (locations gw) `shouldBe` Map.size (locations newState)

@@ -1,22 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Scenario.ConditionSpec (spec) where
 
-import           Command.Commands             (executeGo)
-import           Command.TestUtils            (initTestState, runCommand)
-import           Core.State                   (World (..))
-import           Data.Map                     (Map)
 import qualified Data.Map                     as Map
-import           Data.Text                    (Text, words)
-import           Entity.Class.Movable
+import           Data.Text                    (words)
 import           Entity.Entity
-import           Entity.Types                 (Capacity (..))
+import           Entity.Types.Capacity
 import           Entity.Types.Common          (EntityId (..))
 import           Parser.Parser                (parseCondPhrase, renderExpressionError)
 import           Parser.Types
-    (CmdExpression (..), CondExpression (..), NounClause (..), PossessionClause (..), StateClause (..), SubjClause (..))
 import           Prelude                      hiding (words)
 import           Scenario.ConditionalExecutor (executeConditionCheck)
-import           Scenario.Types
 import           Test.Hspec
 
 
@@ -136,9 +129,7 @@ spec = do
             -- Test each condition string
             mapM_ (\condStr -> case parseCondPhrase condStr of
                 Right cond -> do
-                    let expected = if "not" `elem` words condStr
-                                 then True
-                                 else False
+                    let expected = "not" `elem` words condStr
                     executeConditionCheck cond world `shouldBe` expected
                 Left err -> expectationFailure $ show $ renderExpressionError err
                 ) conditions

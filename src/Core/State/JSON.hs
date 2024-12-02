@@ -7,7 +7,6 @@ import           Data.Aeson
 import qualified Data.ByteString.Lazy as B
 import           GHC.Generics         (Generic)
 
--- | Wrapper for GameEnvironment with JSON data
 newtype GameEnvironmentJSON = GameEnvironmentJSON {
     unGameEnvironment :: (Metadata, Maybe WorldJSON)
 } deriving (Show, Eq, Generic)
@@ -18,7 +17,6 @@ instance FromJSON GameEnvironmentJSON where
         worldJSON <- v .:? "world"
         return $ GameEnvironmentJSON (metadata, worldJSON)
 
--- | Load and parse a game environment from a JSON file
 loadGameEnvironmentJSON :: FilePath -> IO (Either String (Metadata, Maybe WorldJSON))
 loadGameEnvironmentJSON filePath = do
     jsonData <- B.readFile filePath

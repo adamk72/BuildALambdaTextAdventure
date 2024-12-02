@@ -9,7 +9,6 @@ import           Logger
 import           Repl.Interpreter (interpretCommand)
 import           System.IO        (hFlush, stdout)
 
--- | Main REPL loop that handles both game state and logging
 replLoop :: AppState -> IO (Maybe AppState)
 replLoop AppState{gameWorld = world, gameHistory = history} = do
     input <- read_

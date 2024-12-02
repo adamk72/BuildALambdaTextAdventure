@@ -12,7 +12,7 @@ import Entity.Class.EntityBase
 import Entity.Class.Capacity
 import Utils (oxfordComma)
 
--- | Represents the path to an item through containers
+-- Represents the path to an item through containers
 -- e.g. "bag > pouch > coin" would show how to reach the coin
 type InventoryPath = [Text]
 

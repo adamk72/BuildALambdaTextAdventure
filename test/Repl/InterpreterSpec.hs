@@ -1,29 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Repl.InterpreterSpec (spec) where
 
-import           Command.CommandExecutor (CommandExecutor)
-import           Command.CommandHandler (CommandHandler(..))
 import           Command.TestUtils
 import           Control.Monad.State
 import           Core.State.GameState
-import           Data.Text               (Text, isPrefixOf)
+import           Data.Text               (isPrefixOf)
 import           Mock.TestWorld
 import           Repl.Interpreter
 import           Test.Hspec
 
--- Helper function to create test commands
-mkTestCommand :: Text -> [Text] -> CommandExecutor -> CommandHandler
-mkTestCommand txt aliases exec = CommandHandler
-    { cmdText = txt
-    , cmdAliases = aliases
-    , cmdExec = exec
-    }
-
--- Mock command executors for testing
-mockSuccessExecutor :: CommandExecutor
-mockSuccessExecutor _ = return "Success!"
-
--- Test suite
 spec :: Spec
 spec = describe "Interpreter" $ do
     describe "tryCommand" $ do

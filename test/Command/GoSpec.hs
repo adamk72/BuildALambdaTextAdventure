@@ -3,13 +3,11 @@ module Command.GoSpec (spec) where
 
 import           Command.Commands
 import           Command.TestUtils
-import           Control.Exception    (evaluate)
 import           Command.Message
-import           Core.State
-import           Data.Text            (unpack)
 import           Mock.TestWorld
 import           Parser.Types
 import           Test.Hspec
+import Command.CommandExecutor (ScenarioCheckExecutor(..))
 
 spec :: Spec
 spec = do
@@ -18,15 +16,15 @@ spec = do
             it "handles atomic expression (just 'go')" $ do
                 let gw = defaultGW
                     expr = AtomicCmdExpression "go"
-                (output, newState) <- runCommand executeGo expr gw
+                (output, newState) <- runCommand (runScenarioCheck executeGo) expr gw
 
-                output `shouldBe` renderMessage GoWhere -- Should be updated with proper error message
-                verifyStartLocation newState "meadow"  -- Should not move
+                output `shouldBe` renderMessage GoWhere
+                verifyStartLocation newState "meadow"
 
             it "handles unary expression (go <location>)" $ do
                 let gw = defaultGW
                     expr = UnaryCmdExpression "go" (NounClause "cave")
-                (output, newState) <- runCommand executeGo expr gw
+                (output, newState) <- runCommand (runScenarioCheck executeGo) expr gw
 
                 output `shouldBe` "Moving to cave."
                 verifyStartLocation newState "cave"
@@ -34,7 +32,7 @@ spec = do
             it "handles binary expression (go to <location>)" $ do
                 let gw = defaultGW
                     expr = BinaryCmdExpression "go" (PrepClause "to") (NounClause "cave")
-                (output, newState) <- runCommand executeGo expr gw
+                (output, newState) <- runCommand (runScenarioCheck executeGo) expr gw
 
                 output `shouldBe` "Moving to cave."
                 verifyStartLocation newState "cave"
@@ -42,7 +40,7 @@ spec = do
             it "handles complex expression as unknown" $ do
                 let gw = defaultGW
                     expr = ComplexCmdExpression "go" (NounClause "something") (PrepClause "to") (NounClause "cave")
-                (output, newState) <- runCommand executeGo expr gw
+                (output, newState) <- runCommand (runScenarioCheck executeGo) expr gw
 
                 output `shouldBe` renderMessage NotSure
                 verifyStartLocation newState "meadow"

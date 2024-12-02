@@ -4,10 +4,10 @@ import           Command.CommandExecutor
 import           Command.Message
 import           Core.GameMonad
 import           Core.State.GameState
-import           Data.Maybe              (fromMaybe)
-import           Data.Text               (Text)
-import           Entity.Class.Movable
-import           Entity.Ops.Location     (getLocationDestinations)
+import           Data.Maybe               (fromMaybe)
+import           Data.Text                (Text)
+import           Entity.Class.CanMoveSelf
+import           Entity.Ops.Location      (getLocationDestinations)
 import           Entity.Types.Common
 import           Parser.Types
 import           Scenario.Check

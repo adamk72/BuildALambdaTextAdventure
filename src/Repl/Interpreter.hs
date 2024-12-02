@@ -3,16 +3,16 @@
 
 module Repl.Interpreter (interpretCommand, tryCommand) where
 
-import           Command.CommandExecutor (runScenarioCheck)
-import           Command.CommandHandler
-import           Core.Config             (quitCommands)
+import           Command.CommandDefinition
+import           Command.CommandExecutor   (runScenarioCheck)
+import           Core.Config               (quitCommands)
 import           Core.GameMonad
 import           Core.State.GameState
-import           Data.Text               (Text, toLower)
-import qualified Data.Text               as T
+import           Data.Text                 (Text, toLower)
+import qualified Data.Text                 as T
 import           Parser.Parser
-import           Parser.Utils            (getVerb)
-import           Prelude                 hiding (words)
+import           Parser.Utils              (getVerb)
+import           Prelude                   hiding (words)
 
 tryCommand :: Text -> Either Text (GameMonad Text)
 tryCommand input =
