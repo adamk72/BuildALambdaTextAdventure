@@ -11,19 +11,29 @@
     "characters": [
       {
         "tag": "alice",
-        "tags": ["gritty", "brave", "knight"],
+        "tags": [
+          "gritty",
+          "brave",
+          "knight"
+        ],
         "name": "Alice the Adventurer",
         "locationTag": "castle entry"
       },
       {
         "tag": "bob",
-        "tags": ["paladin", "honorable"],
+        "tags": [
+          "paladin",
+          "honorable"
+        ],
         "name": "Bob the Brave",
         "locationTag": "cave"
       },
       {
         "tag": "guard",
-        "tags": ["greedy", "tough"],
+        "tags": [
+          "greedy",
+          "tough"
+        ],
         "name": "Greg the Guard",
         "locationTag": "castle entry"
       }
@@ -82,7 +92,10 @@
     "locations": [
       {
         "tag": "meadow",
-        "tags": ["idyllic", "green"],
+        "tags": [
+          "idyllic",
+          "green"
+        ],
         "name": "A flowery meadow",
         "destinationTags": [
           "cave"
@@ -127,6 +140,7 @@
         "startConditions": [
           {
             "all": [
+              "guard at castle entry",
               "castle entry is locked"
             ]
           }

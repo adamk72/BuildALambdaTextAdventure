@@ -1,4 +1,4 @@
-module Scenario.Checks.Has where
+module Scenario.Checks.Has (module Scenario.Checks.Has) where
 
 import Scenario.ConditionalExecutor
 

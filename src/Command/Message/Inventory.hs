@@ -1,12 +1,9 @@
 module Command.Message.Inventory (InventoryMessage (..), showInventoryList) where
 
-import           Command.Message.Common  (MessageRenderer (..))
-import           Data.Text               (Text)
-import           Entity.Class.Capacity
-import           Entity.Class.EntityBase
-import           Entity.Ops.NestedInventory
+import           Command.Message.Common     (MessageRenderer (..))
+import           Data.Text                  (Text)
 import           Entity.Entity
-import           Utils                   (oxfordEntityNames)
+import           Entity.Ops.NestedInventory
 
 data InventoryMessage
     = PickedUp Text Text

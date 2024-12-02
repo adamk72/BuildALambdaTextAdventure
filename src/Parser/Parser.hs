@@ -1,10 +1,11 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Parser.Parser (parseCmdPhrase, parseCondPhrase, renderExpression, renderExpressionError) where
 
 import           Data.Text                (Text, unwords)
 import qualified Data.Text                as T
 import           Parser.Internal.Patterns
-    (MatchPreference (First, Last), findPattern, isCondTypeOf, knownArticles, knownCondPatterns, knownPreps,
-    verbsRequiringObjects)
+    (CondPatternMatch, MatchPreference (First, Last), PatternType (..), PrepPatternMatch, findPattern, knownArticles,
+    knownCondPatterns, knownPreps, verbsRequiringObjects)
 import           Parser.Types
 import           Prelude                  hiding (unwords, words)
 
@@ -24,10 +25,10 @@ makeStateClause = StateClause . T.unwords
 makePossessionClause:: [Text] -> PossessionClause
 makePossessionClause = PossessionClause . T.unwords
 
-findPrepClause :: [Text] -> Either ParseError (Maybe (Text, [Text], [Text]))
+findPrepClause :: [Text] -> Either ParseError (Maybe PrepPatternMatch)
 findPrepClause words = Right $ findPattern knownPreps Last words
 
-findCondPattern :: [Text] -> Either ParseError (Maybe (Text, [Text], [Text]))
+findCondPattern :: [Text] -> Either ParseError (Maybe CondPatternMatch)
 findCondPattern words = Right $ findPattern knownCondPatterns First words
 
 -- | Main parsing functions
@@ -45,18 +46,19 @@ runParseCondPhrase clause = do
     case condResult of
         Nothing           -> Left $ MalformedCondExpression $ unwords clause
         -- Just (verbClause, subject, condition) -> Left $ MalformedCondExpression $ "on clause: " <> T.intercalate ", " [verbClause, unwords subject, unwords condition]
-        Just (verbClause, subject, condition) ->
-            case isCondTypeOf verbClause of
-            PosState               -> makeStateExpr PosStateExpression
-            NegState               -> makeStateExpr NegStateExpression
-            Possessive             -> makePossesExpr PossessiveExpression
-            NonPossessive          -> makePossesExpr NonPossessiveExpression
-            AtLocation             -> makeStateExpr AtLocationExpression
-            NotAtLocation          -> makeStateExpr NotAtLocationExpression
-            UnknownConditionalType -> Left TBDError
+        Just (patternType, subject, condition) ->
+            case patternType of
+                PosState      -> makeStateExpr PosStateExpression
+                NegState      -> makeStateExpr NegStateExpression
+                Possessive    -> makePossesExpr PossessiveExpression
+                NonPossessive -> makePossesExpr NonPossessiveExpression
+                AtLocation    -> makeStateExpr AtLocationExpression
+                NotAtLocation -> makeStateExpr NotAtLocationExpression
             where
+                makePossesExpr :: (SubjClause -> PossessionClause -> b) -> Either a b
                 makePossesExpr ctor =
                     Right $ ctor (makeSubjClause subject) (makePossessionClause condition)
+                makeStateExpr :: (SubjClause -> StateClause -> b) -> Either a b
                 makeStateExpr ctor =
                     Right $ ctor (makeSubjClause subject) (makeStateClause condition)
 

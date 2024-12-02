@@ -1,7 +1,6 @@
 module Parser.Types
     ( CmdExpression (..)
     , CondExpression (..)
-    , ConditionalType (..)
     , NounClause (..)
     , ParseError (..)
     , PossessionClause (..)
@@ -50,9 +49,6 @@ data CondExpression =
     | NonPossessiveExpression SubjClause PossessionClause
     | AtLocationExpression SubjClause StateClause
     | NotAtLocationExpression SubjClause StateClause
-    deriving (Show, Eq)
-
-data ConditionalType = PosState | NegState | Possessive | NonPossessive | UnknownConditionalType | AtLocation | NotAtLocation
     deriving (Show, Eq)
 
 data ParseError =

@@ -1,30 +1,29 @@
 module Parser.Internal.Patterns
-    ( MatchPreference (..)
-    , PatternList
-    , PatternMatch
+    ( CondPatternList
+    , CondPatternMatch
+    , MatchPreference (..)
+    , PatternType (..)
+    , PrepPatternList
+    , PrepPatternMatch
     , findPattern
-    , findMatchingPattern
-    , isCondTypeOf
     , knownArticles
-    , knownCondNegations
     , knownCondPatterns
     , knownPreps
     , verbsRequiringObjects
     ) where
 
-import           Data.Maybe   (listToMaybe, mapMaybe)
-import           Data.Text    (Text, isInfixOf, toLower, unwords)
-import           Parser.Types (ConditionalType (..), CondExpression)
-import           Prelude      hiding (words)
+import           Data.Maybe (listToMaybe)
+import           Data.Text  (Text)
+import           Prelude    hiding (words)
 
--- | Type alias for pattern matching results
--- (matched base pattern, words before, words after)
-type PatternMatch = (Text, [Text], [Text])
+type CondPatternList = [(PatternType, [[Text]])]
+type PrepPatternList = [(Text, [[Text]])]
 
--- | Type alias for pattern definition lists
--- [(base pattern, list of variant word lists)]
-type PatternExpType = Text | CondExpression
-type PatternList = [(PatternExpType, [[Text]])]
+type CondPatternMatch = (PatternType, [Text], [Text])
+type PrepPatternMatch = (Text, [Text], [Text])
+
+data PatternType = PosState | NegState | Possessive | NonPossessive | AtLocation | NotAtLocation
+    deriving (Show, Eq)
 
 -- | Whether to prefer first or last match when multiple patterns match
 data MatchPreference = First | Last
@@ -34,7 +33,9 @@ data MatchPreference = First | Last
 -- | Whether to prefer first or last match
 -- | Input words to search
 -- | Found pattern if any
-findPattern :: PatternList -> MatchPreference -> [Text] -> Maybe PatternMatch
+-- Todo: Fix. This is _not_ greedy/exact, so the PatternList needs to be properly ordered to ensure it behaves as expected with multi-words.
+-- For example, when working with "is not", if "is" is found first, then "is not" will be skipped.
+findPattern :: [(a, [[Text]])] -> MatchPreference -> [Text] -> Maybe (a, [Text], [Text])
 findPattern patterns pref words =
     let matches =
             [ (basePattern, before, drop (length variant) after)
@@ -50,8 +51,7 @@ findPattern patterns pref words =
         First -> listToMaybe matches
         Last  -> listToMaybe (reverse matches)
 
-
-knownPreps :: PatternList
+knownPreps :: PrepPatternList
 knownPreps =
     [ ("in",    [["in"], ["into"], ["inside"], ["within"]])
     , ("on",    [["on"], ["onto"], ["upon"], ["on", "top", "of"]])
@@ -61,47 +61,19 @@ knownPreps =
     , ("under", [["under"], ["underneath"], ["beneath"]])
     ]
 
-knownCondNegations :: [Text]
-knownCondNegations = ["no", "n't", "not"]
-
-knownCondPatterns :: PatternList
+-- | Order is important here; see note with `findPattern`.
+knownCondPatterns :: CondPatternList
 knownCondPatterns =
-     [ ("at", [["is", "in"], ["is", "not", "in"], ["is", "inside"], ["is", "not", "inside"], ["inside"], ["not", "inside"], ["isn't", "in"], ["aren't", "in"], ["aren't"], ["at"], ["is", "at"], ["is", "not", "at"]])
-     , ("is",  [["is"], ["is", "not"], ["not"], ["are"], ["are", "not"]])
-     , ("has", [["has"], ["has", "no"], ["does", "not", "have"], ["doesn't", "have"], ["don't", "have"], ["owns"], ["carries"], ["possesses"], ["holds"], ["doesn't", "hold"], ["doesn't", "posses"], ["doesn't", "carry"]])
+     [ (NotAtLocation, [["is", "not", "in"], ["is", "not", "inside"], ["not", "inside"], ["isn't", "in"], ["are", "not", "in"], ["aren't", "in"], ["is", "not", "at"], ["not", "at"], ["isn't", "at"]])
+     , (AtLocation, [["is", "in"], ["is", "inside"], ["inside"], ["at"], ["is", "at"]])
+     , (NegState, [["is", "not"], ["not"], ["aren't"], ["are", "not"]])
+     , (PosState, [["is"], ["are"]])
+     , (NonPossessive, [["has", "no"], ["does", "not", "have"], ["doesn't", "have"], ["don't", "have"], ["doesn't", "hold"], ["doesn't", "posses"], ["doesn't", "carry"], ["does", "not", "hold"], ["does", "not", "posses"], ["does", "not", "carry"]])
+     , (Possessive, [["has"], ["owns"], ["carries"], ["possesses"], ["holds"]])
     ]
 
-hasClause :: Text -> [Text] -> Bool
-hasClause p clauses =
-    let lowP = toLower p
-    in any (`isInfixOf` lowP) clauses
-
-isCondTypeOf :: Text -> ConditionalType
-isCondTypeOf t = case findMatchingPattern t of
-    Just ("is", True)   -> NegState
-    Just ("is", False)  -> PosState
-    Just ("has", True)  -> NonPossessive
-    Just ("has", False) -> Possessive
-    Just ("at", True)   -> NotAtLocation
-    Just ("at", False)  -> AtLocation
-    Just {}             -> UnknownConditionalType
-    Nothing             -> UnknownConditionalType
-
--- Todo: Refactor so that instead of `hasNeg` it gives the ConditionalType instead as part of the tuple.
-findMatchingPattern :: Text -> Maybe (Text, Bool)
-findMatchingPattern input =
-    let lowered = toLower input
-        matchPattern (patternName, variants) =
-            let matches = any (hasClause lowered . pure . Data.Text.unwords) variants
-                hasNeg = any (hasClause lowered . pure . Data.Text.unwords)
-                         (filter (any (`elem` knownCondNegations)) variants)
-            in if matches
-               then Just (patternName, hasNeg)
-               else Nothing
-    in listToMaybe $ mapMaybe matchPattern knownCondPatterns
-
 knownArticles :: [Text]
-knownArticles = ["the", "a", "an", "any"]
+knownArticles = ["the", "a", "an"]
 
 verbsRequiringObjects :: [Text]
 verbsRequiringObjects = ["put", "place", "move", "set"]
