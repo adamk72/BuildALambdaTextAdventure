@@ -15,6 +15,7 @@ import           Entity.Types.Common
 import           Parser.Types
 import           Parser.Utils
 import           Utils
+import Scenario.Check (checkForScenarioResponse)
 
 -- | Look inside a container
 lookInContainer :: Text -> World -> GameStateText
@@ -39,40 +40,41 @@ lookAt eTag gw = do
                 (ActorResult actor)  -> return $ "You're looking at " <> getName actor
                 (ItemResult item)    -> return $ "You're looking at " <> getName item
 
-
-
 executeLook :: CommandExecutor
 executeLook expr = do
     gw <- getWorld
-    case expr of
-        AtomicCmdExpression {} ->
-            msg $ YouSeeGeneral "A general view of the space and possibly some items."
+    case checkForScenarioResponse expr gw of
+        Just response -> return response
+        Nothing -> do
+            case expr of
+                AtomicCmdExpression {} ->
+                    msg $ YouSeeGeneral "A general view of the space and possibly some items."
 
-        UnaryCmdExpression _ (NounClause "around") -> do
-            let surroundings = getViewableNamesAtActorLoc gw
-                destinationIds = getLocationDestinations (getLocationId (activeActor gw )) gw
-            case destinationIds of
-                Just dstIds -> do
-                    let dstNames = map unEntityId dstIds
-                        message = renderMessage (YouAreIn $ getActiveActorLocationName gw ) <> " " <> renderMessage (LookAround (oxfordComma surroundings)) <> " You see exits to: " <> oxfordComma dstNames <> "."
-                    return message
-                Nothing -> return "You don't see a way out of here!"
+                UnaryCmdExpression _ (NounClause "around") -> do
+                    let surroundings = getViewableNamesAtActorLoc gw
+                        destinationIds = getLocationDestinations (getLocationId (activeActor gw )) gw
+                    case destinationIds of
+                        Just dstIds -> do
+                            let dstNames = map unEntityId dstIds
+                                message = renderMessage (YouAreIn $ getActiveActorLocationName gw ) <> " " <> renderMessage (LookAround (oxfordComma surroundings)) <> " You see exits to: " <> oxfordComma dstNames <> "."
+                            return message
+                        Nothing -> return "You don't see a way out of here!"
 
-        UnaryCmdExpression _ (NounClause target)
-            | "inventory" `isSuffixOf` target ->
-                return $ showInventoryList gw
-            | otherwise ->
-                lookAt target gw
+                UnaryCmdExpression _ (NounClause target)
+                    | "inventory" `isSuffixOf` target ->
+                        return $ showInventoryList gw
+                    | otherwise ->
+                        lookAt target gw
 
-        BinaryCmdExpression _ (PrepClause prep) (NounClause target)
-            | (prep `isPrepVariantOf` "in" || prep `isPrepVariantOf` "at") && "inventory" `isSuffixOf` target ->
-                return $ showInventoryList gw
-            | prep `isPrepVariantOf` "in" ->
-                lookInContainer target gw
-            | prep `isPrepVariantOf` "at" || prep `isPrepVariantOf` "toward" ->
-                lookAt target gw
-            | otherwise ->
-                return "TBD"
+                BinaryCmdExpression _ (PrepClause prep) (NounClause target)
+                    | (prep `isPrepVariantOf` "in" || prep `isPrepVariantOf` "at") && "inventory" `isSuffixOf` target ->
+                        return $ showInventoryList gw
+                    | prep `isPrepVariantOf` "in" ->
+                        lookInContainer target gw
+                    | prep `isPrepVariantOf` "at" || prep `isPrepVariantOf` "toward" ->
+                        lookAt target gw
+                    | otherwise ->
+                        return "TBD"
 
-        ComplexCmdExpression _ (NounClause object) (PrepClause prep) (NounClause target) ->
-            return $ "You look at " <> object <> " " <> prep <> " " <> target <> "."
+                ComplexCmdExpression _ (NounClause object) (PrepClause prep) (NounClause target) ->
+                    return $ "You look at " <> object <> " " <> prep <> " " <> target <> "."
