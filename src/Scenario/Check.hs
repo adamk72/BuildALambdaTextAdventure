@@ -1,4 +1,4 @@
-module Scenario.Check (checkForScenarioResponse) where
+module Scenario.Check (handleScenarioCheck) where
 
 import Data.Text (Text)
 import qualified Data.Map as Map
@@ -6,6 +6,10 @@ import Parser.Types (CmdExpression)
 import Scenario.Types
 import Entity.Entity (World(scenarios))
 import Scenario.ConditionalExecutor (executeConditionCheck)
+
+handleScenarioCheck :: Monad m => CmdExpression -> World -> m Text -> m Text
+handleScenarioCheck cmd world fallback = do
+    maybe fallback return (checkForScenarioResponse cmd world)
 
 checkConditionGroup :: ConditionGroup -> World -> Bool
 checkConditionGroup group world = case conditions group of
