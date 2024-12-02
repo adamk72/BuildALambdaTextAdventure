@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Scenario.ScenarioConverter (ScenarioJSON, convertToScenario) where
 
 import           Data.Aeson

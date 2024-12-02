@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Scenario.Check (checkForScenarioResponse) where
 
 import Data.Text (Text)

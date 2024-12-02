@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module CmdOptions (parse, AdventureOptions(AdventureOptions), showHelp) where
 
 import           Options.Applicative (ParseError (ShowHelpText), Parser,
