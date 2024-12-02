@@ -15,9 +15,7 @@ import           Scenario.Check          (checkForScenarioResponse)
 moveTo :: Text -> World -> GameStateText
 moveTo dstTag gw
     | currLocTag == dstTag = msg $ AlreadyAtLocation dstTag
-    | dstId `elem` dstIds = case checkForScenarioResponse expr gw of
-        Just response -> return response
-        Nothing -> do
+    | dstId `elem` dstIds = do
             let newAc = setLocationId dstId ac
             modifyWorld $ \w -> w { activeActor = newAc }
             msg $ MovingToLocation dstTag
@@ -27,13 +25,15 @@ moveTo dstTag gw
     dstId = EntityId dstTag
     currLocTag = unEntityId $ getLocationId ac
     dstIds = fromMaybe [] (getLocationDestinations (getLocationId ac) gw)
-    expr = UnaryCmdExpression "go" (NounClause dstTag)
 
 executeGo :: CommandExecutor
 executeGo expr = do
     gw <- getWorld
-    case expr of
-        (AtomicCmdExpression _)                     -> msg GoWhere
-        (UnaryCmdExpression _ (NounClause dst) )    -> moveTo dst gw
-        (BinaryCmdExpression _ _ (NounClause dst) ) -> moveTo dst gw
-        _                                           -> msg NotSure
+    case checkForScenarioResponse expr gw of
+        Just response -> return response
+        Nothing -> do
+            case expr of
+                (AtomicCmdExpression _)                     -> msg GoWhere
+                (UnaryCmdExpression _ (NounClause dst) )    -> moveTo dst gw
+                (BinaryCmdExpression _ _ (NounClause dst) ) -> moveTo dst gw
+                _                                           -> msg NotSure

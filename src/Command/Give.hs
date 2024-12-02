@@ -26,7 +26,7 @@ giveItemToActor itemTag targetActorTag gw =
         itemId = EntityId itemTag
         targetActorId = EntityId targetActorTag
         itemsOnActor = getActiveActorInventoryList gw
-        -- Get the LocationId from the current location entity
+
         currentLocationId = getId (getActiveActorLocation gw)
         actorsInLoc = getActorsAtLocation currentLocationId gw
 

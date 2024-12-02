@@ -4,9 +4,6 @@ import           Command.CommandExecutor
 import           Command.Message
 import           Command.Message.Debug
 import           Core.GameMonad
-import           Core.State
-import           Data.Text               (Text)
-import           Entity.Entity
 import           Parser.Types
 
 executeDebug :: CommandExecutor
