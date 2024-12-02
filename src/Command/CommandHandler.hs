@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Command.CommandHandler (CommandHandler (..), allCommands, findCommand, knownCmdVerbs) where
 
 import           Command.CommandExecutor
@@ -9,19 +10,19 @@ import qualified Data.Text               as T
 data CommandHandler = CommandHandler
     { cmdText    :: T.Text
     , cmdAliases :: [T.Text]
-    , cmdExec    :: CommandExecutor
+    , cmdExec    :: Either CommandExecutor ScenarioCheckExecutor
     }
 
 allCommands :: [CommandHandler]
 allCommands =
-    [ CommandHandler "look" ["search", "examine"] executeLook
-    , CommandHandler "go" [] executeGo
-    , CommandHandler "get" ["take"] executeGet
-    , CommandHandler "drop" [] executeDrop
-    , CommandHandler "put" ["place", "move", "set"] executePut
-    , CommandHandler "give" ["hand"] executeGive
-    , CommandHandler "inventory" ["inv", "i"] executeInventory
-    , CommandHandler ":debug" [] executeDebug
+    [ CommandHandler "look" ["search", "examine"] (Right executeLook)
+    , CommandHandler "go" [] (Right executeGo)
+    , CommandHandler "get" ["take"] (Left executeGet)
+    , CommandHandler "drop" [] (Left executeDrop)
+    , CommandHandler "put" ["place", "move", "set"] (Left executePut)
+    , CommandHandler "give" ["hand"] (Left executeGive)
+    , CommandHandler "inventory" ["inv", "i"] (Left executeInventory)
+    , CommandHandler ":debug" [] (Left executeDebug)
     ]
 
 knownCmdVerbs :: [T.Text]

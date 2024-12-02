@@ -10,7 +10,7 @@ import           Entity.Class.Movable
 import           Entity.Ops.Location     (getLocationDestinations)
 import           Entity.Types.Common
 import           Parser.Types
-import           Scenario.Check          (handleScenarioCheck)
+import           Scenario.Check
 
 moveTo :: Text -> World -> GameStateText
 moveTo dstTag gw
@@ -26,12 +26,13 @@ moveTo dstTag gw
     currLocTag = unEntityId $ getLocationId ac
     dstIds = fromMaybe [] (getLocationDestinations (getLocationId ac) gw)
 
-executeGo :: CommandExecutor
-executeGo expr = do
-    gw <- getWorld
-    handleScenarioCheck expr gw $ do
-        case expr of
-            (AtomicCmdExpression _)                     -> msg GoWhere
-            (UnaryCmdExpression _ (NounClause dst) )    -> moveTo dst gw
-            (BinaryCmdExpression _ _ (NounClause dst) ) -> moveTo dst gw
-            _                                           -> msg NotSure
+executeGo :: ScenarioCheckExecutor
+executeGo = toScenarioCheck executeGoRaw
+
+executeGoRaw :: World -> CommandExecutor
+executeGoRaw gw expr = do
+    case expr of
+        (AtomicCmdExpression _)                     -> msg GoWhere
+        (UnaryCmdExpression _ (NounClause dst) )    -> moveTo dst gw
+        (BinaryCmdExpression _ _ (NounClause dst) ) -> moveTo dst gw
+        _                                           -> msg NotSure

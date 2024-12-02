@@ -1,11 +1,22 @@
-module Scenario.Check (handleScenarioCheck) where
+{-# LANGUAGE FlexibleInstances #-}
+module Scenario.Check (ScenarioCheck (..), handleScenarioCheck) where
 
-import Data.Text (Text)
-import qualified Data.Map as Map
-import Parser.Types (CmdExpression)
-import Scenario.Types
-import Entity.Entity (World(scenarios))
-import Scenario.ConditionalExecutor (executeConditionCheck)
+import           Command.CommandExecutor      (ScenarioCheckExecutor (..), CommandExecutor)
+import           Core.State.GameState
+import qualified Data.Map                     as Map
+import           Data.Text                    (Text)
+import           Parser.Types                 (CmdExpression)
+import           Scenario.ConditionalExecutor (executeConditionCheck)
+import           Scenario.Types
+import Core.GameMonad
+
+class ScenarioCheck a where
+    toScenarioCheck :: a -> ScenarioCheckExecutor
+
+instance ScenarioCheck (World -> CommandExecutor) where
+    toScenarioCheck f = ScenarioCheckExecutor $ \expr -> do
+        world <- getWorld
+        handleScenarioCheck expr world (f world expr)
 
 handleScenarioCheck :: Monad m => CmdExpression -> World -> m Text -> m Text
 handleScenarioCheck cmd world fallback = do
@@ -43,5 +54,5 @@ checkForScenarioResponse cmd world =
         checkConditionGroups = foldr checkGroup Nothing
 
     in foldr (\scenario result -> case result of
-        Just r -> Just r
+        Just r  -> Just r
         Nothing -> checkScenario scenario) Nothing allScenarios

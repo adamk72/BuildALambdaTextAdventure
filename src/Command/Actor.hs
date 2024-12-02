@@ -6,4 +6,4 @@ import Parser.Types (NounClause(NounClause), CmdExpression (UnaryCmdExpression))
 
 executeInventory :: CommandExecutor
 executeInventory _ = do
-  executeLook (UnaryCmdExpression "look" (NounClause "inventory"))
+  runScenarioCheck executeLook (UnaryCmdExpression "look" (NounClause "inventory"))
