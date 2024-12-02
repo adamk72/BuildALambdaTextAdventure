@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "Trial of Your Life",
-    "launchTag": "Trial",
+    "launchTag": "HasNoCoin",
     "description": "A short adventure for testing.",
     "version": "1.0",
     "author": "Adam Kecskes"
@@ -143,93 +143,9 @@
                   "go castle"
                 ],
                 "response": "The guard puts out a hand to stop you."
-              },
-              {
-                "actions": [
-                  "unlock castle entry",
-                  "open castle entry"
-                ],
-                "response": "The guard glares at you."
-              },
-              {
-                "actions": [
-                  "talk to guard"
-                ],
-                "response": "The guard says you can't enter without permission, but he has the glint of greed in his eye."
-              },
-              {
-                "actions": [
-                  "give silver coin to guard"
-                ],
-                "response": "He accepts the coin and unlocks the gate for you to enter."
-              }
-            ]
-          },
-          {
-            "all": [
-              "guard at castle entry",
-              "bob has magic bauble"
-            ],
-            "whileFalse": [
-              {
-                "actions": [
-                  "look at castle entry"
-                ],
-                "response": "There's no one here."
-              },
-              {
-                "actions": [
-                  "unlock castle entry",
-                  "open castle entry"
-                ],
-                "response": "The gate is locked, but you see Bob's name scratched on it and small divot below there about the size of a bauble."
-              }
-            ]
-          },
-          {
-            "all": [
-              "guard at castle entry"
-            ],
-            "whileTrue": [
-              {
-                "actions": [
-                  "look at castle entry"
-                ],
-                "response": "There's no one here."
-              },
-              {
-                "actions": [
-                  "unlock castle entry",
-                  "open castle entry"
-                ],
-                "response": "The gate is locked, but you see Bob's name scratched on it and small divot below there about the size of a bauble."
-              }
-            ]
-          },
-          {
-            "any": [
-              "alice is queen",
-              "bob is king"
-            ],
-            "whileFalse": [
-              {
-                "actions": [
-                  "look at castle entry"
-                ],
-                "response": ""
-              },
-              {
-                "actions": [
-                  "unlock castle entry",
-                  "open castle entry"
-                ],
-                "response": "The gate is locked, but you see Bob's name scratched on it and small divot below there about the size of a bauble."
               }
             ]
           }
-        ],
-        "actionsOnceTrue": [
-          "unlock castle entry"
         ]
       }
     ]

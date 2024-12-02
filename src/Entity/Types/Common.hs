@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Entity.Types.Common where
+module Entity.Types.Common (module Entity.Types.Common) where
 
 import           Data.Text    (Text)
 import           GHC.Generics (Generic)

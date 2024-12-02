@@ -150,6 +150,7 @@ test-suite TextAdventure-test
       Command.TestUtils
       MainSpec
       Mock.TestWorld
+      Parser.Internal.PatternsSpec
       Parser.ParserSpec
       Repl.InterpreterSpec
       Scenario.ConditionSpec

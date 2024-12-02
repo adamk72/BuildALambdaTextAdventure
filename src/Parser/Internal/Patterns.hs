@@ -3,6 +3,7 @@ module Parser.Internal.Patterns
     , PatternList
     , PatternMatch
     , findPattern
+    , findMatchingPattern
     , isCondTypeOf
     , knownArticles
     , knownCondNegations
@@ -13,7 +14,7 @@ module Parser.Internal.Patterns
 
 import           Data.Maybe   (listToMaybe, mapMaybe)
 import           Data.Text    (Text, isInfixOf, toLower, unwords)
-import           Parser.Types (ConditionalType (..))
+import           Parser.Types (ConditionalType (..), CondExpression)
 import           Prelude      hiding (words)
 
 -- | Type alias for pattern matching results
@@ -22,7 +23,8 @@ type PatternMatch = (Text, [Text], [Text])
 
 -- | Type alias for pattern definition lists
 -- [(base pattern, list of variant word lists)]
-type PatternList = [(Text, [[Text]])]
+type PatternExpType = Text | CondExpression
+type PatternList = [(PatternExpType, [[Text]])]
 
 -- | Whether to prefer first or last match when multiple patterns match
 data MatchPreference = First | Last

@@ -44,6 +44,7 @@ runParseCondPhrase clause = do
     condResult <- findCondPattern clause
     case condResult of
         Nothing           -> Left $ MalformedCondExpression $ unwords clause
+        -- Just (verbClause, subject, condition) -> Left $ MalformedCondExpression $ "on clause: " <> T.intercalate ", " [verbClause, unwords subject, unwords condition]
         Just (verbClause, subject, condition) ->
             case isCondTypeOf verbClause of
             PosState               -> makeStateExpr PosStateExpression
