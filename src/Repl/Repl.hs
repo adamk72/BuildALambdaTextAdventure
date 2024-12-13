@@ -1,13 +1,14 @@
 module Repl.Repl (replLoop) where
 
-import           Core.Config      (quitCommands, replPrompt)
+import           Control.Monad.State (runStateT)
+import           Core.Config         (quitCommands, replPrompt)
 import           Core.GameMonad
-import           Core.State       (AppState (..), GameState (..))
-import           Data.Text        (Text)
-import qualified Data.Text.IO     as TIO
+import           Core.State          (AppState (..), GameState (..))
+import           Data.Text           (Text)
+import qualified Data.Text.IO        as TIO
 import           Logger
-import           Repl.Interpreter (interpretCommand)
-import           System.IO        (hFlush, stdout)
+import           Repl.Interpreter    (interpretCommand)
+import           System.IO           (hFlush, stdout)
 
 replLoop :: AppState -> IO (Maybe AppState)
 replLoop AppState{gameWorld = world, gameHistory = history} = do
@@ -21,7 +22,7 @@ replLoop AppState{gameWorld = world, gameHistory = history} = do
     else do
         let initialState = GameState world history
         (result, GameState newWorld newHistory) <-
-            runGameMonad (interpretCommand input) initialState
+            runStateT (interpretCommand input) initialState
 
         case result of
             Just output -> do

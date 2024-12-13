@@ -1,4 +1,4 @@
-module Core.GameMonad (getWorld, logGameDebug, logGameError, logGameInfo, modifyWorld, runGameMonad) where
+module Core.GameMonad (getWorld, logGameDebug, logGameError, logGameInfo, modifyWorld) where
 
 import           Control.Monad.State
 import           Core.State.GameState (GameMonad, GameState (..), World)
