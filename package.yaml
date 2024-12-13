@@ -50,6 +50,7 @@ library:
   - mtl
   - split
   - text
+  - raw-strings-qq
   - time
 
 executables:

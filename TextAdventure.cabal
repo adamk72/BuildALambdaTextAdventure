@@ -98,6 +98,7 @@ library
     , directory
     , filepath
     , mtl
+    , raw-strings-qq
     , split
     , text
     , time

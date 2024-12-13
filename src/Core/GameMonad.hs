@@ -5,9 +5,6 @@ import           Core.State.GameState (GameMonad, GameState (..), World)
 import           Data.Text            (Text)
 import           Logger
 
-runGameMonad :: GameMonad a -> GameState -> IO (a, GameState)
-runGameMonad = runStateT
-
 getWorld :: GameMonad World
 getWorld = gets gsWorld
 
