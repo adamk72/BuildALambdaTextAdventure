@@ -7,7 +7,9 @@ module Parser.Types
     , PrepClause (..)
     , StateClause (..)
     , SubjClause (..)
+    , TagClause (..)
     , Subject
+    , TagExpression (..)
     ) where
 
 import           Data.Text
@@ -36,9 +38,10 @@ data CmdExpression =
     | ComplexCmdExpression Verb NounClause PrepClause NounClause
     deriving (Show, Eq)
 
-newtype SubjClause = SubjClause { unSubjClause :: Text} deriving (Show, Eq)
-newtype StateClause = StateClause { unStateClause :: Text} deriving (Show, Eq)
-newtype PossessionClause = PossessionClause { unPossessionClause :: Text} deriving (Show, Eq)
+newtype SubjClause = SubjClause { unSubjClause :: Text } deriving (Show, Eq)
+newtype StateClause = StateClause { unStateClause :: Text } deriving (Show, Eq)
+newtype PossessionClause = PossessionClause { unPossessionClause :: Text } deriving (Show, Eq)
+newtype TagClause = TagClause { unTagClause :: Text } deriving (Show, Eq)
 
 type Subject = Text
 
@@ -50,6 +53,8 @@ data CondExpression =
     | AtLocationExpression SubjClause StateClause
     | NotAtLocationExpression SubjClause StateClause
     deriving (Show, Eq)
+
+data TagExpression = IsOfTagTypeExpression SubjClause TagClause | IsNotOfTagTypeExpression SubjClause TagClause
 
 data ParseError =
       MissingObject

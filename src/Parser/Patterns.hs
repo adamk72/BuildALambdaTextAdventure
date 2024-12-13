@@ -1,14 +1,19 @@
 module Parser.Patterns
     ( CondPatternList
     , CondPatternMatch
+    , CondPatternType (..)
     , MatchPreference (..)
-    , PatternType (..)
     , PrepPatternList
     , PrepPatternMatch
+    , TagPatternMatch
+    , TagPatternType (..)
     , findPattern
     , knownArticles
     , knownCondPatterns
+    , knownPluralEntityClasses
     , knownPreps
+    , knownTagPatterns
+    , knownTagPreps
     , verbsRequiringObjects
     ) where
 
@@ -16,13 +21,15 @@ import           Data.Maybe (listToMaybe)
 import           Data.Text  (Text)
 import           Prelude    hiding (words)
 
-type CondPatternList = [(PatternType, [[Text]])]
+type CondPatternList = [(CondPatternType, [[Text]])]
 type PrepPatternList = [(Text, [[Text]])]
+type TagPatternList = [(TagPatternType, [[Text]])]
 
-type CondPatternMatch = (PatternType, [Text], [Text])
+type CondPatternMatch = (CondPatternType, [Text], [Text])
 type PrepPatternMatch = (Text, [Text], [Text])
+type TagPatternMatch = (TagPatternType, [Text], [Text])
 
-data PatternType = PosState | NegState | Possessive | NonPossessive | AtLocation | NotAtLocation
+data CondPatternType = PosState | NegState | Possessive | NonPossessive | AtLocation | NotAtLocation
     deriving (Show, Eq)
 
 data MatchPreference = First | Last
@@ -66,6 +73,23 @@ knownCondPatterns =
      , (NonPossessive, [["has", "no"], ["does", "not", "have"], ["doesn't", "have"], ["don't", "have"], ["doesn't", "hold"], ["doesn't", "posses"], ["doesn't", "carry"], ["does", "not", "hold"], ["does", "not", "posses"], ["does", "not", "carry"]])
      , (Possessive, [["has"], ["owns"], ["carries"], ["possesses"], ["holds"]])
     ]
+
+data TagPatternType
+    = IsOfType
+    | IsNotOfType
+    deriving (Show, Eq)
+
+knownTagPatterns :: TagPatternList
+knownTagPatterns =
+    [ (IsNotOfType, [["is", "not"], ["tag"], ["type"], ["has", "tag"], ["has", "type"], ["has", "tag"],["tag", "is"], ["type", "is"], ["is", "tag"], ["is", "type"], ["who", "has"], ["who", "is"], ["which", "has"], ["which", "is"], ["who", "are"], ["who", "have"], ["which", "are"], ["which", "have"], ["with"]])
+    , (IsOfType, [["is"], ["tag"], ["type"], ["has", "tag"], ["has", "type"], ["has", "tag"],["tag", "is"], ["type", "is"], ["is", "of", "tag"], ["is", "of", "type"], ["who", "has"], ["who", "is"], ["which", "has"], ["which", "is"], ["who", "are"], ["who", "have"], ["which", "are"], ["which", "have"], ["with"]])
+    ]
+
+knownTagPreps :: [Text]
+knownTagPreps = ["of"]
+
+knownPluralEntityClasses :: [Text]
+knownPluralEntityClasses = ["actors", "items", "locations"]
 
 knownArticles :: [Text]
 knownArticles = ["the", "a", "an"]

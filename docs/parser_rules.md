@@ -94,7 +94,7 @@ which will be an object in code like this:
 
 In some cases, parts of the scenario are evaluated behind the scenes, preventing the player access; more often than not, the user will get some sort of feedback, clue, or hint as to what can be done to overcome an obstacle, though they may not know the entire extent of what needs to be done, based on how many conditions there are to match the end conditions.
 
-## Phrase Forms
+## Conditional Phrase Forms
 
 ### Basic
 
@@ -105,15 +105,7 @@ In some cases, parts of the scenario are evaluated behind the scenes, preventing
 - subject verb possession       - e.g., queen has ring, guard has coin
   - verbs" "has," "has no,", "doesn't have," "doesn't have any"
 
-### Tagged
 
-Negation and verbs are as with the Basic structure.
-
-- subject [negation] condition "tag|type"   - e.g., bauble blue tag, bauble not blue type
-- subject "tag|type" verb condition         - e.g., bauble tag is blue, bauble type is not blue
-- subject verb condition "tag|type"         - e.g., bauble is blue tag, bauble type is blue type
-- subject verb possession "tag|type"        - e.g., bauble has blue tag, bauble type has blue type
-- subject verb "of tag|of type" condition   - e.g., bauble is of type blue, bauble is of tag blue
 
 ## Conditions Verbs List
 
@@ -136,6 +128,19 @@ Negation and verbs are as with the Basic structure.
 - alice is queen
 - alice is not queen
 
+## Tagged Phrase forms
+
+Negation and verbs are similar to the Basic structure
+
+- subject [negation] condition "tag|type"   - e.g., bauble blue tag, bauble not blue type
+- subject "tag|type" verb condition         - e.g., bauble tag is blue, bauble type is not blue
+- subject verb condition "tag|type"         - e.g., bauble is blue tag, bauble type is blue type
+- subject verb possession "tag|type"        - e.g., bauble has blue tag, bauble type has blue type
+- subject verb "of tag|of type" condition   - e.g., bauble is of type blue, bauble is of tag blue
+- entities "who|which" verb noun "tag|type" - e.g., actors who have the guard tag, actors who do not have the guard tag
+- entities "who|which" verb noun            - e.g., actors who are guards, items which are small
+- entities "with" noun "tag|type"           - e.g., items with the small tag
+
 ### Tagged Examples
 These make use of potential tags that can be applied to Entities.
 
@@ -146,3 +151,10 @@ These make use of potential tags that can be applied to Entities.
 - guard is of type royal
 - guard type is royal
 - guard doesn't have any key -- `any` here implies a type.
+- actors who are gritty
+- actors who are guards
+- actors who have the guard tag
+- items which are small
+- actors with the gritty tag
+- items with the small tag
+

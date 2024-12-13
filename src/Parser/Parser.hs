@@ -1,34 +1,48 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-module Parser.Parser (parseCmdPhrase, parseCondPhrase, renderExpression, renderExpressionError) where
+module Parser.Parser (parseCmdPhrase, parseCondPhrase, parseTagPhrase, renderExpression, renderExpressionError) where
 
 import           Data.Text       (Text, unwords)
 import qualified Data.Text       as T
 import           Parser.Patterns
-    (CondPatternMatch, MatchPreference (First, Last), PatternType (..), PrepPatternMatch, findPattern, knownArticles,
-    knownCondPatterns, knownPreps, verbsRequiringObjects)
 import           Parser.Types
 import           Prelude         hiding (unwords, words)
 
 isArticle :: Text -> Bool
 isArticle = (`elem` knownArticles)
 
-makeNounClause :: [Text] -> NounClause
-makeNounClause = NounClause . T.unwords
+isTagPrep :: Text -> Bool
+isTagPrep = (`elem` knownTagPreps)
 
-makeSubjClause:: [Text] -> SubjClause
-makeSubjClause = SubjClause . T.unwords
+-- | MakeClause helper function
+mkCl :: (Text -> a) -> [Text] -> a
+mkCl ctor = ctor . T.unwords
 
-makeStateClause:: [Text] -> StateClause
-makeStateClause = StateClause . T.unwords
+findWithPattern :: [Text] -> [(a1, [[Text]])] -> MatchPreference -> Either a2 (Maybe (a1, [Text], [Text]))
+findWithPattern words pat pref = Right $ findPattern pat pref words
 
-makePossessionClause:: [Text] -> PossessionClause
-makePossessionClause = PossessionClause . T.unwords
+parseTagPhrase :: Text -> Either ParseError TagExpression
+parseTagPhrase input = do
+    let words' = filter (\w -> not (isArticle w || isTagPrep w)) $ T.words $ T.toLower input
+    case words' of
+        [] -> Left $ MalformedCondExpression input
+        _  -> runParseTagPhrase words'
 
-findPrepClause :: [Text] -> Either ParseError (Maybe PrepPatternMatch)
-findPrepClause words = Right $ findPattern knownPreps Last words
-
-findCondPattern :: [Text] -> Either ParseError (Maybe CondPatternMatch)
-findCondPattern words = Right $ findPattern knownCondPatterns First words
+runParseTagPhrase :: [Text] -> Either ParseError TagExpression
+runParseTagPhrase []     = Left TBDError
+runParseTagPhrase clause = do
+    tagResult <- findWithPattern clause knownTagPatterns First
+    case tagResult of
+        Nothing -> Left $ MalformedCondExpression $ unwords clause
+        -- Just (patternType, subject, condition) -> Left $ MalformedCondExpression $ "on clause: " <> T.intercalate ", " [T.pack (show patternType), unwords subject, unwords condition]
+        Just (patternType, subject, tag) -> do
+            if T.unwords subject `elem` knownPluralEntityClasses
+            then undefined
+            else
+                case patternType of
+                    IsNotOfType -> makeTagExpr IsNotOfTagTypeExpression
+                    IsOfType    -> makeTagExpr IsOfTagTypeExpression
+                where
+                    makeTagExpr ctor = Right $ ctor (mkCl SubjClause subject) (mkCl TagClause tag)
 
 parseCondPhrase :: Text -> Either ParseError CondExpression
 parseCondPhrase input = do
@@ -40,10 +54,9 @@ parseCondPhrase input = do
 runParseCondPhrase :: [Text] -> Either ParseError CondExpression
 runParseCondPhrase [] = Left TBDError
 runParseCondPhrase clause = do
-    condResult <- findCondPattern clause
+    condResult <- findWithPattern clause knownCondPatterns First
     case condResult of
         Nothing           -> Left $ MalformedCondExpression $ unwords clause
-        -- Just (verbClause, subject, condition) -> Left $ MalformedCondExpression $ "on clause: " <> T.intercalate ", " [verbClause, unwords subject, unwords condition]
         Just (patternType, subject, condition) ->
             case patternType of
                 PosState      -> makeStateExpr PosStateExpression
@@ -55,10 +68,10 @@ runParseCondPhrase clause = do
             where
                 makePossesExpr :: (SubjClause -> PossessionClause -> b) -> Either a b
                 makePossesExpr ctor =
-                    Right $ ctor (makeSubjClause subject) (makePossessionClause condition)
+                    Right $ ctor (mkCl SubjClause subject) (mkCl PossessionClause condition)
                 makeStateExpr :: (SubjClause -> StateClause -> b) -> Either a b
                 makeStateExpr ctor =
-                    Right $ ctor (makeSubjClause subject) (makeStateClause condition)
+                    Right $ ctor (mkCl SubjClause subject) (mkCl StateClause condition)
 
 parseCmdPhrase :: Text -> Either ParseError CmdExpression
 parseCmdPhrase input = do
@@ -70,9 +83,9 @@ parseCmdPhrase input = do
 runParseCmdPhrase :: Text -> [Text] -> Either ParseError CmdExpression
 runParseCmdPhrase verb [] = Right $ AtomicCmdExpression verb
 runParseCmdPhrase verb clause = do
-    prepResult <- findPrepClause clause
+    prepResult <- findWithPattern clause knownPreps Last
     case prepResult of
-        Nothing -> Right $ UnaryCmdExpression verb (makeNounClause clause)
+        Nothing -> Right $ UnaryCmdExpression verb (mkCl NounClause clause)
         Just (prep, beforePrep, afterPrep) ->
             case (beforePrep, afterPrep) of
                 ([], []) -> Left MissingTarget
@@ -81,12 +94,12 @@ runParseCmdPhrase verb clause = do
                     then Left MissingObject
                     else Right $ BinaryCmdExpression verb
                                  (PrepClause prep)
-                                 (makeNounClause target)
+                                 (mkCl NounClause target)
                 (obj, target) ->
                     Right $ ComplexCmdExpression verb
-                            (makeNounClause obj)
+                            (mkCl NounClause obj)
                             (PrepClause prep)
-                            (makeNounClause target)
+                            (mkCl NounClause target)
 
 renderExpression :: CmdExpression -> Text
 renderExpression = \case
