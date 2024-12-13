@@ -52,6 +52,7 @@ library
       Core.GameMonad
       Core.Launch
       Core.Operations
+      Core.Replay
       Core.State
       Core.State.GameState
       Core.State.JSON
