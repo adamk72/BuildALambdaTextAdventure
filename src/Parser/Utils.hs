@@ -19,7 +19,7 @@ getVerb :: CmdExpression -> Text
 getVerb = \case
     AtomicCmdExpression verb -> verb
     UnaryCmdExpression verb _ -> verb
-    BinaryCmdExpression verb _ _ -> verb
+    SplitCmdExpression verb _ _ -> verb
     ComplexCmdExpression verb _ _ _ -> verb
 
 

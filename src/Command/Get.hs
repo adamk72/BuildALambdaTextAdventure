@@ -41,7 +41,7 @@ executeGet expr = do
             AtomicCmdExpression {} -> msg GetWhat
             UnaryCmdExpression _ (NounClause itemTag) ->
                 getItem itemTag Nothing gw
-            BinaryCmdExpression {} -> msg GetWhat
+            SplitCmdExpression {} -> msg GetWhat
             ComplexCmdExpression _ (NounClause itemTag) (PrepClause prep) (NounClause src)
                 | prep `isPrepVariantOf` "from" || prep `isPrepVariantOf` "in" ->
                     getItem itemTag (Just src) gw

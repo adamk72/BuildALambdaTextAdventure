@@ -34,5 +34,5 @@ executeGoRaw gw expr = do
     case expr of
         (AtomicCmdExpression _)                     -> msg GoWhere
         (UnaryCmdExpression _ (NounClause dst) )    -> moveTo dst gw
-        (BinaryCmdExpression _ _ (NounClause dst) ) -> moveTo dst gw
+        (SplitCmdExpression _ _ (NounClause dst) ) -> moveTo dst gw
         _                                           -> msg NotSure

@@ -35,21 +35,21 @@ spec = do
         context "with preposition commands" $ do
             it "parses simple preposition commands" $ do
                 parseCmdPhrase "look at bag" `shouldBe`
-                    Right (BinaryCmdExpression "look" (PrepClause "at") (NounClause "bag"))
+                    Right (SplitCmdExpression "look" (PrepClause "at") (NounClause "bag"))
                 parseCmdPhrase "look in box" `shouldBe`
-                    Right (BinaryCmdExpression "look" (PrepClause "in") (NounClause "box"))
+                    Right (SplitCmdExpression "look" (PrepClause "in") (NounClause "box"))
 
             it "handles equivalent prepositions" $ do
                 parseCmdPhrase "look inside box" `shouldBe`
-                    Right (BinaryCmdExpression "look" (PrepClause "in") (NounClause "box"))
+                    Right (SplitCmdExpression "look" (PrepClause "in") (NounClause "box"))
                 parseCmdPhrase "look into box" `shouldBe`
-                    Right (BinaryCmdExpression "look" (PrepClause "in") (NounClause "box"))
+                    Right (SplitCmdExpression "look" (PrepClause "in") (NounClause "box"))
 
             it "handles complex phrases with prepositions" $ do
                 parseCmdPhrase "look at ancient stone altar" `shouldBe`
-                    Right (BinaryCmdExpression "look" (PrepClause "at") (NounClause "ancient stone altar"))
+                    Right (SplitCmdExpression "look" (PrepClause "at") (NounClause "ancient stone altar"))
                 parseCmdPhrase "look under weathered marble statue" `shouldBe`
-                    Right (BinaryCmdExpression "look" (PrepClause "under") (NounClause "weathered marble statue"))
+                    Right (SplitCmdExpression "look" (PrepClause "under") (NounClause "weathered marble statue"))
 
         context "with complex object commands" $ do
             it "parses basic object placement" $ do
@@ -92,7 +92,7 @@ spec = do
                     `shouldBe` "go cave"
 
             it "renders binary expressions" $ do
-                renderExpression (BinaryCmdExpression "look" (PrepClause "in") (NounClause "bag"))
+                renderExpression (SplitCmdExpression "look" (PrepClause "in") (NounClause "bag"))
                     `shouldBe` "look in bag"
 
             it "renders complex expressions" $ do

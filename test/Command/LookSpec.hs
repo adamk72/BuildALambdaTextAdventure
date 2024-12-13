@@ -37,7 +37,7 @@ spec = do
 
             it "handles looking at specific items" $ do
                 let gw = defaultGW
-                    expr = BinaryCmdExpression "look" (PrepClause "at") (NounClause "silver coin")
+                    expr = SplitCmdExpression "look" (PrepClause "at") (NounClause "silver coin")
                 (output, newState) <- runCommand (runScenarioCheck executeLook) expr gw
 
                 "silver coin" `shouldSatisfy` (`isInfixOf` output)
@@ -45,7 +45,7 @@ spec = do
 
             it "handles looking in containers" $ do
                 let gw = defaultGW
-                    expr = BinaryCmdExpression "look" (PrepClause "in") (NounClause "bag of holding")
+                    expr = SplitCmdExpression "look" (PrepClause "in") (NounClause "bag of holding")
                 (output, newState) <- runCommand (runScenarioCheck executeLook) expr gw
 
                 "pearl" `shouldSatisfy` (`isInfixOf` output)
@@ -70,7 +70,7 @@ spec = do
 
             it "shows items in visible containers" $ do
                 let gw = defaultGW
-                    expr = BinaryCmdExpression "look" (PrepClause "in") (NounClause "bag of holding")
+                    expr = SplitCmdExpression "look" (PrepClause "in") (NounClause "bag of holding")
                 (output, _) <- runCommand (runScenarioCheck executeLook) expr gw
 
                 "pearl" `shouldSatisfy` (`isInfixOf` output)

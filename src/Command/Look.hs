@@ -63,7 +63,7 @@ executeLookRaw gw expr = do
             | otherwise ->
                 lookAt target gw
 
-        BinaryCmdExpression _ (PrepClause prep) (NounClause target)
+        SplitCmdExpression _ (PrepClause prep) (NounClause target)
             | (prep `isPrepVariantOf` "in" || prep `isPrepVariantOf` "at") && "inventory" `isSuffixOf` target ->
                 return $ showInventoryList gw
             | prep `isPrepVariantOf` "in" ->

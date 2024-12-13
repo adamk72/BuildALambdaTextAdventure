@@ -34,7 +34,7 @@ spec = do
 
             it "questions what is meant by an incomplete phrase" $ do
                 let gw = defaultGW
-                    expr = BinaryCmdExpression "drop" (PrepClause "on") (NounClause "ground")
+                    expr = SplitCmdExpression "drop" (PrepClause "on") (NounClause "ground")
                 (output, _) <- runCommand executeDrop expr gw
                 output `shouldBe` renderMessage DropWhat
 

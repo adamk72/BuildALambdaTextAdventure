@@ -32,7 +32,7 @@ spec = do
 
             it "handles binary expression (get <item> from <location>)" $ do
                 let gw = defaultGW
-                    expr = BinaryCmdExpression "get" (PrepClause "from") (NounClause "someplace")
+                    expr = SplitCmdExpression "get" (PrepClause "from") (NounClause "someplace")
                 (output, newState) <- runCommand executeGet expr gw
 
                 output `shouldBe` renderMessage GetWhat

@@ -31,7 +31,7 @@ spec = do
 
             it "handles binary expression (put in <container>)" $ do
                 let gw = defaultGW
-                    expr = BinaryCmdExpression "put" (PrepClause "in") (NounClause "bag of holding")
+                    expr = SplitCmdExpression "put" (PrepClause "in") (NounClause "bag of holding")
                 (output, newState) <- runCommand executePut expr gw
 
                 output `shouldBe` renderMessage PutWhat

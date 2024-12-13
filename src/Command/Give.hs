@@ -46,7 +46,7 @@ executeGive expr = do
             msg GiveWhat
         UnaryCmdExpression _ (NounClause itemTag) ->
             msg $ GiveToWhom itemTag
-        BinaryCmdExpression {} ->
+        SplitCmdExpression {} ->
             msg GiveWhat
         ComplexCmdExpression _ (NounClause itemTag) (PrepClause prep) (NounClause actorTag)
             | prep `isPrepVariantOf` "to" ->

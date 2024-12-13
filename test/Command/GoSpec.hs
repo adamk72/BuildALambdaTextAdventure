@@ -31,7 +31,7 @@ spec = do
 
             it "handles binary expression (go to <location>)" $ do
                 let gw = defaultGW
-                    expr = BinaryCmdExpression "go" (PrepClause "to") (NounClause "cave")
+                    expr = SplitCmdExpression "go" (PrepClause "to") (NounClause "cave")
                 (output, newState) <- runCommand (runScenarioCheck executeGo) expr gw
 
                 output `shouldBe` "Moving to cave."

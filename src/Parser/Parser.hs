@@ -71,7 +71,7 @@ runParseCmdPhrase verb clause = do
                 ([], target) ->
                     if verb `elem` verbsRequiringObjects
                     then Left MissingObject
-                    else Right $ BinaryCmdExpression verb
+                    else Right $ SplitCmdExpression verb
                                  (PrepClause prep)
                                  (mkCl NounClause target)
                 (obj, target) ->
@@ -86,7 +86,7 @@ renderExpression = \case
         verb
     UnaryCmdExpression verb target ->
         T.unwords [verb, unNounClause target]
-    BinaryCmdExpression verb prep target ->
+    SplitCmdExpression verb prep target ->
         T.unwords [verb, unPrepClause prep, unNounClause target]
     ComplexCmdExpression verb obj prep target ->
         T.unwords [verb, unNounClause obj, unPrepClause prep, unNounClause target]

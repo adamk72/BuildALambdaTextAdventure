@@ -32,7 +32,7 @@ type Verb = Text
 data CmdExpression =
       AtomicCmdExpression Verb
     | UnaryCmdExpression Verb NounClause
-    | BinaryCmdExpression Verb PrepClause NounClause
+    | SplitCmdExpression Verb PrepClause NounClause
     | ComplexCmdExpression Verb NounClause PrepClause NounClause
     deriving (Show, Eq)
 

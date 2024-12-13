@@ -34,7 +34,7 @@ executeDrop expr = do
                 msg DropWhat
             UnaryCmdExpression _ (NounClause object) ->
                 dropObject object Nothing  gw
-            BinaryCmdExpression {} ->
+            SplitCmdExpression {} ->
                 msg DropWhat
             ComplexCmdExpression _ (NounClause object) (PrepClause prep) (NounClause dst) -> dropObject object (Just (prep <> " " <> dst)) gw
     handle expr

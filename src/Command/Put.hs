@@ -49,7 +49,7 @@ executePut expr = do
             msg PutWhat
         UnaryCmdExpression _ (NounClause itemTag) ->
             msg $ PutWhere itemTag
-        BinaryCmdExpression {} ->
+        SplitCmdExpression {} ->
             msg PutWhat
         ComplexCmdExpression _ (NounClause itemTag) (PrepClause prep)  (NounClause containerTag)
             | prep `isPrepVariantOf` "in" ->
