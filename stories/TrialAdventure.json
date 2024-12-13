@@ -11,7 +11,7 @@
     "characters": [
       {
         "tag": "alice",
-        "tags": [
+        "types": [
           "gritty",
           "brave",
           "knight"
@@ -21,7 +21,7 @@
       },
       {
         "tag": "bob",
-        "tags": [
+        "types": [
           "paladin",
           "honorable"
         ],
@@ -30,9 +30,9 @@
       },
       {
         "tag": "guard",
-        "tags": [
-          "greedy",
-          "tough"
+        "types": [
+          "tough",
+          "greedy"
         ],
         "name": "Greg the Guard",
         "locationTag": "castle entry"
@@ -42,7 +42,7 @@
       {
         "tag": "silver coin",
         "name": "a silver coin",
-        "locationTag": "castle entry"
+        "locationTag": "alice"
       },
       {
         "tag": "box",
@@ -92,7 +92,7 @@
     "locations": [
       {
         "tag": "meadow",
-        "tags": [
+        "types": [
           "idyllic",
           "green"
         ],
@@ -148,7 +148,7 @@
         "endConditions": [
           {
             "all": [
-              "guard at castle entry",
+              "guard is greedy",
               "guard does not have a silver coin"
             ],
             "whileTrue": [
@@ -176,68 +176,6 @@
                   "give silver coin to guard"
                 ],
                 "response": "He accepts the coin and unlocks the gate for you to enter."
-              }
-            ]
-          },
-          {
-            "all": [
-              "guard at castle entry",
-              "bob has magic bauble"
-            ],
-            "whileFalse": [
-              {
-                "actions": [
-                  "look at castle entry"
-                ],
-                "response": "There's no one here."
-              },
-              {
-                "actions": [
-                  "unlock castle entry",
-                  "open castle entry"
-                ],
-                "response": "The gate is locked, but you see Bob's name scratched on it and small divot below there about the size of a bauble."
-              }
-            ]
-          },
-          {
-            "all": [
-              "guard at castle entry"
-            ],
-            "whileTrue": [
-              {
-                "actions": [
-                  "look at castle entry"
-                ],
-                "response": "There's no one here."
-              },
-              {
-                "actions": [
-                  "unlock castle entry",
-                  "open castle entry"
-                ],
-                "response": "The gate is locked, but you see Bob's name scratched on it and small divot below there about the size of a bauble."
-              }
-            ]
-          },
-          {
-            "any": [
-              "alice is queen",
-              "bob is king"
-            ],
-            "whileFalse": [
-              {
-                "actions": [
-                  "look at castle entry"
-                ],
-                "response": "The gate appears locked and the guard glares at you for paying too much attention to it."
-              },
-              {
-                "actions": [
-                  "unlock castle entry",
-                  "open castle entry"
-                ],
-                "response": "The gate is locked, but you see Bob's name scratched on it and small divot below there about the size of a bauble."
               }
             ]
           }

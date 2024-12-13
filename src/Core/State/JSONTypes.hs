@@ -18,13 +18,13 @@ data EntityJSON = EntityJSON {
 instance FromJSON EntityJSON where
     parseJSON = withObject "EntityJSON" $ \v -> do
         tag <- v .: "tag"
-        tags <- v .:? "tags"
+        types <- v .:? "types"
         name <- v .: "name"
         locTag <- v .: "locationTag"
         hasInv <- v .:? "hasInventorySlot"
         return EntityJSON
             { jTag = tag
-            , jTags = tags
+            , jTags = types
             , jName = name
             , jLocTag = locTag
             , jHasInventorySlot = hasInv
@@ -40,12 +40,12 @@ data Location = Location {
 instance FromJSON Location where
     parseJSON = withObject "Location" $ \v -> do
         tag <- v .: "tag"
-        tags <- v .:? "tags"
+        types <- v .:? "types"
         name <- v .: "name"
         dests <- v .: "destinationTags"
         return Location
             { locTag = tag
-            , locTags = tags
+            , locTags = types
             , locName = name
             , destinationTags = dests
             }

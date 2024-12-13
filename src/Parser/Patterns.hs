@@ -5,15 +5,11 @@ module Parser.Patterns
     , MatchPreference (..)
     , PrepPatternList
     , PrepPatternMatch
-    , TagPatternMatch
-    , TagPatternType (..)
     , findPattern
     , knownArticles
     , knownCondPatterns
     , knownPluralEntityClasses
     , knownPreps
-    , knownTagPatterns
-    , knownTagPreps
     , verbsRequiringObjects
     ) where
 
@@ -23,11 +19,9 @@ import           Prelude    hiding (words)
 
 type CondPatternList = [(CondPatternType, [[Text]])]
 type PrepPatternList = [(Text, [[Text]])]
-type TagPatternList = [(TagPatternType, [[Text]])]
 
 type CondPatternMatch = (CondPatternType, [Text], [Text])
 type PrepPatternMatch = (Text, [Text], [Text])
-type TagPatternMatch = (TagPatternType, [Text], [Text])
 
 data CondPatternType = PosState | NegState | Possessive | NonPossessive | AtLocation | NotAtLocation
     deriving (Show, Eq)
@@ -66,27 +60,99 @@ knownPreps =
 -- Order is important here; see note with `findPattern`.
 knownCondPatterns :: CondPatternList
 knownCondPatterns =
-     [ (NotAtLocation, [["is", "not", "in"], ["is", "not", "inside"], ["not", "inside"], ["isn't", "in"], ["are", "not", "in"], ["aren't", "in"], ["is", "not", "at"], ["not", "at"], ["isn't", "at"]])
-     , (AtLocation, [["is", "in"], ["is", "inside"], ["inside"], ["at"], ["is", "at"]])
-     , (NegState, [["is", "not"], ["not"], ["aren't"], ["are", "not"]])
-     , (PosState, [["is"], ["are"]])
-     , (NonPossessive, [["has", "no"], ["does", "not", "have"], ["doesn't", "have"], ["don't", "have"], ["doesn't", "hold"], ["doesn't", "posses"], ["doesn't", "carry"], ["does", "not", "hold"], ["does", "not", "posses"], ["does", "not", "carry"]])
-     , (Possessive, [["has"], ["owns"], ["carries"], ["possesses"], ["holds"]])
+     [ (NotAtLocation, [
+        ["are", "not", "in"],
+        ["aren't", "in"],
+        ["is", "not", "at"],
+        ["is", "not", "in"],
+        ["is", "not", "inside"],
+        ["isn't", "at"],
+        ["isn't", "in"],
+        ["not", "at"],
+        ["not", "inside"]])
+    , (AtLocation, [
+        ["inside"],
+        ["is", "at"],
+        ["is", "in"],
+        ["is", "inside"],
+        ["at"]])
+    , (NonPossessive, [
+        ["is", "not", "carrying"],
+        ["is", "not", "holding"],
+        ["is", "not", "possessing"],
+        ["does", "not", "carry"],
+        ["does", "not", "have"],
+        ["does", "not", "hold"],
+        ["does", "not", "own"],
+        ["does", "not", "posses"],
+        ["doesn't", "carry"],
+        ["doesn't", "have"],
+        ["doesn't", "hold"],
+        ["doesn't", "own"],
+        ["doesn't", "posses"],
+        ["has", "no"]])
+    , (Possessive, [
+        ["has"],
+        ["owns"],
+        ["carries"],
+        ["possesses"],
+        ["holds"],
+        ["does", "have"]])
+    , (NegState, [
+        ["is", "not"],
+        ["is", "not", "of", "type"],
+        ["is", "not", "type", "of"],
+        ["not"],
+        ["not", "of", "type"],
+        ["not", "type", "of"],
+        ["aren't"],
+        ["are", "not"],
+        ["no", "type"],
+        ["has", "no", "type"],
+        ["has", "no", "type", "of"],
+        ["type", "is", "not"],
+        ["is", "not", "type"],
+        ["is", "not", "of", "type"],
+        ["who", "does", "not", "have", "type"],
+        ["who", "does", "not", "have", "type", "of"]])
+    , (PosState, [
+        ["who", "is"],
+        ["who", "is", "type", "of"],
+        ["who", "have"],
+        ["who", "have", "type", "of"],
+        ["who", "have", "type", "of"],
+        ["who", "have", "of", "type"],
+        ["who", "has"],
+        ["who", "has", "type", "of"],
+        ["who", "are"],
+        ["who", "are", "type", "of"],
+        ["who", "are", "type", "of"],
+        ["who", "are", "of", "type"],
+        ["which", "is"],
+        ["which", "is", "type", "of"],
+        ["which", "have"],
+        ["which", "have", "type", "of"],
+        ["which", "have", "type", "of"],
+        ["which", "have", "of", "type"],
+        ["which", "has"],
+        ["which", "has", "type", "of"],
+        ["which", "are"],
+        ["which", "are", "type", "of"],
+        ["which", "are", "type", "of"],
+        ["which", "are", "of", "type"],
+        ["type", "is"],
+        ["is", "type"],
+        ["is", "type", "of"],
+        ["is", "of", "type"],
+        ["has", "type"],
+        ["are"],
+        ["are", "type", "of"],
+        ["are", "of", "type"],
+        ["type"],
+        ["with"],
+        ["is"],
+        ["is"]])
     ]
-
-data TagPatternType
-    = IsOfType
-    | IsNotOfType
-    deriving (Show, Eq)
-
-knownTagPatterns :: TagPatternList
-knownTagPatterns =
-    [ (IsNotOfType, [["is", "not"], ["tag"], ["type"], ["has", "tag"], ["has", "type"], ["has", "tag"],["tag", "is"], ["type", "is"], ["is", "tag"], ["is", "type"], ["who", "has"], ["who", "is"], ["which", "has"], ["which", "is"], ["who", "are"], ["who", "have"], ["which", "are"], ["which", "have"], ["with"]])
-    , (IsOfType, [["is"], ["tag"], ["type"], ["has", "tag"], ["has", "type"], ["has", "tag"],["tag", "is"], ["type", "is"], ["is", "of", "tag"], ["is", "of", "type"], ["who", "has"], ["who", "is"], ["which", "has"], ["which", "is"], ["who", "are"], ["who", "have"], ["which", "are"], ["which", "have"], ["with"]])
-    ]
-
-knownTagPreps :: [Text]
-knownTagPreps = ["of"]
 
 knownPluralEntityClasses :: [Text]
 knownPluralEntityClasses = ["actors", "items", "locations"]

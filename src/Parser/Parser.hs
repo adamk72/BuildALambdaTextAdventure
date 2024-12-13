@@ -1,5 +1,10 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-module Parser.Parser (parseCmdPhrase, parseCondPhrase, parseTagPhrase, renderExpression, renderExpressionError) where
+module Parser.Parser
+    ( parseCmdPhrase
+    , parseCondPhrase
+    , renderExpression
+    , renderExpressionError
+    ) where
 
 import           Data.Text       (Text, unwords)
 import qualified Data.Text       as T
@@ -10,39 +15,12 @@ import           Prelude         hiding (unwords, words)
 isArticle :: Text -> Bool
 isArticle = (`elem` knownArticles)
 
-isTagPrep :: Text -> Bool
-isTagPrep = (`elem` knownTagPreps)
-
 -- | MakeClause helper function
 mkCl :: (Text -> a) -> [Text] -> a
 mkCl ctor = ctor . T.unwords
 
 findWithPattern :: [Text] -> [(a1, [[Text]])] -> MatchPreference -> Either a2 (Maybe (a1, [Text], [Text]))
 findWithPattern words pat pref = Right $ findPattern pat pref words
-
-parseTagPhrase :: Text -> Either ParseError TagExpression
-parseTagPhrase input = do
-    let words' = filter (\w -> not (isArticle w || isTagPrep w)) $ T.words $ T.toLower input
-    case words' of
-        [] -> Left $ MalformedCondExpression input
-        _  -> runParseTagPhrase words'
-
-runParseTagPhrase :: [Text] -> Either ParseError TagExpression
-runParseTagPhrase []     = Left TBDError
-runParseTagPhrase clause = do
-    tagResult <- findWithPattern clause knownTagPatterns First
-    case tagResult of
-        Nothing -> Left $ MalformedCondExpression $ unwords clause
-        -- Just (patternType, subject, condition) -> Left $ MalformedCondExpression $ "on clause: " <> T.intercalate ", " [T.pack (show patternType), unwords subject, unwords condition]
-        Just (patternType, subject, tag) -> do
-            if T.unwords subject `elem` knownPluralEntityClasses
-            then undefined
-            else
-                case patternType of
-                    IsNotOfType -> makeTagExpr IsNotOfTagTypeExpression
-                    IsOfType    -> makeTagExpr IsOfTagTypeExpression
-                where
-                    makeTagExpr ctor = Right $ ctor (mkCl SubjClause subject) (mkCl TagClause tag)
 
 parseCondPhrase :: Text -> Either ParseError CondExpression
 parseCondPhrase input = do
@@ -57,14 +35,15 @@ runParseCondPhrase clause = do
     condResult <- findWithPattern clause knownCondPatterns First
     case condResult of
         Nothing           -> Left $ MalformedCondExpression $ unwords clause
+        -- Just (patternType, subject, condition) -> Left $ CheckingExpression $  T.intercalate ", " [T.pack (show patternType), unwords subject, unwords condition]
         Just (patternType, subject, condition) ->
             case patternType of
-                PosState      -> makeStateExpr PosStateExpression
-                NegState      -> makeStateExpr NegStateExpression
-                Possessive    -> makePossesExpr PossessiveExpression
-                NonPossessive -> makePossesExpr NonPossessiveExpression
                 AtLocation    -> makeStateExpr AtLocationExpression
                 NotAtLocation -> makeStateExpr NotAtLocationExpression
+                Possessive    -> makePossesExpr PossessiveExpression
+                NonPossessive -> makePossesExpr NonPossessiveExpression
+                PosState      -> makeStateExpr PosStateExpression
+                NegState      -> makeStateExpr NegStateExpression
             where
                 makePossesExpr :: (SubjClause -> PossessionClause -> b) -> Either a b
                 makePossesExpr ctor =
@@ -115,6 +94,7 @@ renderExpression = \case
 renderExpressionError :: ParseError -> Text
 renderExpressionError = \case
     TBDError -> "TBD on ths one"
+    CheckingExpression phrase -> "What we have: " <> phrase
     MalformedCondExpression phrase -> "Conditional phrase is incomplete or possibly empty: " <> phrase
     MissingObject ->
         "This phrase needs an object to act on. For example: 'put bauble in bag', where 'bauble' is the object."

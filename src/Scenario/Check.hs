@@ -1,14 +1,19 @@
 {-# LANGUAGE FlexibleInstances #-}
-module Scenario.Check (ScenarioCheck (..), handleScenarioCheck) where
+module Scenario.Check (ScenarioCheck (..), executeConditionCheck, handleScenarioCheck) where
 
-import           Command.CommandExecutor      (ScenarioCheckExecutor (..), CommandExecutor)
+import           Command.CommandExecutor (CommandExecutor, ScenarioCheckExecutor (..))
+import           Core.GameMonad
 import           Core.State.GameState
-import qualified Data.Map                     as Map
-import           Data.Text                    (Text)
-import           Parser.Types                 (CmdExpression)
-import           Scenario.ConditionalExecutor (executeConditionCheck)
+import qualified Data.Map                as Map
+import           Data.Text               (Text)
+import           Entity.Class.Capacity   (getItemList)
+import           Entity.Class.EntityBase (getId, isOfType)
+import           Entity.Class.Viewable   (getLocationId)
+import           Entity.Entity           (EntityResult (..), findEntityById)
+import           Entity.Types.Common     (EntityId (..), LocationId)
+import           Parser.Types
+    (CmdExpression, CondExpression (..), PossessionClause (..), StateClause (..), SubjClause (..))
 import           Scenario.Types
-import Core.GameMonad
 
 class ScenarioCheck a where
     toScenarioCheck :: a -> ScenarioCheckExecutor
@@ -56,3 +61,38 @@ checkForScenarioResponse cmd world =
     in foldr (\scenario result -> case result of
         Just r  -> Just r
         Nothing -> checkScenario scenario) Nothing allScenarios
+
+
+executeConditionCheck :: CondExpression -> World -> Bool
+executeConditionCheck expr world = case expr of
+    AtLocationExpression (SubjClause subject) (StateClause location) -> checkLocation (EntityId subject) (EntityId location) (==)
+    NotAtLocationExpression (SubjClause subject) (StateClause location) -> checkLocation (EntityId subject) (EntityId location) (/=)
+    PossessiveExpression (SubjClause subject) (PossessionClause tag) -> checkPossession (EntityId subject) tag id
+    NonPossessiveExpression (SubjClause subject) (PossessionClause itemTag) -> checkPossession (EntityId subject) itemTag not
+    PosStateExpression (SubjClause subject) (StateClause tag) -> checkForType (EntityId subject) tag id
+    NegStateExpression (SubjClause subject) (StateClause tag) -> checkForType (EntityId subject) tag not
+  where
+    checkLocation :: EntityId -> LocationId -> (LocationId -> LocationId -> Bool) -> Bool
+    checkLocation subjectId locId comp = case findEntityById subjectId world of
+        Just (ActorResult actor) -> getLocationId actor `comp` locId
+        Just (ItemResult item)   -> getLocationId item `comp` locId
+        _                        -> False
+
+    checkPossession :: EntityId -> Text -> (Bool -> Bool) -> Bool
+    checkPossession subjectId itemTag modifier = case findEntityById subjectId world of
+        Just (ActorResult actor)    -> modifier $ hasItem (getId actor) itemTag
+        Just (ItemResult container) -> modifier $ hasItem (getId container) itemTag
+        _                           -> False
+
+    hasItem :: EntityId -> Text -> Bool
+    hasItem containerId tag = any (\i -> unEntityId (getId i) == tag) $
+                             getItemList containerId world
+
+    checkForType :: EntityId -> Text ->  (Bool -> Bool) -> Bool
+    checkForType entityId targetTag modifier =
+        case findEntityById entityId world of
+            Just (LocationResult loc) -> modifier $ isOfType loc targetTag
+            Just (ActorResult actor)  -> modifier $ isOfType actor targetTag
+            Just (ItemResult item)    -> modifier $ isOfType item targetTag
+            _                         -> False
+

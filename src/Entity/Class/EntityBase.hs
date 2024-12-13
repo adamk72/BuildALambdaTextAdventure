@@ -2,9 +2,10 @@
 {-# LANGUAGE MonoLocalBinds #-}
 module Entity.Class.EntityBase (module Entity.Class.EntityBase) where
 
-import           Data.Text
+import           Data.Text hiding (elem)
 import           Entity.Entity
 import           Entity.Types.Common
+
 
 class HasEntityBase (a :: EntityType) where
     getBase :: Entity a -> EntityBase a
@@ -26,3 +27,8 @@ getTags = entityTags . getBase
 
 getName :: HasEntityBase a => Entity a -> Text
 getName = entityName . getBase
+
+isOfType :: HasEntityBase a => Entity a -> Text -> Bool
+isOfType entity targetTag = case getTags entity of
+        Nothing   -> False
+        Just types -> targetTag `elem` types

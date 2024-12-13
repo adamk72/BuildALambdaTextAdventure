@@ -1,17 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Scenario.ConditionSpec (spec) where
 
-import qualified Data.Map                     as Map
-import           Data.Text                    (words)
+import qualified Data.Map              as Map
+import           Data.Text             (words)
 import           Entity.Entity
 import           Entity.Types.Capacity
-import           Entity.Types.Common          (EntityId (..))
-import           Parser.Parser                (parseCondPhrase, renderExpressionError)
+import           Entity.Types.Common   (EntityId (..))
+import           Parser.Parser         (parseCondPhrase, renderExpressionError)
 import           Parser.Types
-import           Prelude                      hiding (words)
-import           Scenario.ConditionalExecutor (executeConditionCheck)
+import           Prelude               hiding (words)
+import           Scenario.Check        (executeConditionCheck)
 import           Test.Hspec
-
 
 -- Helper to create a basic test world
 createTestWorld :: Bool -> World

@@ -21,7 +21,10 @@ instance MessageRenderer DebugMessage where
 formatEntityBase :: EntityBase a -> Text
 formatEntityBase base =
     "ID: " <> unEntityId (entityId base) <>
-    ", Name: " <> entityName base
+    ", Name: " <> entityName base <>
+    case entityTags base of
+        Nothing -> ""
+        Just tags -> ", Types: [" <> T.intercalate ", " tags <> "]"
 
 formatLocation :: Entity 'LocationT -> Text
 formatLocation loc =
