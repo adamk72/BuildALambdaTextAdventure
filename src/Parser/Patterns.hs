@@ -55,6 +55,7 @@ knownPreps =
     , ("to",    [["to"], ["toward"], ["towards"]])
     , ("from",  [["from"]])
     , ("under", [["under"], ["underneath"], ["beneath"]])
+    , ("with",  [["with"]])
     ]
 
 -- Order is important here; see note with `findPattern`.

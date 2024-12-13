@@ -22,7 +22,7 @@ allCommands =
     , CommandDefinition "put" ["place", "move", "set"] (Left executePut)
     , CommandDefinition "give" ["hand"] (Left executeGive)
     , CommandDefinition "inventory" ["inv", "i"] (Left executeInventory)
-    , CommandDefinition ":debug" [] (Left executeDebug)
+    , CommandDefinition ":debug" [":d", ":dbg"] (Left executeDebug)
     ]
 
 knownCmdVerbs :: [T.Text]
