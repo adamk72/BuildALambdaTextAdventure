@@ -1,5 +1,5 @@
 tmp
-game.log
+*.log
 
 # Main Haskell ignore
 .DS_Store

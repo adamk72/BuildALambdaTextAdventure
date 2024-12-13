@@ -22,7 +22,7 @@ instance MessageRenderer InventoryMessage where
         DroppedItem object -> "You dropped " <> object <> "."
         DroppedItemWithInventory object invText ->
             "You dropped " <> object <> ". " <> invText
-        YouDoNotHave object -> "You don't have a " <> object <> " to drop."
+        YouDoNotHave object -> "You don't have a " <> object <> "."
         LookAround objs -> "You look around and see " <> objs <> "."
         AlreadyHaveItem item -> "You already have " <> item
         NotFoundIn item container -> "Cannot find " <> item <> " in " <> container

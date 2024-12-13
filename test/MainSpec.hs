@@ -117,7 +117,7 @@ spec = do
 
             it "should handle invalid 'drop' commands" $ do
                 actionWrapper $ \handles -> do
-                    testCommand handles "drop unicorn" "You don't have a unicorn to drop."
+                    testCommand handles "drop unicorn" "You don't have a unicorn."
 
         context "Container Commands" $ do
             it "should handle 'put' commands with valid containers" $ do

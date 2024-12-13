@@ -79,7 +79,6 @@ logMessage hist level isCmd msg = do
     timestamp <- liftIO getCurrentTime
     let entry = LogEntry timestamp level msg isCmd
         newHist = hist { logEntries = entry : logEntries hist }
-    -- Write to log file
     liftIO $ TIO.appendFile (logFile hist) (formatLogEntry entry)
     return newHist
 

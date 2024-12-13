@@ -5,11 +5,14 @@ module Repl.Interpreter (interpretCommand, tryCommand) where
 
 import           Command.CommandDefinition
 import           Command.CommandExecutor   (runScenarioCheck)
+import           Control.Monad.State       (gets, modify)
 import           Core.Config               (quitCommands)
+
 import           Core.GameMonad
 import           Core.State.GameState
 import           Data.Text                 (Text, toLower)
 import qualified Data.Text                 as T
+import           Logger                    (logCommand)
 import           Parser.Parser
 import           Parser.Utils              (getVerb)
 import           Prelude                   hiding (words)
@@ -26,12 +29,19 @@ tryCommand input =
           Right executor -> Right $ runScenarioCheck executor expr
         Nothing -> Left $ "I don't understand '" <> verb <> "'. Valid phrases start with: " <> T.intercalate ", " knownCmdVerbs <> "."
 
+logPlayerCommand :: Text -> GameMonad ()
+logPlayerCommand cmd = do
+    oldHistory <- gets gsHistory
+    newHistory <- logCommand oldHistory cmd
+    modify $ \s -> s { gsHistory = newHistory }
+
 interpretCommand :: Text -> GameMonad (Maybe Text)
 interpretCommand raw = do
     let input = toLower raw
     case tryCommand input of
         Right action -> do
             logGameInfo $ "Executing command: " <> input
+            logPlayerCommand input
             result <- action
             logGameInfo $ "Command result: " <> result
             return $ Just result

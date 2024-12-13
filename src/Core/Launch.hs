@@ -11,10 +11,16 @@ import           Logger
 import           Repl.Repl              (replLoop)
 import           System.FilePath        (takeDirectory, (</>))
 
+logFileName :: String
+logFileName = "game.log"
+
+historyFileName :: String
+historyFileName = "history.log"
+
 initAppState :: World -> FilePath -> IO AppState
 initAppState gw baseDir = do
-    let logPath = baseDir </> "logs" </> "game.log"
-        histPath = baseDir </> "logs" </> "history.json"
+    let logPath = baseDir </> "logs" </> logFileName
+        histPath = baseDir </> "logs" </> historyFileName
 
     history <- initGameHistory logPath histPath
     newHistory <- logInfo history "Initializing new game state"
@@ -44,8 +50,8 @@ launch fp = do
     fileResult <- loadGameEnvironmentJSON fp
     case fileResult of
         Left err -> do
-                let logPath = takeDirectory fp </> "logs" </> "game.log"
-                    histPath = takeDirectory fp </> "logs" </> "history.json"
+                let logPath = takeDirectory fp </> "logs" </> logFileName
+                    histPath = takeDirectory fp </> "logs" </> historyFileName
                 history <- initGameHistory logPath histPath
                 _ <- logError history $ "Error loading game: " <> pack (show err)
                 return $ Left $ "Error loading game: " <> pack (show err)
@@ -53,8 +59,8 @@ launch fp = do
         Right (_, world) ->
             case world of
                 Nothing -> do
-                    let logPath = takeDirectory fp </> "logs" </> "game.log"
-                        histPath = takeDirectory fp </> "logs" </> "history.json"
+                    let logPath = takeDirectory fp </> "logs" </> logFileName
+                        histPath = takeDirectory fp </> "logs" </> historyFileName
                     history <- initGameHistory logPath histPath
                     _ <- logError history "No game world found in environment"
                     return $ Left "No game world found!"
