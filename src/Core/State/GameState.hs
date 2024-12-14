@@ -1,21 +1,23 @@
-module Core.State.GameState (AppState (..), World (..), GameState(..), GameMonad, GameStateText) where
+module Core.State.GameState (AppState (..), GameMonad, GameState (..), GameStateText, World (..)) where
 
 import           Control.Monad.State
-import           Entity.Entity
 import           Data.Text           (Text)
+import           Entity.Entity
 import           Logger              (GameHistoryLog)
 
 type GameMonad a = StateT GameState IO a
 
 data GameState = GameState
-    { gsWorld :: World
+    { gsWorld      :: World
     , gsHistoryLog :: GameHistoryLog
     }
 
 type GameStateText = GameMonad Text
 
 data AppState = AppState
-    { gameWorld   :: World
+    { gameWorld      :: World
     , gameHistoryLog :: GameHistoryLog
+    , isReplayMode   :: Bool
+    , replayCommands :: [Text]
     }
 
