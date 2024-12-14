@@ -48,11 +48,11 @@ library
       Command.Message.Look
       Command.Message.Utils
       Command.Put
+      Command.Replay
       Core.Config
       Core.GameMonad
       Core.Launch
       Core.Operations
-      Core.Replay
       Core.State
       Core.State.GameState
       Core.State.JSON
@@ -75,6 +75,7 @@ library
       Parser.Utils
       Repl.Interpreter
       Repl.Repl
+      Repl.Replay
       Scenario.Check
       Scenario.ScenarioConverter
       Scenario.Types

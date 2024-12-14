@@ -4,6 +4,7 @@ module Command.CommandDefinition (CommandDefinition (..), allCommands, findComma
 import           Command.CommandExecutor
 import           Command.Commands
 import           Command.Debug
+import           Core.Replay             (executeReplay)
 import           Data.List               (find)
 import qualified Data.Text               as T
 
@@ -23,6 +24,7 @@ allCommands =
     , CommandDefinition "give" ["hand"] (Left executeGive)
     , CommandDefinition "inventory" ["inv", "i"] (Left executeInventory)
     , CommandDefinition ":debug" [":d", ":dbg"] (Left executeDebug)
+    , CommandDefinition ":replay" [":r"] (Left executeReplay)
     ]
 
 knownCmdVerbs :: [T.Text]
