@@ -32,7 +32,7 @@ parseArgs adventures = \case
             Just path -> constructor path
             Nothing   -> InvalidAdventure tag
 
-    findAdventureByTag tag = fmap fst . find (\(_, Right md) -> launchTag md == tag)
+    findAdventureByTag tag = fmap fst . find (\(_, result) -> either (const False) ((== tag) . launchTag) result)
 
 formatMetadata :: Metadata -> Text
 formatMetadata md = title md <> " (" <> launchTag md <> ") - " <> description md
@@ -48,7 +48,7 @@ main = do
             Right _  -> return ()
 
     let validAdventures = filter (isRight . snd) adventures
-        adventureDescriptions = map (formatMetadata . (\(Right md) -> md) . snd) validAdventures
+        adventureDescriptions = map (formatMetadata . either (error "No valid adventures found.") id . snd) validAdventures
 
     getArgs >>= \args ->
         case parseArgs validAdventures args of
