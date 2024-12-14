@@ -26,9 +26,9 @@ tryCommand input =
 
 logPlayerCommand :: Text -> GameMonad ()
 logPlayerCommand cmd = do
-    oldHistory <- gets gsHistory
+    oldHistory <- gets gsHistoryLog
     newHistory <- logCommand oldHistory cmd
-    modify $ \s -> s { gsHistory = newHistory }
+    modify $ \s -> s { gsHistoryLog = newHistory }
 
 interpretCommand :: Text -> GameMonad (Maybe Text)
 interpretCommand raw = do

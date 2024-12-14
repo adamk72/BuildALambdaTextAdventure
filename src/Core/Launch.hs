@@ -27,19 +27,19 @@ initAppState gw baseDir = do
 
     return $ AppState
         { gameWorld = gw
-        , gameHistory = newHistory
+        , gameHistoryLog = newHistory
         }
 
 gameLoop :: AppState -> IO (Either Text ())
 gameLoop state = do
-    newHistory <- logDebug (gameHistory state) "Starting new game loop iteration"
-    let updatedState = state { gameHistory = newHistory }
+    newHistory <- logDebug (gameHistoryLog state) "Starting new game loop iteration"
+    let updatedState = state { gameHistoryLog = newHistory }
 
     nextState <- replLoop updatedState
     case nextState of
         Just newState -> gameLoop newState
         Nothing -> do
-            finalHistory <- logInfo (gameHistory state) "Game ended normally"
+            finalHistory <- logInfo (gameHistoryLog state) "Game ended normally"
             saveHistory finalHistory
             return (Right ())
 
@@ -68,7 +68,7 @@ launch fp = do
                     case gwE of
                         Right gw -> do
                             state <- initAppState gw (takeDirectory fp)
-                            newHistory <- logInfo (gameHistory state) $
+                            newHistory <- logInfo (gameHistoryLog state) $
                                 "Game loaded successfully from: " <> pack fp
-                            gameLoop state { gameHistory = newHistory }
+                            gameLoop state { gameHistoryLog = newHistory }
                         Left err -> return $ Left ("Something went wrong with parsing the JSON: " <> err)

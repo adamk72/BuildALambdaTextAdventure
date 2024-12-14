@@ -3,10 +3,9 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Logger
-    ( GameHistory (..)
+    ( GameHistoryLog (..)
     , LogEntry (..)
     , LogLevel (..)
-    , getRecentCommands
     , initGameHistory
     , loadHistory
     , logCommand
@@ -34,7 +33,7 @@ data LogEntry = LogEntry
     , isCommand :: Bool
     } deriving (Show, Eq)
 
-data GameHistory = GameHistory
+data GameHistoryLog = GameHistoryLog
     { logEntries        :: [LogEntry]
     , recentCommands    :: [T.Text]
     , maxCommandHistory :: Int
@@ -42,11 +41,11 @@ data GameHistory = GameHistory
     , historyFile       :: FilePath
     } deriving (Show)
 
-initGameHistory :: FilePath -> FilePath -> IO GameHistory
+initGameHistory :: FilePath -> FilePath -> IO GameHistoryLog
 initGameHistory logPath histPath = do
     createDirectoryIfMissing True (takeDirectory logPath)
     createDirectoryIfMissing True (takeDirectory histPath)
-    return $ GameHistory
+    return $ GameHistoryLog
         { logEntries = []
         , recentCommands = []
         , maxCommandHistory = 50
@@ -54,7 +53,7 @@ initGameHistory logPath histPath = do
         , historyFile = histPath
         }
 
-logCommand :: MonadIO m => GameHistory -> T.Text -> m GameHistory
+logCommand :: MonadIO m => GameHistoryLog -> T.Text -> m GameHistoryLog
 logCommand hist cmd = do
     timestamp <- liftIO getCurrentTime
     let entry = LogEntry timestamp Info cmd True
@@ -65,16 +64,16 @@ logCommand hist cmd = do
     liftIO $ TIO.appendFile (logFile hist) (formatLogEntry entry)
     return newHist
 
-logDebug :: MonadIO m => GameHistory -> T.Text -> m GameHistory
+logDebug :: MonadIO m => GameHistoryLog -> T.Text -> m GameHistoryLog
 logDebug hist = logMessage hist Debug False
 
-logInfo :: MonadIO m => GameHistory -> T.Text -> m GameHistory
+logInfo :: MonadIO m => GameHistoryLog -> T.Text -> m GameHistoryLog
 logInfo hist = logMessage hist Info False
 
-logError :: MonadIO m => GameHistory -> T.Text -> m GameHistory
+logError :: MonadIO m => GameHistoryLog -> T.Text -> m GameHistoryLog
 logError hist = logMessage hist Error False
 
-logMessage :: MonadIO m => GameHistory -> LogLevel -> Bool -> T.Text -> m GameHistory
+logMessage :: MonadIO m => GameHistoryLog -> LogLevel -> Bool -> T.Text -> m GameHistoryLog
 logMessage hist level isCmd msg = do
     timestamp <- liftIO getCurrentTime
     let entry = LogEntry timestamp level msg isCmd
@@ -91,17 +90,14 @@ formatLogEntry LogEntry{..} = T.unwords
     , "\n"
     ]
 
-getRecentCommands :: GameHistory -> [T.Text]
-getRecentCommands = recentCommands
-
-saveHistory :: GameHistory -> IO ()
+saveHistory :: GameHistoryLog -> IO ()
 saveHistory hist = do
     let logContent = T.unlines $ map formatLogEntry (reverse $ logEntries hist)
     TIO.appendFile (logFile hist) logContent
 
     TIO.writeFile (historyFile hist) $ T.unlines (reverse $ recentCommands hist)
 
-loadHistory :: FilePath -> FilePath -> IO GameHistory
+loadHistory :: FilePath -> FilePath -> IO GameHistoryLog
 loadHistory logPath histPath = do
     hist <- initGameHistory logPath histPath
     -- Load previous commands if they exist

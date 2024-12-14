@@ -14,20 +14,20 @@ modifyWorld f = modify $ \s -> s { gsWorld = f (gsWorld s) }
 logGameDebug :: Text -> GameMonad ()
 logGameDebug msg = do
     _state <- get
-    newHistory <- liftIO $ logDebug (gsHistory _state) msg
-    modify $ \s -> s { gsHistory = newHistory }
+    newHistory <- liftIO $ logDebug (gsHistoryLog _state) msg
+    modify $ \s -> s { gsHistoryLog = newHistory }
 
 logGameInfo :: Text -> GameMonad ()
 logGameInfo msg = do
     _state <- get
-    newHistory <- liftIO $ logInfo (gsHistory _state) msg
-    modify $ \s -> s { gsHistory = newHistory }
+    newHistory <- liftIO $ logInfo (gsHistoryLog _state) msg
+    modify $ \s -> s { gsHistoryLog = newHistory }
 
 logGameError :: Text -> GameMonad ()
 logGameError msg = do
     _state <- get
-    newHistory <- liftIO $ logError (gsHistory _state) msg
-    modify $ \s -> s { gsHistory = newHistory }
+    newHistory <- liftIO $ logError (gsHistoryLog _state) msg
+    modify $ \s -> s { gsHistoryLog = newHistory }
 
 
 

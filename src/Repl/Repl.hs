@@ -10,7 +10,7 @@ import           Repl.Interpreter    (interpretCommand)
 import           System.IO           (hFlush, stdout)
 
 replLoop :: AppState -> IO (Maybe AppState)
-replLoop AppState{gameWorld = world, gameHistory = history} = do
+replLoop AppState{gameWorld = world, gameHistoryLog = history} = do
     input <- read_
 
     let initialState = GameState world history
