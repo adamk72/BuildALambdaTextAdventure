@@ -1,6 +1,6 @@
 module Command.Put (module Command.Put) where
 
-import           Command.CommandExecutor
+import           Command.Executor
 import           Command.Message
 import           Core.GameMonad
 import           Core.State
@@ -41,7 +41,7 @@ putItemInContainer itemTag containerTag gw =
                      return $ "You put " <> itemTag <> " in " <> containerTag <> "."
                 Left errMsg -> return errMsg
 
-executePut :: CommandExecutor
+executePut :: BasicCommandExecutor
 executePut expr = do
     gw <- getWorld
     case expr of

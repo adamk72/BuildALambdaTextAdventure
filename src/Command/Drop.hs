@@ -1,5 +1,5 @@
 module Command.Drop (module Command.Drop) where
-import           Command.CommandExecutor
+import           Command.Executor
 import           Command.Message
 import           Core.GameMonad
 import           Core.State
@@ -26,7 +26,7 @@ dropObject itemTag dstTagM gw =
                      msg $ DroppedItemWithInventory itemTag (showInventoryList updatedGW)
                 Left errMsg -> return errMsg
 
-executeDrop :: CommandExecutor
+executeDrop :: BasicCommandExecutor
 executeDrop expr = do
     gw <- getWorld
     let handle = \case

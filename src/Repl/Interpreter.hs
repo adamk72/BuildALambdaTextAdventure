@@ -1,33 +1,28 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Fuse foldr/map" #-}
-
 module Repl.Interpreter (interpretCommand, tryCommand) where
 
-import           Command.CommandDefinition
-import           Command.CommandExecutor   (runScenarioCheck)
-import           Control.Monad.State       (gets, modify)
-import           Core.Config               (quitCommands)
-
+import           Command.Executor
+import           Command.Types
+import           Control.Monad.State
+import           Core.CommandRegistry
 import           Core.GameMonad
-import           Core.State.GameState
-import           Data.Text                 (Text, toLower)
-import qualified Data.Text                 as T
-import           Logger                    (logCommand)
-import           Parser.Parser
-import           Parser.Utils              (getVerb)
-import           Prelude                   hiding (words)
+import           Core.State
+import           Data.Text            as T (Text, intercalate, toLower)
+import           Logger
+import           Parser.Parser        (parseCmdPhrase, renderExpressionError)
+import           Parser.Utils
 
-tryCommand :: Text -> Either Text (GameMonad Text)
+tryCommand :: Text -> Either Text (GameMonad CommandResult)
 tryCommand input =
   case parseCmdPhrase input of
     Left err -> Left $ renderExpressionError err
     Right expr -> do
-      let verb = getVerb expr
-      case findCommand verb of
-        Just cmdInfo -> case cmdExec cmdInfo of
-          Left executor  -> Right $ executor expr
-          Right executor -> Right $ runScenarioCheck executor expr
-        Nothing -> Left $ "I don't understand '" <> verb <> "'. Valid phrases start with: " <> T.intercalate ", " knownCmdVerbs <> "."
+        let verb = getVerb expr
+        case findCommand verb allCommands of
+            Just cmdInfo -> case cmdHandler cmdInfo of
+                QuitCommand                                 -> Right $ return Quit
+                BasicCommand cmd                            -> Right $ Continue <$> cmd expr
+                ScenarioCommand (ScenarioCheckExecutor cmd) -> Right $ Continue <$> cmd expr
+            Nothing -> Left $ "I don't understand '" <> verb <> "'. Valid phrases start with: " <> T.intercalate ", " (getKnownVerbs allCommands) <> "."
 
 logPlayerCommand :: Text -> GameMonad ()
 logPlayerCommand cmd = do
@@ -43,13 +38,13 @@ interpretCommand raw = do
             logGameInfo $ "Executing command: " <> input
             logPlayerCommand input
             result <- action
-            logGameInfo $ "Command result: " <> result
-            return $ Just result
+            case result of
+                Continue output -> do
+                    logGameInfo $ "Command result: " <> output
+                    return $ Just output
+                Quit -> do
+                    logGameInfo "Quit command received"
+                    return Nothing
         Left err -> do
-            if input `elem` quitCommands
-            then do
-                logGameInfo "Quit command received"
-                return Nothing
-            else do
-                logGameError $ "Command error: " <> err
-                return $ Just err
+            logGameError $ "Command error: " <> err
+            return $ Just err

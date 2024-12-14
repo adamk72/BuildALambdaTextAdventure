@@ -39,11 +39,9 @@ gameLoop state = do
     case nextState of
         Just newState -> gameLoop newState
         Nothing -> do
-            -- Log game end and save history
             finalHistory <- logInfo (gameHistory state) "Game ended normally"
             saveHistory finalHistory
             return (Right ())
-
 
 launch :: FilePath -> IO (Either Text ())
 launch fp = do

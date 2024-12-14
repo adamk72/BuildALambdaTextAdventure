@@ -3,7 +3,7 @@
 
 module Command.Look (executeLook, renderMessage) where
 
-import           Command.CommandExecutor
+import           Command.Executor
 import           Command.Message
 import           Core.State
 import           Data.Maybe
@@ -41,7 +41,7 @@ lookAt eTag gw = do
 executeLook :: ScenarioCheckExecutor
 executeLook = toScenarioCheck executeLookRaw
 
-executeLookRaw :: World -> CommandExecutor
+executeLookRaw :: World -> BasicCommandExecutor
 executeLookRaw gw expr = do
     case expr of
         AtomicCmdExpression {} ->

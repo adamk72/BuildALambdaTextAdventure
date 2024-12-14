@@ -26,11 +26,10 @@ source-repository head
 library
   exposed-modules:
       Command.Actor
-      Command.CommandDefinition
-      Command.CommandExecutor
       Command.Commands
       Command.Debug
       Command.Drop
+      Command.Executor
       Command.Get
       Command.Give
       Command.Go
@@ -48,11 +47,14 @@ library
       Command.Message.Look
       Command.Message.Utils
       Command.Put
-      Command.Replay
+      Command.Types
+      Core.CommandRegistry
       Core.Config
       Core.GameMonad
       Core.Launch
       Core.Operations
+      Core.Registry.GameCommand
+      Core.Registry.SystemCommand
       Core.State
       Core.State.GameState
       Core.State.JSON
@@ -75,7 +77,6 @@ library
       Parser.Utils
       Repl.Interpreter
       Repl.Repl
-      Repl.Replay
       Scenario.Check
       Scenario.ScenarioConverter
       Scenario.Types

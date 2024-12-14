@@ -1,6 +1,6 @@
 module Command.Get (module Command.Get) where
 
-import           Command.CommandExecutor
+import           Command.Executor
 import           Command.Message
 import           Core.GameMonad
 import           Core.State
@@ -34,7 +34,7 @@ getItem itemTag srcM gw =
                      msg $ PickedUp itemTag (getName (activeActor gw))
                 Left errMsg -> return errMsg
 
-executeGet :: CommandExecutor
+executeGet :: BasicCommandExecutor
 executeGet expr = do
     gw <- getWorld
     let handle = \case

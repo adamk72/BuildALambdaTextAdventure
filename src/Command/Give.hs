@@ -1,6 +1,6 @@
 module Command.Give (module Command.Give) where
 
-import           Command.CommandExecutor
+import           Command.Executor
 import           Command.Message
 import           Core.GameMonad
 import           Core.State
@@ -38,7 +38,7 @@ giveItemToActor itemTag targetActorTag gw =
                     msg $ GaveItem itemTag (getName target)
                 Left errMsg -> return errMsg
 
-executeGive :: CommandExecutor
+executeGive :: BasicCommandExecutor
 executeGive expr = do
     gw <- getWorld
     case expr of

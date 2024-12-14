@@ -1,6 +1,6 @@
 module Command.Go (module Command.Go) where
 
-import           Command.CommandExecutor
+import           Command.Executor
 import           Command.Message
 import           Core.GameMonad
 import           Core.State.GameState
@@ -29,7 +29,7 @@ moveTo dstTag gw
 executeGo :: ScenarioCheckExecutor
 executeGo = toScenarioCheck executeGoRaw
 
-executeGoRaw :: World -> CommandExecutor
+executeGoRaw :: World -> BasicCommandExecutor
 executeGoRaw gw expr = do
     case expr of
         (AtomicCmdExpression _)                     -> msg GoWhere

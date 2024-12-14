@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 module Scenario.Check (ScenarioCheck (..), executeConditionCheck, handleScenarioCheck) where
 
-import           Command.CommandExecutor (CommandExecutor, ScenarioCheckExecutor (..))
+import           Command.Executor (BasicCommandExecutor, ScenarioCheckExecutor (..))
 import           Core.GameMonad
 import           Core.State.GameState
 import qualified Data.Map                as Map
@@ -18,7 +18,7 @@ import           Scenario.Types
 class ScenarioCheck a where
     toScenarioCheck :: a -> ScenarioCheckExecutor
 
-instance ScenarioCheck (World -> CommandExecutor) where
+instance ScenarioCheck (World -> BasicCommandExecutor) where
     toScenarioCheck f = ScenarioCheckExecutor $ \expr -> do
         world <- getWorld
         handleScenarioCheck expr world (f world expr)
