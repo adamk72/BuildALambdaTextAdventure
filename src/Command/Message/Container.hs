@@ -1,7 +1,7 @@
 module Command.Message.Container (ContainerMessage (..)) where
 
 import           Command.Message.Common (MessageRenderer (..))
-import           Data.Text           (Text)
+import           Data.Text              (Text)
 
 data ContainerMessage
     = PutItemIn Text Text

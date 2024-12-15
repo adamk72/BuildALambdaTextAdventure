@@ -1,8 +1,8 @@
 module Command.Message.Look (LookMessage (..)) where
 
 import           Command.Message.Common (MessageRenderer (..))
-import           Data.Text           (Text)
-import qualified Data.Text           as T
+import           Data.Text              (Text)
+import qualified Data.Text              as T
 
 data LookMessage
     = YouSeeGeneral Text

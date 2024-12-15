@@ -9,7 +9,7 @@ import           Data.Text               (Text)
 import           Entity.Class.Capacity   (changeItemContainer)
 import           Entity.Class.EntityBase
 import           Entity.Entity           hiding (getItem)
-import           Entity.Types.Common (EntityId(..))
+import           Entity.Types.Common     (EntityId (..))
 import           Parser.Types
 import           Parser.Utils
 import           Prelude                 hiding (pred)

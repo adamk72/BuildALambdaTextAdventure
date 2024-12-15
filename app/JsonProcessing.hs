@@ -31,10 +31,6 @@ readAllMetadata :: [Either String FilePath] -> IO [(FilePath, Either String  Met
 readAllMetadata filePaths = do
     let validPaths = Either.rights filePaths
     mapM processFile validPaths
-    -- Todo: add to trigger list (Redundant Return; mapM)
-    -- let validPaths = Either.rights filePaths -- filter out the bad files
-    -- results <- mapM processFile validPaths
-    -- return $ results
   where
     processFile filePath = do
       md <- readMetadata filePath

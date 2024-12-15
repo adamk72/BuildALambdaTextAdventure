@@ -1,7 +1,7 @@
 module Command.Message.Location (LocationMessage (..)) where
 
 import           Command.Message.Common (MessageRenderer (..))
-import           Data.Text           (Text, toLower)
+import           Data.Text              (Text, toLower)
 
 data LocationMessage
     = AlreadyAtLocation Text

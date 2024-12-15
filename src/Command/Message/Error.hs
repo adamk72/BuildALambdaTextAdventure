@@ -1,7 +1,7 @@
 module Command.Message.Error (ErrorMessage (..)) where
 
 import           Command.Message.Common (MessageRenderer (..))
-import           Data.Text           (Text)
+import           Data.Text              (Text)
 
 data ErrorMessage
     = LocationError Text

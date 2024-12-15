@@ -64,7 +64,7 @@ instance FromJSON WorldJSON where
         actors <- v .: "characters"
         locs <- v .: "locations"
         items <- v .: "items"
-        scenarios <- v .:? "scenarios"  -- Optional field
+        scenarios <- v .:? "scenarios"
         return WorldJSON
             { jStartingActorTag = startActor
             , jPlayableActors = actors

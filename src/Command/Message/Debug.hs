@@ -23,7 +23,7 @@ formatEntityBase base =
     "ID: " <> unEntityId (entityId base) <>
     ", Name: " <> entityName base <>
     case entityTags base of
-        Nothing -> ""
+        Nothing   -> ""
         Just tags -> ", Types: [" <> T.intercalate ", " tags <> "]"
 
 formatLocation :: Entity 'LocationT -> Text

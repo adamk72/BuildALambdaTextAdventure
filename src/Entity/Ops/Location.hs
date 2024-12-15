@@ -59,12 +59,10 @@ getActiveActorLocationId = getLocationId . activeActor
 getActorsAtLocation :: LocationId -> World -> [Entity 'ActorT]
 getActorsAtLocation locId world = viewableActors $ getViewablesRecordByLocId locId world
 
--- If you need to format actor names at a location
 getActorNamesAtLocation :: LocationId -> World -> [Text]
 getActorNamesAtLocation locId world =
     P.map getName $ viewableActors $ getViewablesRecordByLocId locId world
 
--- If you need both items and actors but want to process them separately
 processLocationContents :: LocationId -> World -> Text
 processLocationContents locId world =
     let ViewablesRecord {viewableItems = items, viewableActors = actors} =

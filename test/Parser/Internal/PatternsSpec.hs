@@ -28,7 +28,6 @@ spec = describe "Pattern Matching" $ do
             let pattern2 = findPattern knownCondPatterns First str2
             let pattern3 = findPattern knownCondPatterns First str3
 
-            -- Just check that we get some kind of match for these patterns
             pattern1 `shouldSatisfy` \case
                 Just (NonPossessive, _, _) -> True
                 _ -> False

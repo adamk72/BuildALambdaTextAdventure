@@ -6,9 +6,9 @@ import           Core.GameMonad
 import           Core.State
 import           Data.Text               (Text)
 import           Entity.Class.Capacity   (changeItemContainer)
-import           Entity.Class.EntityBase (getName, getId)
+import           Entity.Class.EntityBase (getId, getName)
 import           Entity.Entity
-import           Entity.Types.Common     (EntityId(..))
+import           Entity.Types.Common     (EntityId (..))
 import           Parser.Types
 import           Parser.Utils            (isPrepVariantOf)
 import           Utils                   (ItemTag)

@@ -3,7 +3,7 @@
 
 module Entity.Class.Viewable (ViewablesRecord (..), getLocationId, getViewablesRecordByLocId) where
 
-import qualified Data.Map      as Map
+import qualified Data.Map            as Map
 import           Entity.Entity
 import           Entity.Types.Common
 

@@ -100,7 +100,6 @@ saveHistory hist = do
 loadHistory :: FilePath -> FilePath -> IO GameHistoryLog
 loadHistory logPath histPath = do
     hist <- initGameHistory logPath histPath
-    -- Load previous commands if they exist
     commands <- TIO.readFile histPath `catch` \(_ :: IOError) -> return ""
     let loadedCommands = filter (not . T.null) $ T.lines commands
     return hist { recentCommands = loadedCommands }

@@ -12,7 +12,6 @@ import           Prelude               hiding (words)
 import           Scenario.Check        (executeConditionCheck)
 import           Test.Hspec
 
--- Helper to create a basic test world
 createTestWorld :: Bool -> World
 createTestWorld guardHasCoin = World
     { locations = Map.fromList [(EntityId "castle entry", testLoc)]
@@ -125,7 +124,6 @@ spec = do
                     , "guard does not have a silver coin"
                     ]
 
-            -- Test each condition string
             mapM_ (\condStr -> case parseCondPhrase condStr of
                 Right cond -> do
                     let expected = "not" `elem` words condStr

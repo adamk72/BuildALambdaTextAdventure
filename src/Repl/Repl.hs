@@ -13,7 +13,7 @@ replLoop :: AppState -> IO (Maybe AppState)
 replLoop state@AppState{gameWorld = world, gameHistoryLog = history, isReplayMode = replay, replayCommands = commands} = do
     input <- read_ state
     case input of
-        Nothing -> return Nothing  -- End of replay
+        Nothing -> return Nothing
         Just cmd -> do
             let initialState = GameState world history
             (result, GameState newWorld newHistory) <- runStateT (interpretCommand cmd) initialState
@@ -25,7 +25,7 @@ replLoop state@AppState{gameWorld = world, gameHistoryLog = history, isReplayMod
                         { gameWorld = newWorld
                         , gameHistoryLog = updatedHistory
                         , isReplayMode = replay
-                        , replayCommands = drop 1 commands  -- Move to next command in replay mode
+                        , replayCommands = drop 1 commands
                         }
                 Nothing -> do
                     finalizedHistory <- logInfo newHistory "Game exit requested"

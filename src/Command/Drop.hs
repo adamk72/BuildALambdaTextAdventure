@@ -7,7 +7,7 @@ import           Entity.Class.Capacity
 import           Entity.Entity
 import           Entity.Types.Common
 import           Parser.Types
-import           Utils                   (ContainerTag, ItemTag)
+import           Utils                 (ContainerTag, ItemTag)
 
 dropObject :: ItemTag -> Maybe ContainerTag -> World -> GameStateText
 dropObject itemTag dstTagM gw =

@@ -23,15 +23,14 @@ initAppState gw baseDir replayMode replayFileM = do
     let logPath = baseDir </> "logs" </> logFileName
         cmdHistPath = case replayFileM of
             Just customCmdFile -> baseDir </> "logs" </> customCmdFile -- Todo: make this smarter, since now it assumes logs are in the same directory.
-            Nothing -> baseDir </> "logs" </> cmdHistoryFileName
+            Nothing            -> baseDir </> "logs" </> cmdHistoryFileName
 
     history <- initGameHistory logPath cmdHistPath
     newHistory <- logInfo history "Initializing new game state"
 
     commands <- if replayMode
                 then do
-                    -- Todo #1: handle file failures
-                    -- Todo #2: handle other filename
+                    -- Todo: handle file failures
                     contents <- TIO.readFile (historyFile history)
                     return $ Prelude.filter (not . T.null) $ T.lines contents
                 else return []

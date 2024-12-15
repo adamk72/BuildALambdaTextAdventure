@@ -1,16 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Command.LookSpec (spec) where
 
+import           Command.CommandExecutor (ScenarioCheckExecutor (..))
 import           Command.Commands
 import           Command.TestUtils
 import           Core.State
+import qualified Data.Map                as Map
+import           Data.Text               (isInfixOf)
+import           Entity.Class.EntityBase
 import           Mock.TestWorld
 import           Parser.Types
 import           Test.Hspec
-import           Entity.Class.EntityBase
-import           Data.Text            (isInfixOf)
-import qualified Data.Map            as Map
-import Command.CommandExecutor (ScenarioCheckExecutor(..))
 
 spec :: Spec
 spec = do
@@ -29,7 +29,6 @@ spec = do
                     expr = UnaryCmdExpression "look" (NounClause "around")
                 (output, newState) <- runCommand (runScenarioCheck executeLook) expr gw
 
-                -- Test that output includes location and visible items
                 "flowery meadow" `shouldSatisfy` (`isInfixOf` output)
                 "silver coin" `shouldSatisfy` (`isInfixOf` output)
                 "bag of holding" `shouldSatisfy` (`isInfixOf` output)

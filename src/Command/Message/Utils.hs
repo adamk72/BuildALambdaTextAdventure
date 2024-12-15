@@ -1,8 +1,8 @@
 module Command.Message.Utils (msg, msg2, msgGameWordError, msgs) where
 
-import           Command.Message.Common  (MessageRenderer (..))
+import           Command.Message.Common (MessageRenderer (..))
 import           Core.State.GameState
-import           Data.Text            (Text, intercalate, unpack)
+import           Data.Text              (Text, intercalate, unpack)
 
 msg :: MessageRenderer a => a -> GameStateText
 msg = return . renderMessage

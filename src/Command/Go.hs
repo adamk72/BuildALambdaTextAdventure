@@ -32,7 +32,7 @@ executeGo = toScenarioCheck executeGoRaw
 executeGoRaw :: World -> BasicCommandExecutor
 executeGoRaw gw expr = do
     case expr of
-        (AtomicCmdExpression _)                     -> msg GoWhere
-        (UnaryCmdExpression _ (NounClause dst) )    -> moveTo dst gw
+        (AtomicCmdExpression _)                    -> msg GoWhere
+        (UnaryCmdExpression _ (NounClause dst) )   -> moveTo dst gw
         (SplitCmdExpression _ _ (NounClause dst) ) -> moveTo dst gw
-        _                                           -> msg NotSure
+        _                                          -> msg NotSure

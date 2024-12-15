@@ -1,10 +1,5 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-module Parser.Parser
-    ( parseCmdPhrase
-    , parseCondPhrase
-    , renderExpression
-    , renderExpressionError
-    ) where
+module Parser.Parser (parseCmdPhrase, parseCondPhrase, renderExpression, renderExpressionError) where
 
 import           Data.Text       (Text, unwords)
 import qualified Data.Text       as T
@@ -35,7 +30,6 @@ runParseCondPhrase clause = do
     condResult <- findWithPattern clause knownCondPatterns First
     case condResult of
         Nothing           -> Left $ MalformedCondExpression $ unwords clause
-        -- Just (patternType, subject, condition) -> Left $ CheckingExpression $  T.intercalate ", " [T.pack (show patternType), unwords subject, unwords condition]
         Just (patternType, subject, condition) ->
             case patternType of
                 AtLocation    -> makeStateExpr AtLocationExpression

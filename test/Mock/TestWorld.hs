@@ -8,7 +8,6 @@ import           Entity.Entity
 import           Entity.Types.Capacity   (Capacity (..))
 import           Entity.Types.Common
 
--- Common test locations
 testCave :: Entity 'LocationT
 testCave = Location
     { locationBase = EntityBase
@@ -42,7 +41,6 @@ testForest = Location
     , locationCapacity = Unlimited
     }
 
--- Common test actors
 testAlice :: Entity 'ActorT
 testAlice = Actor
     { actorBase = EntityBase
@@ -65,7 +63,6 @@ testBob = Actor
     , actorCapacity = Limited 10
     }
 
--- Common test items
 testBagOfHolding :: Entity 'ItemT
 testBagOfHolding = Item
     { itemBase = EntityBase
@@ -154,7 +151,6 @@ testBat = Item
     , itemCapacity = Nothing
     }
 
--- World builder
 defaultGW :: World
 defaultGW = World
     { locations = Map.fromList [(getId loc, loc) | loc <- [testCave, testMeadow, testForest]]
@@ -167,7 +163,6 @@ defaultGW = World
     allItems = [testCoin, testEightBall, testBat, testBagOfHolding,
                 testBag, testBauble, testPearl, testAnotherPearl]
 
--- Helper functions
 withActorAt :: World -> Entity 'LocationT -> World
 withActorAt world newLoc =
     world { activeActor = (activeActor world) { actorLocationId = getId newLoc } }

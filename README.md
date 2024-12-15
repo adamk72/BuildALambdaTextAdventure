@@ -37,6 +37,15 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 
 ## Todos
 
+### Cleanup Todos
+[] Fix exports to only what's necessary.
+[] Rename variables and functions to be more consistent.
+[] Clean up tests; try to simplify.
+[] Create a test command history file with expected outcomes to check against.
+[] Standardize all of the messages/errors, especially ones that are in situ.
+[] Rename the app (get rid of "my").
+[] Clean up this documentation; move the "todos" to their own file and the blog ideas to the blog.
+
 ### Coding Todos
 - [] Supplementary for scenarios
   - [x] Create "give" command for NPC interaction.
@@ -53,9 +62,9 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
   - [x] Aeson parse the scenarios section of the Trial Adventure.json file.
   - [x] Determine how you're actually going to access that data in the midst of a command use.
 - [] Logging, Gave saves, Game replays
-  - [z] Log status for debugging.
+  - [x] Log status for debugging.
   - [] Where there are `error` throws, try logging instead.
-  - [å] Save current state of game to files.
+  - [x] Save current state of game to files.
   - [] Save commands so that the user can up arrow to get last command.
   - [] Save (valid) moves to files so that the game can be replayed for testing.
 - [] Create 'prospect' location status, indicating Look is misdirecting the player
@@ -148,6 +157,13 @@ The maybe function takes a default value, a function, and a Maybe value. If the 
 -- Just st <$ mapM_ print_ outM -- why doesn't this work?
 ```
 
+```haskell
+    -- Todo: Talk about init and last in blog
+    let init' = init xs
+        last' = last xs
+        commaList = intercalate ", " (map toLower init')
+```
+
 ## Trigger patterns
 
 ```haskell
@@ -162,5 +178,15 @@ launch fp = do
         gameLoop $ world adventure
     Left e -> print e
 -}
+```
+
+```haskell
+let validPaths = Either.rights filePaths
+mapM processFile validPaths
+
+-- Todo: add to trigger list (Redundant Return; mapM)
+let validPaths = Either.rights filePaths -- filter out the bad files
+results <- mapM processFile validPaths
+return $ results
 ```
 

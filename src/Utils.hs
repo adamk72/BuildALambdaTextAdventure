@@ -20,7 +20,6 @@ oxfordComma [] = ""
 oxfordComma [x] = toLower x
 oxfordComma [x,y] = toLower x <> " and " <> toLower y
 oxfordComma xs =
-    -- Todo: Talk about init and last in blog
     let init' = init xs
         last' = last xs
         commaList = intercalate ", " (map toLower init')

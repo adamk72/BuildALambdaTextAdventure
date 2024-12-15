@@ -21,12 +21,10 @@ spec = do
                 verifyStartLocation newState "meadow"
 
             it "handles unary expression (drop <item>)" $ do
-                -- First get the item
                 let gw = defaultGW
                     getExpr = UnaryCmdExpression "get" (NounClause "silver coin")
                 (_, midState) <- runCommand executeGet getExpr gw
 
-                    -- Then drop it
                 let dropExpr = UnaryCmdExpression "drop" (NounClause "silver coin")
                 (output, finalState) <- runCommand executeDrop dropExpr midState
 

@@ -11,7 +11,6 @@ import           System.Process
     waitForProcess)
 import           Test.Hspec
 
--- Process Setup Helpers
 launchCmd :: CreateProcess
 launchCmd = proc "stack" ["run", "TextAdventure-exe", "--", "-a", "Trial"]
 
@@ -30,7 +29,6 @@ closeHandles sin sout ph = do
     mapM_ hClose sout
     terminateProcess ph
 
--- Test Action Wrapper
 actionWrapper :: ((Handle, Handle, ProcessHandle) -> IO a) -> IO a
 actionWrapper testAction = do
     result <- createProcess launchWithPipes
@@ -43,7 +41,6 @@ actionWrapper testAction = do
             cleanup
             fail "Failed to get process handles"
 
--- Test Helper Functions
 type TestHandles = (Handle, Handle, ProcessHandle)
 
 sendCommand :: Handle -> String -> IO ()
@@ -60,7 +57,6 @@ testCommand (stdin, stdout, _) cmd expectedResponse = do
     response <- getResponse stdout
     response `shouldBe` "λ> " ++ expectedResponse
 
--- Specs
 spec :: Spec
 spec = do
     describe "Text Adventure Game Tests" $ do

@@ -63,7 +63,7 @@ isContainer (Actor {})          = True
 isContainer (Item _ _ (Just _)) = True
 isContainer (Item _ _ Nothing)  = False
 
--- EntityResult
+-- | EntityResult
 {- Example usage:
 case findEntityById targetId world of
     Nothing -> handleNotFound targetId

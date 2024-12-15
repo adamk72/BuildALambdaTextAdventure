@@ -1,7 +1,7 @@
 module Command.Message.Item (ItemMessage (..)) where
 
 import           Command.Message.Common (MessageRenderer (..))
-import           Data.Text           (Text)
+import           Data.Text              (Text)
 
 data ItemMessage
     = DoNotSeeItem Text

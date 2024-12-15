@@ -2,11 +2,9 @@ module Command.Message.Common (CommonMessage (..), MessageRenderer (..)) where
 
 import           Data.Text (Text)
 
--- Base type class for all message renderers
 class MessageRenderer a where
     renderMessage :: a -> Text
 
--- Common messages that might be used across different commands
 data CommonMessage
     = ItemDoesNotExist Text
     | LocationDoesNotExist Text

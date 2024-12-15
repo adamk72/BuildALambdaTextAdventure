@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 module Scenario.Check (ScenarioCheck (..), executeConditionCheck, handleScenarioCheck) where
 
-import           Command.Executor (BasicCommandExecutor, ScenarioCheckExecutor (..))
+import           Command.Executor        (BasicCommandExecutor, ScenarioCheckExecutor (..))
 import           Core.GameMonad
 import           Core.State.GameState
 import qualified Data.Map                as Map

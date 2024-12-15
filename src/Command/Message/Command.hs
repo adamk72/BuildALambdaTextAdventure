@@ -1,7 +1,7 @@
 module Command.Message.Command (CommandMessage (..)) where
 
 import           Command.Message.Common (MessageRenderer (..))
-import           Data.Text           (Text)
+import           Data.Text              (Text)
 
 data CommandMessage
     = DontKnowWhere Text

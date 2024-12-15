@@ -1,9 +1,4 @@
-module Command.Types
-    ( CommandHandler (..)
-    , CommandInfo (..)
-    , CommandRegistry (..)
-    , CommandResult (..)
-    ) where
+module Command.Types (CommandHandler (..), CommandInfo (..), CommandRegistry (..), CommandResult (..)) where
 
 import           Command.Executor
 import           Data.Text        (Text)
