@@ -21,41 +21,43 @@ import           Data.Text
   - 'prepositional clause'
 -}
 
-newtype NounClause = NounClause { unNounClause :: Text }
-    deriving (Show, Eq)
+newtype NounClause = NounClause {unNounClause :: Text}
+  deriving (Show, Eq)
 
-newtype PrepClause = PrepClause { unPrepClause :: Text }
-    deriving (Show, Eq)
+newtype PrepClause = PrepClause {unPrepClause :: Text}
+  deriving (Show, Eq)
 
 type Verb = Text
 
-data CmdExpression =
-      AtomicCmdExpression Verb
-    | UnaryCmdExpression Verb NounClause
-    | SplitCmdExpression Verb PrepClause NounClause
-    | ComplexCmdExpression Verb NounClause PrepClause NounClause
-    deriving (Show, Eq)
+data CmdExpression
+  = AtomicCmdExpression Verb
+  | UnaryCmdExpression Verb NounClause
+  | SplitCmdExpression Verb PrepClause NounClause
+  | ComplexCmdExpression Verb NounClause PrepClause NounClause
+  deriving (Show, Eq)
 
-newtype SubjClause = SubjClause { unSubjClause :: Text } deriving (Show, Eq)
-newtype StateClause = StateClause { unStateClause :: Text } deriving (Show, Eq)
-newtype PossessionClause = PossessionClause { unPossessionClause :: Text } deriving (Show, Eq)
+newtype SubjClause = SubjClause {unSubjClause :: Text} deriving (Show, Eq)
+
+newtype StateClause = StateClause {unStateClause :: Text} deriving (Show, Eq)
+
+newtype PossessionClause = PossessionClause {unPossessionClause :: Text} deriving (Show, Eq)
 
 type Subject = Text
 
-data CondExpression =
-      PosStateExpression SubjClause StateClause
-    | NegStateExpression SubjClause StateClause
-    | PossessiveExpression SubjClause PossessionClause
-    | NonPossessiveExpression SubjClause PossessionClause
-    | AtLocationExpression SubjClause StateClause
-    | NotAtLocationExpression SubjClause StateClause
-    deriving (Show, Eq)
+data CondExpression
+  = PosStateExpression SubjClause StateClause
+  | NegStateExpression SubjClause StateClause
+  | PossessiveExpression SubjClause PossessionClause
+  | NonPossessiveExpression SubjClause PossessionClause
+  | AtLocationExpression SubjClause StateClause
+  | NotAtLocationExpression SubjClause StateClause
+  deriving (Show, Eq)
 
-data ParseError =
-      MissingObject
-    | MissingTarget
-    | MalformedCmdExpression Text
-    | MalformedCondExpression Text
-    | TBDError
-    | CheckingExpression Text
-    deriving (Show, Eq)
+data ParseError
+  = MissingObject
+  | MissingTarget
+  | MalformedCmdExpression Text
+  | MalformedCondExpression Text
+  | TBDError
+  | CheckingExpression Text
+  deriving (Show, Eq)

@@ -1,4 +1,4 @@
-module Command.Give (module Command.Give) where
+module Command.Give (executeGive) where
 
 import           Command.Executor
 import           Command.Message
@@ -15,41 +15,42 @@ import           Utils                   (ItemTag)
 
 giveItemToActor :: ItemTag -> Text -> World -> GameStateText
 giveItemToActor itemTag targetActorTag gw =
-    case findEntityById itemId gw of
-        Just (ItemResult item) | item `elem` itemsOnActor ->
-            case findEntityById targetActorId gw of
-                Just (ActorResult target) | target `elem` actorsInLoc ->
-                    transferItem item target
-                _ -> msg $ NoActorForItem itemTag targetActorTag
-        _ -> msg $ YouDoNotHave itemTag
-    where
-        itemId = EntityId itemTag
-        targetActorId = EntityId targetActorTag
-        itemsOnActor = getActiveActorInventoryList gw
+  case findEntityById itemId gw of
+    Just (ItemResult item) | item `elem` itemsOnActor ->
+      case findEntityById targetActorId gw of
+        Just (ActorResult target)
+          | target `elem` actorsInLoc ->
+              transferItem item target
+        _ -> msg $ NoActorForItem itemTag targetActorTag
+    _ -> msg $ YouDoNotHave itemTag
+  where
+    itemId = EntityId itemTag
+    targetActorId = EntityId targetActorTag
+    itemsOnActor = getActiveActorInventoryList gw
 
-        currentLocationId = getId (getActiveActorLocation gw)
-        actorsInLoc = getActorsAtLocation currentLocationId gw
+    currentLocationId = getId (getActiveActorLocation gw)
+    actorsInLoc = getActorsAtLocation currentLocationId gw
 
-        transferItem :: Entity 'ItemT -> Entity 'ActorT -> GameStateText
-        transferItem item target =
-            case changeItemContainer target item gw of
-                Right updatedGW -> do
-                    modifyWorld (const updatedGW)
-                    msg $ GaveItem itemTag (getName target)
-                Left errMsg -> return errMsg
+    transferItem :: Entity 'ItemT -> Entity 'ActorT -> GameStateText
+    transferItem item target =
+      case changeItemContainer target item gw of
+        Right updatedGW -> do
+          modifyWorld (const updatedGW)
+          msg $ GaveItem itemTag (getName target)
+        Left errMsg -> return errMsg
 
 executeGive :: BasicCommandExecutor
 executeGive expr = do
-    gw <- getWorld
-    case expr of
-        AtomicCmdExpression {} ->
-            msg GiveWhat
-        UnaryCmdExpression _ (NounClause itemTag) ->
-            msg $ GiveToWhom itemTag
-        SplitCmdExpression {} ->
-            msg GiveWhat
-        ComplexCmdExpression _ (NounClause itemTag) (PrepClause prep) (NounClause actorTag)
-            | prep `isPrepVariantOf` "to" ->
-                giveItemToActor itemTag actorTag gw
-        ComplexCmdExpression {} ->
-            msg NotSure
+  gw <- getWorld
+  case expr of
+    AtomicCmdExpression {} ->
+      msg GiveWhat
+    UnaryCmdExpression _ (NounClause itemTag) ->
+      msg $ GiveToWhom itemTag
+    SplitCmdExpression {} ->
+      msg GiveWhat
+    ComplexCmdExpression _ (NounClause itemTag) (PrepClause prep) (NounClause actorTag)
+      | prep `isPrepVariantOf` "to" ->
+          giveItemToActor itemTag actorTag gw
+    ComplexCmdExpression {} ->
+      msg NotSure

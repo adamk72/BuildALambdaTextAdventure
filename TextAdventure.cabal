@@ -51,20 +51,21 @@ library
       Core.CommandRegistry
       Core.Config
       Core.GameMonad
+      Core.GameState
+      Core.JSON.EntityConverter
+      Core.JSON.GameEnv
+      Core.JSON.ScenarioConverter
+      Core.JSON.Types
       Core.Launch
       Core.Operations
       Core.Registry.GameCommand
       Core.Registry.SystemCommand
       Core.State
-      Core.State.GameState
-      Core.State.JSON
-      Core.State.JSONTypes
       Entity.Class.CanMoveSelf
       Entity.Class.Capacity
       Entity.Class.EntityBase
       Entity.Class.Viewable
       Entity.Entity
-      Entity.EntityConverter
       Entity.Ops.Inventory
       Entity.Ops.Location
       Entity.Ops.NestedInventory
@@ -78,7 +79,6 @@ library
       Repl.Interpreter
       Repl.Repl
       Scenario.Check
-      Scenario.ScenarioConverter
       Scenario.Types
       Utils
   other-modules:

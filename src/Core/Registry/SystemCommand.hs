@@ -4,7 +4,8 @@ import           Command.Debug (executeDebug)
 import           Command.Types
 
 systemCommandRegistry :: CommandRegistry
-systemCommandRegistry = CommandRegistry
-    [ CommandInfo ":debug" [] (BasicCommand executeDebug)
-    , CommandInfo ":quit" [":q", ":exit", ":e"] QuitCommand
+systemCommandRegistry =
+  CommandRegistry
+    [ CommandInfo ":debug" [] (BasicCommand executeDebug),
+      CommandInfo ":quit" [":q", ":exit", ":e"] QuitCommand
     ]

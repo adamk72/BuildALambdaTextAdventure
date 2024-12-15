@@ -1,26 +1,27 @@
 module CmdOptions (AdventureOptions (..), RunCommand (..), findAdventurePath, getParserInfo, options, programDesc) where
 
-import           Core.State.JSONTypes
-import           Data.Text            as T (Text, intercalate, pack, unpack)
+import           Core.JSON.Types
+import           Data.Text           as T (Text, intercalate, pack, unpack)
 import           Options.Applicative
-import           Prettyprinter        (Pretty (pretty), indent, vsep)
+import           Prettyprinter       (Pretty (pretty), indent, vsep)
 
-newtype AdventureOptions = AdventureOptions { optCommand :: RunCommand }
+newtype AdventureOptions = AdventureOptions {optCommand :: RunCommand}
 
 data RunCommand
-    = Run Text
-    | Replay Text
-    | ReplayFile Text FilePath
-    deriving (Show)
+  = Run Text
+  | Replay Text
+  | ReplayFile Text FilePath
+  deriving (Show)
 
 options :: [(FilePath, Either String Metadata)] -> Parser AdventureOptions
 options adventures = AdventureOptions <$> commandParser adventures
 
 commandParser :: [(FilePath, Either String Metadata)] -> Parser RunCommand
-commandParser adventures = subparser
+commandParser adventures =
+  subparser
     ( command "run" (info (runOptions adventures) (progDesc "Run an adventure"))
-    <> command "replay" (info (replayOptions adventures) (progDesc "Replay an adventure from the automatically generated command history file."))
-    <> command "replay-file" (info replayFileOptions (progDesc "Replay an adventure using a specific file. This file must be located in stories/logs (for now)."))
+        <> command "replay" (info (replayOptions adventures) (progDesc "Replay an adventure from the automatically generated command history file."))
+        <> command "replay-file" (info replayFileOptions (progDesc "Replay an adventure using a specific file. This file must be located in stories/logs (for now)."))
     )
 
 runOptions :: [(FilePath, Either String Metadata)] -> Parser RunCommand
@@ -30,26 +31,28 @@ replayOptions :: [(FilePath, Either String Metadata)] -> Parser RunCommand
 replayOptions adventures = Replay <$> adventureOption adventures
 
 replayFileOptions :: Parser RunCommand
-replayFileOptions = ReplayFile
+replayFileOptions =
+  ReplayFile
     <$> strOption
-        ( long "adventure"
-        <> short 'a'
-        <> metavar "NAME"
-        <> help "Name of the adventure to replay"
-        )
+      ( long "adventure"
+          <> short 'a'
+          <> metavar "NAME"
+          <> help "Name of the adventure to replay"
+      )
     <*> strOption
-        ( long "file"
-        <> short 'f'
-        <> metavar "FILEPATH"
-        <> help "File containing commands to replay"
-        )
+      ( long "file"
+          <> short 'f'
+          <> metavar "FILEPATH"
+          <> help "File containing commands to replay"
+      )
 
 adventureOption :: [(FilePath, Either String Metadata)] -> Parser Text
-adventureOption adventures = strOption
+adventureOption adventures =
+  strOption
     ( long "adventure"
-    <> short 'a'
-    <> metavar "NAME"
-    <> help (unpack $ "Name of the adventure. Available: " <> intercalate ", " (map getAdventureName adventures))
+        <> short 'a'
+        <> metavar "NAME"
+        <> help (unpack $ "Name of the adventure. Available: " <> intercalate ", " (map getAdventureName adventures))
     )
 
 getAdventureName :: (FilePath, Either String Metadata) -> Text
@@ -63,36 +66,50 @@ findAdventurePath tag = foldr check Nothing
     check _ acc                = acc
 
 programDesc :: [(FilePath, Either String Metadata)] -> String
-programDesc adventures = unlines
-    [ "Haskell Text Adventure Game"
-    , "Available adventures:"
-    ] ++ concatMap showAdventure adventures
+programDesc adventures =
+  unlines
+    [ "Haskell Text Adventure Game",
+      "Available adventures:"
+    ]
+    ++ concatMap showAdventure adventures
   where
     showAdventure (_, Right md) = unpack $ "  " <> title md <> " (" <> launchTag md <> ") - " <> description md <> "\n"
     showAdventure (path, _)     = unpack $ "  " <> pack path <> " (invalid metadata)\n"
 
 versionOption :: String -> Parser (a -> a)
-versionOption ver = infoOption ver
+versionOption ver =
+  infoOption
+    ver
     ( long "version"
-    <> short 'v'
-    <> help "Show main program version information"
+        <> short 'v'
+        <> help "Show main program version information"
     )
 
 getParserInfo :: [(FilePath, Either String Metadata)] -> String -> ParserInfo AdventureOptions
-getParserInfo adventures ver = info (helper <*> versionOption ver <*> options adventures)
+getParserInfo adventures ver =
+  info
+    (helper <*> versionOption ver <*> options adventures)
     ( fullDesc
-    <> progDesc "Run a text adventure game."
-    <> header "Haskell Adventure - a journey into fun!"
-    <> (progDescDoc . Just $ indent 2 $ vsep [pretty (formatAdventures adventures)])
+        <> progDesc "Run a text adventure game."
+        <> header "Haskell Adventure - a journey into fun!"
+        <> (progDescDoc . Just $ indent 2 $ vsep [pretty (formatAdventures adventures)])
     )
   where
     formatAdventures :: [(FilePath, Either String Metadata)] -> String
     formatAdventures advs = unlines $ "Available adventures:" : map formatAdventure advs
 
     formatAdventure :: (FilePath, Either String Metadata) -> String
-    formatAdventure (_, Right md) = unpack $
-        "  " <> title md <> " (v" <> version md <> ") by " <> author md <>
-        "\n    " <> description md <>
-        "\n    Launch with: --name " <> launchTag md
+    formatAdventure (_, Right md) =
+      unpack $
+        "  "
+          <> title md
+          <> " (v"
+          <> version md
+          <> ") by "
+          <> author md
+          <> "\n    "
+          <> description md
+          <> "\n    Launch with: --name "
+          <> launchTag md
     formatAdventure (path, Left _) =
-        "  Invalid adventure at: " ++ path
+      "  Invalid adventure at: " ++ path

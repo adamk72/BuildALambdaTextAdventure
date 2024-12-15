@@ -1,6 +1,6 @@
-module Command.Actor (module Command.Actor) where
-import           Command.Executor
+module Command.Actor (executeInventory) where
 
+import           Command.Executor
 import           Command.Look
 import           Parser.Types     (CmdExpression (UnaryCmdExpression), NounClause (NounClause))
 

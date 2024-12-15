@@ -38,12 +38,12 @@ GameWorld {activeCharacter = Character {charTag = "alice", charName = "Alice the
 ## Todos
 
 ### Cleanup Todos
-[] Fix exports to only what's necessary.
+[x] Fix exports to only what's necessary.
 [] Rename variables and functions to be more consistent.
 [] Clean up tests; try to simplify.
 [] Create a test command history file with expected outcomes to check against.
 [] Standardize all of the messages/errors, especially ones that are in situ.
-[] Rename the app (get rid of "my").
+[x] Rename the app (get rid of "my").
 [] Clean up this documentation; move the "todos" to their own file and the blog ideas to the blog.
 
 ### Coding Todos

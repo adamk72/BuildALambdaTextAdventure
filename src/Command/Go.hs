@@ -1,9 +1,9 @@
-module Command.Go (module Command.Go) where
+module Command.Go (executeGo) where
 
 import           Command.Executor
 import           Command.Message
 import           Core.GameMonad
-import           Core.State.GameState
+import           Core.GameState
 import           Data.Maybe               (fromMaybe)
 import           Data.Text                (Text)
 import           Entity.Class.CanMoveSelf
@@ -14,12 +14,12 @@ import           Scenario.Check
 
 moveTo :: Text -> World -> GameStateText
 moveTo dstTag gw
-    | currLocTag == dstTag = msg $ AlreadyAtLocation dstTag
-    | dstId `elem` dstIds = do
-            let newAc = setLocationId dstId ac
-            modifyWorld $ \w -> w { activeActor = newAc }
-            msg $ MovingToLocation dstTag
-    | otherwise = msg $ NoPath dstTag
+  | currLocTag == dstTag = msg $ AlreadyAtLocation dstTag
+  | dstId `elem` dstIds = do
+      let newAc = setLocationId dstId ac
+      modifyWorld $ \w -> w {activeActor = newAc}
+      msg $ MovingToLocation dstTag
+  | otherwise = msg $ NoPath dstTag
   where
     ac = activeActor gw
     dstId = EntityId dstTag
@@ -31,8 +31,8 @@ executeGo = toScenarioCheck executeGoRaw
 
 executeGoRaw :: World -> BasicCommandExecutor
 executeGoRaw gw expr = do
-    case expr of
-        (AtomicCmdExpression _)                    -> msg GoWhere
-        (UnaryCmdExpression _ (NounClause dst) )   -> moveTo dst gw
-        (SplitCmdExpression _ _ (NounClause dst) ) -> moveTo dst gw
-        _                                          -> msg NotSure
+  case expr of
+    (AtomicCmdExpression _)                   -> msg GoWhere
+    (UnaryCmdExpression _ (NounClause dst))   -> moveTo dst gw
+    (SplitCmdExpression _ _ (NounClause dst)) -> moveTo dst gw
+    _                                         -> msg NotSure

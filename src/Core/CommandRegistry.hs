@@ -11,9 +11,10 @@ import           Core.Registry.SystemCommand
 import           Data.Text                   hiding (concatMap)
 
 allCommands :: CommandRegistry
-allCommands = CommandRegistry $
+allCommands =
+  CommandRegistry $
     getCommands gameCommandRegistry ++ getCommands systemCommandRegistry
 
 getKnownVerbs :: CommandRegistry -> [Text]
 getKnownVerbs (CommandRegistry commands) =
-    concatMap (\cmdInfo -> cmdText cmdInfo : cmdAliases cmdInfo) commands
+  concatMap (\cmdInfo -> cmdText cmdInfo : cmdAliases cmdInfo) commands
