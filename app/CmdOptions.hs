@@ -19,8 +19,8 @@ options adventures = AdventureOptions <$> commandParser adventures
 commandParser :: [(FilePath, Either String Metadata)] -> Parser RunCommand
 commandParser adventures = subparser
     ( command "run" (info (runOptions adventures) (progDesc "Run an adventure"))
-    <> command "replay" (info (replayOptions adventures) (progDesc "Replay an adventure"))
-    <> command "replay-file" (info replayFileOptions (progDesc "Replay an adventure using a specific file"))
+    <> command "replay" (info (replayOptions adventures) (progDesc "Replay an adventure from the automatically generated command history file."))
+    <> command "replay-file" (info replayFileOptions (progDesc "Replay an adventure using a specific file. This file must be located in stories/logs (for now)."))
     )
 
 runOptions :: [(FilePath, Either String Metadata)] -> Parser RunCommand
@@ -46,8 +46,8 @@ replayFileOptions = ReplayFile
 
 adventureOption :: [(FilePath, Either String Metadata)] -> Parser Text
 adventureOption adventures = strOption
-    ( long "name"
-    <> short 'n'
+    ( long "adventure"
+    <> short 'a'
     <> metavar "NAME"
     <> help (unpack $ "Name of the adventure. Available: " <> intercalate ", " (map getAdventureName adventures))
     )
@@ -75,7 +75,7 @@ versionOption :: String -> Parser (a -> a)
 versionOption ver = infoOption ver
     ( long "version"
     <> short 'v'
-    <> help "Show version information"
+    <> help "Show main program version information"
     )
 
 getParserInfo :: [(FilePath, Either String Metadata)] -> String -> ParserInfo AdventureOptions
