@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "accum",
+    "advs",
     "Conds",
     "curr",
     "dests",
@@ -11,6 +12,7 @@
     "prettyprinter",
     "Resps",
     "sout",
+    "subparser",
     "Viewables",
     "visibles",
     "wrld"
