@@ -4,16 +4,12 @@ import           CmdOptions
 import           Control.Monad        (forM_)
 import           Core.Launch          (launch)
 import           Core.State.JSONTypes (Metadata (..))
-import           Data.Either          (isRight)
 import           Data.Text
 import qualified Data.Text.IO         as TIO
 import           JsonProcessing       (getJsonFilePaths, readAllMetadata, storyDirectory)
 import           Options.Applicative
 import           Prelude              as P
 import           System.Exit          (exitFailure, exitSuccess)
-
-formatMetadata :: Metadata -> Text
-formatMetadata md = title md <> " (" <> launchTag md <> ") - " <> description md
 
 main :: IO ()
 main = do
@@ -32,18 +28,18 @@ main = do
 
 runCommand :: [(FilePath, Either String Metadata)] -> RunCommand -> IO ()
 runCommand adventures cmd = case cmd of
-    Run name          -> runGame adventures name False
-    Replay name       -> runGame adventures name True
-    ReplayFile name _ -> runGame adventures name True  -- Todo: Handle custom file path
+    Run name             -> runGame adventures name False Nothing
+    Replay name          -> runGame adventures name True Nothing
+    ReplayFile name file -> runGame adventures name True (Just file)
 
-runGame :: [(FilePath, Either String Metadata)] -> Text -> Bool -> IO ()
-runGame adventures name replayMode =
+runGame :: [(FilePath, Either String Metadata)] -> Text -> Bool -> Maybe FilePath -> IO ()
+runGame adventures name replayMode fp =
     case findAdventurePath name adventures of
         Nothing -> do
             TIO.putStrLn $ "Invalid adventure name: " <> name
             exitFailure
         Just path -> do
-            result <- launch path replayMode
+            result <- launch path replayMode fp
             case result of
                 Left msg -> do
                     TIO.putStrLn $ "Game ended with error: " <> msg
